@@ -417,6 +417,7 @@ ATIVIDADE
     flex-direction:column;
 
     gap:6px;
+    background-color: white;
 
 }
 
@@ -942,15 +943,26 @@ AVATAR AMIGOS
 
 /* ================= ATIVIDADES ================= */
 
-:global([data-theme="escuro"]) .atividadeItem {
+/* ================= ATIVIDADES - MODO ESCURO ================= */
+
+:global([data-theme="escuro"]) .activity {
+    background-color: #171d33;
     border-color: #2b3555;
 }
 
-:global([data-theme="escuro"]) .atividadeItem p {
-    color: #cbd5e1;
+:global([data-theme="escuro"]) .activity div {
+    background-color: #171d33;
 }
 
-:global([data-theme="escuro"]) .atividadeItem span {
+:global([data-theme="escuro"]) .activity strong {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .activity span {
+    color: #aab6d3;
+}
+
+:global([data-theme="escuro"]) .activity small {
     color: #8491b0;
 }
 
@@ -974,30 +986,15 @@ AVATAR AMIGOS
 
 /* ================= CARDS DO PERFIL ================= */
 
-.card,
-.activityCard,
-.generosCard,
-.sequenciaCard,
-.conquistasCard,
-.amigosCard,
-.estatisticasCard {
+:global([data-theme="escuro"]) .card,
+:global([data-theme="escuro"]) .activityCard,
+:global([data-theme="escuro"]) .generosCard,
+:global([data-theme="escuro"]) .sequenciaCard,
+:global([data-theme="escuro"]) .conquistasCard,
+:global([data-theme="escuro"]) .amigosCard,
+:global([data-theme="escuro"]) .estatisticasCard {
     background: #161d35;
     border: 1px solid #2b3657;
-    color: #e8edf7;
-}
-
-/* Títulos dos cards */
-
-.card h2,
-.card h3,
-.activityCard h2,
-.activityCard h3,
-.generosCard h2,
-.generosCard h3,
-.sequenciaCard h2,
-.sequenciaCard h3,
-.conquistasCard h2,
-.conquistasCard h3 {
     color: #e8edf7;
 }
 
