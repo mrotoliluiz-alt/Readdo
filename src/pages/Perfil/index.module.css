@@ -1,929 +1,844 @@
-.container{
-    display:flex;
-    flex-direction:column;
-
-    width:100%;
-    flex:1;
-
-    padding:30px;
-
-    background:#f8fafc;
-
-    color:#0F1C64;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-/* =======================================
-HEADER
-======================================= */
-
-.header{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:30px;
-
-}
-
-.titulo{
-
-    display:flex;
-    align-items:center;
-    gap:18px;
-
-}
-
-.titulo h1{
-
-    font-size:3rem;
-    font-weight:700;
-
-}
-
-/* =======================================
-LAYOUT
-======================================= */
-
-.layout{
-
-    display:grid;
-
-    grid-template-columns:2.6fr 1fr;
-
-    gap:28px;
-
-    align-items:start;
-
-}
-
-.left{
-
-    display:flex;
-    flex-direction:column;
-    gap:25px;
-
-}
-
-.right{
-
-    display:flex;
-    flex-direction:column;
-    gap:25px;
-
-}
-
-/* =======================================
-CARD PERFIL
-======================================= */
-
-.profileCard{
-
-    background:white;
-
-    border:1px solid #dbe4ee;
-
-    border-radius:22px;
-
-    padding:30px;
-
-    display:flex;
-
-    align-items:flex-start;
-
-    gap:25px;
-
-}
-
-.avatar{
-
-    width:120px;
-    height:120px;
-
-    border-radius:50%;
-
-    overflow:hidden;
-
-    flex-shrink:0;
-
-    border:4px solid #dbe4ee;
-
-}
-
-.avatar svg{
-
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-}
-
-.profileInfo{
-
-    flex:1;
-
-    display:flex;
-    flex-direction:column;
-
-}
-
-.nomeLinha{
-
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    margin-bottom:6px;
-
-}
-
-.nomeLinha h2{
-
-    font-size:2.6rem;
-    font-weight:700;
-
-}
-
-.profileInfo>p:first-of-type{
-
-    color:#64748b;
-
-    margin-bottom:18px;
-
-}
-
-/* =======================================
-BARRA XP
-======================================= */
-
-.progress{
-
-    width:100%;
-    height:10px;
-
-    background:#e2e8f0;
-
-    border-radius:30px;
-
-    overflow:hidden;
-
-    margin-bottom:10px;
-
-}
-
-.progressFill{
-
-    width:70%;
-
-    height:100%;
-
-    background:#0FA6B3;
-
-    border-radius:30px;
-
-}
-
-.progress + span{
-
-    color:#64748b;
-
-    font-size:14px;
-
-}
-
-/* =======================================
-BIO
-======================================= */
-
-.bio{
-
-    margin-top:20px;
-
-    color:#475569;
-
-    line-height:1.7;
-
-    font-size:15px;
-
-}
-
-/* =======================================
-INFORMAÇÕES
-======================================= */
-
-.infoLinha{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:18px;
-
-    margin-top:22px;
-
-}
-
-.infoLinha span{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    color:#64748b;
-
-    font-size:14px;
-
-}
-
-/* =======================================
-BOTÃO
-======================================= */
-
-.editar{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    height:48px;
-
-    padding:0 20px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:#0FA6B3;
-
-    color:white;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-}
-
-.editar:hover{
-
-    background:#0d95a1;
-
-}
-
-/* =======================================
-TABS
-======================================= */
-
-.tabs{
-
-    display:flex;
-
-    gap:30px;
-
-    border-bottom:1px solid #dbe4ee;
-
-    padding-bottom:14px;
-
-}
-
-.tabs button{
-
-    background:none;
-
-    border:none;
-
-    color:#64748b;
-
-    font-size:15px;
-
-    cursor:pointer;
-
-    font-weight:500;
-
-    transition:.25s;
-
-}
-
-.tabs button:hover{
-
-    color:#0FA6B3;
-
-}
-
-.active{
-
-    color:#0FA6B3 !important;
-
-    position:relative;
-
-    font-weight:700 !important;
-
-}
-
-.active::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:0;
-
-    bottom:-15px;
-
-    width:100%;
-
-    height:3px;
-
-    border-radius:20px;
-
-    background:#0FA6B3;
-
-}
-
-/* =======================================
-GRID PRINCIPAL
-======================================= */
-
-.cards{
-
-    display:grid;
-
-    grid-template-columns:1.4fr 1fr;
-
-    gap:24px;
-
-}
-
-/* =======================================
-CARD PADRÃO
-======================================= */
-
-.card{
-
-    background:white;
-
-    border:1px solid #dbe4ee;
-
-    border-radius:22px;
-
-    padding:24px;
-
-}
-
-.card h3{
-
-    font-size:2rem;
-
-    margin-bottom:25px;
-
-}
-
-/* =======================================
-ATIVIDADE
-======================================= */
-
-.activity{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    gap:20px;
-
-    padding:16px 0;
-
-    border-bottom:1px solid #edf2f7;
-    background-color: white;
-
-}
-
-.activity:last-child{
-
-    border-bottom:none;
-
-}
-
-.activity div{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:6px;
-    background-color: white;
-
-}
-
-.activity strong{
-
-    font-size:15px;
-
-    color:#0F1C64;
-
-}
-
-.activity span{
-
-    color:#64748b;
-
-    font-size:14px;
-
-}
-
-.activity small{
-
-    color:#94a3b8;
-
-    white-space:nowrap;
-
-}
-
-.verTudo{
-
-    margin-top:24px;
-
-    width:100%;
-
-    height:46px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:#eefcff;
-
-    color:#0FA6B3;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-}
-
-.verTudo:hover{
-
-    background:#d8f7fb;
-
-}
-
 /* ======================================================
-GÊNEROS MAIS LIDOS
+   CONTAINER
 ====================================================== */
 
-.grafico{
+.container {
+    display: flex;
+    flex-direction: column;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    width: 100%;
+    flex: 1;
 
-    margin:25px 0;
+    padding: 30px;
+    box-sizing: border-box;
 
+    background: #f8fafc;
+    color: #0f1c64;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        "Open Sans",
+        "Helvetica Neue",
+        sans-serif;
 }
 
-.circle{
 
-    width:180px;
-    height:180px;
+/* ======================================================
+   HEADER
+====================================================== */
 
-    border-radius:50%;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 30px;
+}
+
+.titulo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.titulo h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+
+/* ======================================================
+   LAYOUT
+====================================================== */
+
+.layout {
+    display: grid;
+
+    grid-template-columns: 2.6fr 1fr;
+
+    gap: 28px;
+
+    align-items: start;
+}
+
+.left,
+.right {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+
+/* ======================================================
+   CARD PERFIL
+====================================================== */
+
+.profileCard {
+    background: #ffffff;
+
+    border: 1px solid #dbe4ee;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 25px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    border: 4px solid #dbe4ee;
+}
+
+.avatar svg,
+.avatar img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.profileInfo {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.nomeLinha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 6px;
+}
+
+.nomeLinha h2 {
+    font-size: 2.6rem;
+    font-weight: 700;
+}
+
+.profileInfo > p:first-of-type {
+    color: #64748b;
+
+    margin-bottom: 18px;
+}
+
+
+/* ======================================================
+   BARRA XP
+====================================================== */
+
+.progress {
+    width: 100%;
+    height: 10px;
+
+    background: #e2e8f0;
+
+    border-radius: 30px;
+
+    overflow: hidden;
+
+    margin-bottom: 10px;
+}
+
+.progressFill {
+    width: 70%;
+    height: 100%;
+
+    background: #0fa6b3;
+
+    border-radius: 30px;
+}
+
+.progress + span {
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* ======================================================
+   BIO
+====================================================== */
+
+.bio {
+    margin-top: 20px;
+
+    color: #475569;
+
+    line-height: 1.7;
+
+    font-size: 15px;
+}
+
+
+/* ======================================================
+   INFORMAÇÕES
+====================================================== */
+
+.infoLinha {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    margin-top: 22px;
+}
+
+.infoLinha span {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* ======================================================
+   BOTÃO EDITAR
+====================================================== */
+
+.editar {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    height: 48px;
+
+    padding: 0 20px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #0fa6b3;
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.editar:hover {
+    background: #0d95a1;
+}
+
+
+/* ======================================================
+   TABS
+====================================================== */
+
+.tabs {
+    display: flex;
+
+    gap: 30px;
+
+    border-bottom: 1px solid #dbe4ee;
+
+    padding-bottom: 14px;
+}
+
+.tabs button {
+    background: none;
+
+    border: none;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    font-weight: 500;
+
+    transition: 0.25s;
+}
+
+.tabs button:hover {
+    color: #0fa6b3;
+}
+
+.active {
+    color: #0fa6b3 !important;
+
+    position: relative;
+
+    font-weight: 700 !important;
+}
+
+.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: -15px;
+
+    width: 100%;
+
+    height: 3px;
+
+    border-radius: 20px;
+
+    background: #0fa6b3;
+}
+
+
+/* ======================================================
+   GRID PRINCIPAL
+====================================================== */
+
+.cards {
+    display: grid;
+
+    grid-template-columns: 1.4fr 1fr;
+
+    gap: 24px;
+}
+
+
+/* ======================================================
+   CARD PADRÃO
+====================================================== */
+
+.card {
+    background: #ffffff;
+
+    border: 1px solid #dbe4ee;
+
+    border-radius: 22px;
+
+    padding: 24px;
+}
+
+.card h3 {
+    font-size: 2rem;
+
+    margin-bottom: 25px;
+}
+
+
+/* ======================================================
+   ATIVIDADE RECENTE
+====================================================== */
+
+.activity {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 16px 0;
+
+    border-bottom: 1px solid #edf2f7;
+}
+
+.activity:last-child {
+    border-bottom: none;
+}
+
+.activity div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.activity strong {
+    font-size: 15px;
+
+    color: #0f1c64;
+}
+
+.activity span {
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+.activity small {
+    color: #94a3b8;
+
+    white-space: nowrap;
+}
+
+.verTudo {
+    margin-top: 24px;
+
+    width: 100%;
+
+    height: 46px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #eefcff;
+
+    color: #0fa6b3;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.verTudo:hover {
+    background: #d8f7fb;
+}
+
+
+/* ======================================================
+   GÊNEROS MAIS LIDOS
+====================================================== */
+
+.grafico {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin: 25px 0;
+}
+
+.circle {
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
 
     background:
-    conic-gradient(
-        #7c3aed 0% 45%,
-        #2563eb 45% 65%,
-        #22c55e 65% 80%,
-        #ec4899 80% 90%,
-        #94a3b8 90% 100%
-    );
+        conic-gradient(
+            #7c3aed 0% 45%,
+            #2563eb 45% 65%,
+            #22c55e 65% 80%,
+            #ec4899 80% 90%,
+            #94a3b8 90% 100%
+        );
 
-    position:relative;
-
+    position: relative;
 }
 
-.circle::after{
+.circle::after {
+    content: "";
 
-    content:"";
+    position: absolute;
 
-    position:absolute;
+    inset: 28px;
 
-    inset:28px;
+    border-radius: 50%;
 
-    border-radius:50%;
-
-    background:white;
-
+    background: #ffffff;
 }
 
-.generos{
+.generos {
+    list-style: none;
 
-    list-style:none;
+    display: flex;
 
-    display:flex;
-    flex-direction:column;
+    flex-direction: column;
 
-    gap:14px;
+    gap: 14px;
 
-    padding:0;
+    padding: 0;
 
-    margin-top:25px;
-
+    margin-top: 25px;
 }
 
-.generos li{
+.generos li {
+    color: #475569;
 
-    color:#475569;
+    font-size: 15px;
 
-    font-size:15px;
+    display: flex;
 
-    display:flex;
-
-    justify-content:space-between;
-
+    justify-content: space-between;
 }
+
 
 /* ======================================================
-SEQUÊNCIA
+   SEQUÊNCIA DE LEITURA
 ====================================================== */
 
-.sequencia{
+.sequencia {
+    background: #ffffff;
 
-    background:white;
+    border: 1px solid #dbe4ee;
 
-    border:1px solid #dbe4ee;
+    border-radius: 22px;
 
-    border-radius:22px;
-
-    padding:24px;
-
+    padding: 24px;
 }
 
-.seqTitulo{
+.seqTitulo {
+    display: flex;
 
-    display:flex;
+    align-items: center;
 
-    align-items:center;
+    gap: 12px;
 
-    gap:12px;
-
-    margin-bottom:28px;
-
+    margin-bottom: 28px;
 }
 
-.seqTitulo h2{
+.seqTitulo h2 {
+    flex: 1;
 
-    flex:1;
+    font-size: 2rem;
 
-    font-size:2rem;
-
+    color: #0f1c64;
 }
 
-.seqTitulo span{
+.seqTitulo span {
+    color: #fb923c;
 
-    color:#fb923c;
+    font-weight: 700;
 
-    font-weight:700;
-
-    font-size:18px;
-
+    font-size: 18px;
 }
 
-.dias{
+.dias {
+    display: flex;
 
-    display:flex;
+    justify-content: space-between;
 
-    justify-content:space-between;
-
-    gap:14px;
-
+    gap: 14px;
 }
 
-.dia{
+.dia {
+    display: flex;
 
-    display:flex;
+    flex-direction: column;
 
-    flex-direction:column;
+    align-items: center;
 
-    align-items:center;
+    gap: 10px;
 
-    gap:10px;
-
-    flex:1;
-
+    flex: 1;
 }
 
-.bolinha{
+.bolinha {
+    width: 46px;
+    height: 46px;
 
-    width:46px;
-    height:46px;
+    border-radius: 50%;
 
-    border-radius:50%;
+    background: #22c55e;
 
-    background:#22c55e;
+    color: white;
 
-    color:white;
+    display: flex;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    justify-content: center;
 
-    font-weight:bold;
+    align-items: center;
 
-    font-size:18px;
+    font-weight: bold;
 
-    transition:.25s;
+    font-size: 18px;
 
+    transition: 0.25s;
 }
 
-.bolinha:hover{
-
-    transform:scale(1.08);
-
+.bolinha:hover {
+    transform: scale(1.08);
 }
 
-.dia small{
+.dia small {
+    color: #64748b;
 
-    color:#64748b;
-
-    font-size:13px;
-
+    font-size: 13px;
 }
+
 
 /* ======================================================
-GRID ESTATÍSTICAS
+   GRID ESTATÍSTICAS
 ====================================================== */
 
-.statsGrid{
+.statsGrid {
+    display: grid;
 
-    display:grid;
+    grid-template-columns: repeat(2, 1fr);
 
-    grid-template-columns:repeat(2,1fr);
-
-    gap:18px;
-
+    gap: 18px;
 }
 
-.statCard{
+.statCard {
+    background: #ffffff;
 
-    background:white;
+    border: 1px solid #dbe4ee;
 
-    border:1px solid #dbe4ee;
+    border-radius: 18px;
 
-    border-radius:18px;
+    padding: 22px;
 
-    padding:22px;
+    display: flex;
 
-    display:flex;
+    flex-direction: column;
 
-    flex-direction:column;
+    gap: 10px;
 
-    gap:10px;
-
-    transition:.25s;
-
+    transition: 0.25s;
 }
 
-.statCard:hover{
+.statCard:hover {
+    transform: translateY(-5px);
 
-    transform:translateY(-5px);
-
-    box-shadow:0 10px 25px rgba(0,0,0,.05);
-
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.statCard small{
+.statCard small {
+    color: #64748b;
 
-    color:#64748b;
-
-    font-size:14px;
-
+    font-size: 14px;
 }
 
-.statCard h3{
+.statCard h3 {
+    font-size: 30px;
 
-    font-size:30px;
-
-    color:#0F1C64;
-
+    color: #0f1c64;
 }
 
-.statCard span{
+.statCard span {
+    color: #94a3b8;
 
-    color:#94a3b8;
-
-    font-size:13px;
-
+    font-size: 13px;
 }
+
 
 /* ======================================================
-SIDE CARD
+   SIDE CARD
 ====================================================== */
 
-.sideCard{
+.sideCard {
+    background: #ffffff;
 
-    background:white;
+    border: 1px solid #dbe4ee;
 
-    border:1px solid #dbe4ee;
+    border-radius: 20px;
 
-    border-radius:20px;
-
-    padding:22px;
-
+    padding: 22px;
 }
 
-.cardHeader{
+.cardHeader {
+    display: flex;
 
-    display:flex;
+    justify-content: space-between;
 
-    justify-content:space-between;
+    align-items: center;
 
-    align-items:center;
-
-    margin-bottom:24px;
-
+    margin-bottom: 24px;
 }
 
-.cardHeader h3{
-
-    font-size:20px;
-
+.cardHeader h3 {
+    font-size: 20px;
 }
 
-.cardHeader button{
+.cardHeader button {
+    border: none;
 
-    border:none;
+    background: none;
 
-    background:none;
+    color: #0fa6b3;
 
-    color:#0FA6B3;
+    cursor: pointer;
 
-    cursor:pointer;
-
-    font-weight:600;
-
+    font-weight: 600;
 }
+
 
 /* ======================================================
-CONQUISTAS / AMIGOS
+   CONQUISTAS / AMIGOS
 ====================================================== */
 
-.item{
+.item {
+    display: flex;
 
-    display:flex;
+    align-items: center;
 
-    align-items:center;
+    gap: 16px;
 
-    gap:16px;
+    padding: 15px 0;
 
-    padding:15px 0;
-
-    border-bottom:1px solid #edf2f7;
-
+    border-bottom: 1px solid #edf2f7;
 }
 
-.item:last-child{
-
-    border:none;
-
+.item:last-child {
+    border-bottom: none;
 }
 
-.item > div:not(.avatarMini){
+.item > div:not(.avatarMini) {
+    flex: 1;
 
-    flex:1;
+    display: flex;
 
-    display:flex;
+    flex-direction: column;
 
-    flex-direction:column;
-
-    gap:4px;
-
+    gap: 4px;
 }
 
-.item strong{
-
-    color:#0F1C64;
-
+.item strong {
+    color: #0f1c64;
 }
 
-.item span{
+.item span {
+    color: #64748b;
 
-    color:#64748b;
-
-    font-size:14px;
-
+    font-size: 14px;
 }
 
-.item small{
+.item small {
+    color: #94a3b8;
 
-    color:#94a3b8;
-
-    white-space:nowrap;
-
+    white-space: nowrap;
 }
+
 
 /* ======================================================
-AVATAR AMIGOS
+   AVATAR AMIGOS
 ====================================================== */
 
-.avatarMini{
+.avatarMini {
+    width: 46px;
 
-    width:46px;
+    height: 46px;
 
-    height:46px;
+    border-radius: 50%;
 
-    border-radius: 46px;
+    background:
+        linear-gradient(
+            135deg,
+            #0fa6b3,
+            #4f7cff
+        );
 
-    background:linear-gradient(
-        135deg,
-        #0FA6B3,
-        #4f7cff
-    );
+    color: white;
 
-    color:white;
+    display: flex;
 
-    display:flex;
+    justify-content: center;
 
-    justify-content:center;
+    align-items: center;
 
-    align-items:center;
+    font-weight: 700;
 
-    font-weight:700;
-
-    flex-shrink:0;
-
+    flex-shrink: 0;
 }
 
-/* =========================================================
+
+/* ======================================================
    MODO ESCURO
-   ========================================================= */
+====================================================== */
 
 :global([data-theme="escuro"]) .container {
     background: #0f1426;
+
     color: #f1f5f9;
 }
 
-/* ================= CARDS ================= */
+
+/* ======================================================
+   CARDS - MODO ESCURO
+====================================================== */
 
 :global([data-theme="escuro"]) .profileCard,
+:global([data-theme="escuro"]) .card,
+:global([data-theme="escuro"]) .sequencia,
 :global([data-theme="escuro"]) .statCard,
-:global([data-theme="escuro"]) .sideCard,
-:global([data-theme="escuro"]) .atividadeCard,
-:global([data-theme="escuro"]) .generosCard,
-:global([data-theme="escuro"]) .conquistasCard {
+:global([data-theme="escuro"]) .sideCard {
     background: #171d33;
+
     border-color: #2b3555;
+
     color: #f1f5f9;
 }
 
-/* ================= TEXTOS ================= */
 
-:global([data-theme="escuro"]) h2,
-:global([data-theme="escuro"]) h3,
-:global([data-theme="escuro"]) h4 {
+/* ======================================================
+   TEXTOS - MODO ESCURO
+====================================================== */
+
+:global([data-theme="escuro"]) .titulo h1,
+:global([data-theme="escuro"]) .nomeLinha h2,
+:global([data-theme="escuro"]) .card h3,
+:global([data-theme="escuro"]) .seqTitulo h2,
+:global([data-theme="escuro"]) .statCard h3,
+:global([data-theme="escuro"]) .cardHeader h3 {
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) p,
-:global([data-theme="escuro"]) span,
-:global([data-theme="escuro"]) small {
+
+/* ======================================================
+   PERFIL - MODO ESCURO
+====================================================== */
+
+:global([data-theme="escuro"]) .profileInfo > p:first-of-type {
     color: #aab6d3;
 }
 
-/* ================= PERFIL ================= */
+:global([data-theme="escuro"]) .bio {
+    color: #cbd5e1;
+}
 
-:global([data-theme="escuro"]) .profileCard {
-    background: #171d33;
+:global([data-theme="escuro"]) .infoLinha span {
+    color: #aab6d3;
+}
+
+:global([data-theme="escuro"]) .avatar {
     border-color: #2b3555;
 }
 
-:global([data-theme="escuro"]) .profileInfo p {
-    color: #aab6d3;
-}
 
-:global([data-theme="escuro"]) .profileInfo span {
-    color: #94a3c5;
-}
+/* ======================================================
+   XP - MODO ESCURO
+====================================================== */
 
-:global([data-theme="escuro"]) .profileInfo small {
-    color: #8491b0;
-}
-
-/* ================= XP ================= */
-
-:global([data-theme="escuro"]) .progressBar,
-:global([data-theme="escuro"]) .barra {
+:global([data-theme="escuro"]) .progress {
     background: #29334f;
 }
 
-/* ================= ABAS ================= */
+:global([data-theme="escuro"]) .progress + span {
+    color: #aab6d3;
+}
+
+
+/* ======================================================
+   TABS - MODO ESCURO
+====================================================== */
 
 :global([data-theme="escuro"]) .tabs {
     border-color: #2b3555;
@@ -934,24 +849,16 @@ AVATAR AMIGOS
 }
 
 :global([data-theme="escuro"]) .tabs button:hover {
-    color: #0FA6B3;
+    color: #0fa6b3;
 }
 
-:global([data-theme="escuro"]) .tabs .active {
-    color: #0FA6B3;
-}
 
-/* ================= ATIVIDADES ================= */
-
-/* ================= ATIVIDADES - MODO ESCURO ================= */
+/* ======================================================
+   ATIVIDADE - MODO ESCURO
+====================================================== */
 
 :global([data-theme="escuro"]) .activity {
-    background-color: #171d33;
     border-color: #2b3555;
-}
-
-:global([data-theme="escuro"]) .activity div {
-    background-color: #171d33;
 }
 
 :global([data-theme="escuro"]) .activity strong {
@@ -966,203 +873,199 @@ AVATAR AMIGOS
     color: #8491b0;
 }
 
-/* ================= CONQUISTAS ================= */
 
-:global([data-theme="escuro"]) .conquista {
-    background: #1d2540;
-    border-color: #303b5c;
-}
+/* ======================================================
+   BOTÃO VER TUDO - MODO ESCURO
+====================================================== */
 
-/* ================= HOVER ================= */
-
-:global([data-theme="escuro"]) .statCard:hover,
-:global([data-theme="escuro"]) .sideCard:hover,
-:global([data-theme="escuro"]) .atividadeCard:hover,
-:global([data-theme="escuro"]) .generosCard:hover,
-:global([data-theme="escuro"]) .conquistasCard:hover {
-    background: #1c2440;
-    border-color: #3a476b;
-}
-
-/* ================= CARDS DO PERFIL ================= */
-
-:global([data-theme="escuro"]) .card,
-:global([data-theme="escuro"]) .activityCard,
-:global([data-theme="escuro"]) .generosCard,
-:global([data-theme="escuro"]) .sequenciaCard,
-:global([data-theme="escuro"]) .conquistasCard,
-:global([data-theme="escuro"]) .amigosCard,
-:global([data-theme="escuro"]) .estatisticasCard {
-    background: #161d35;
-    border: 1px solid #2b3657;
-    color: #e8edf7;
-}
-
-/* Textos secundários */
-
-.card p,
-.card span,
-.activityCard p,
-.activityCard span,
-.generosCard p,
-.generosCard span,
-.sequenciaCard p,
-.sequenciaCard span {
-    color: #a9b5cf;
-}
-
-/* ================= ATIVIDADES ================= */
-
-.activityItem {
-    border-bottom: 1px solid #2b3657;
-}
-
-.activityItem:last-child {
-    border-bottom: none;
-}
-
-/* ================= BOTÃO VER TODAS ================= */
-
-.verTodas {
+:global([data-theme="escuro"]) .verTudo {
     background: #102b42;
+
     color: #0fa6b3;
-    border: none;
 }
 
-.verTodas:hover {
+:global([data-theme="escuro"]) .verTudo:hover {
     background: #143b56;
 }
 
-/* ================= GRÁFICO ================= */
 
-.generosCard {
-    background: #161d35;
+/* ======================================================
+   GÊNEROS - MODO ESCURO
+====================================================== */
+
+:global([data-theme="escuro"]) .circle::after {
+    background: #171d33;
 }
 
-/* ================= SEQUÊNCIA ================= */
-
-.sequencia {
-    background: #161d35;
+:global([data-theme="escuro"]) .generos li {
+    color: #aab6d3;
 }
 
-.sequencia .dia {
-    color: #a9b5cf;
+
+/* ======================================================
+   SEQUÊNCIA - MODO ESCURO
+====================================================== */
+
+:global([data-theme="escuro"]) .seqTitulo h2 {
+    color: #f1f5f9;
 }
 
-/* ================= CONQUISTAS ================= */
-
-.conquistasCard {
-    background: #161d35;
+:global([data-theme="escuro"]) .seqTitulo span {
+    color: #fb923c;
 }
 
-/* ================= BORDAS ================= */
+:global([data-theme="escuro"]) .dia small {
+    color: #aab6d3;
+}
 
-.card,
-.activityCard,
-.generosCard,
-.sequencia,
-.conquistasCard,
-.amigosCard,
-.estatisticasCard {
+
+/* ======================================================
+   ESTATÍSTICAS - MODO ESCURO
+====================================================== */
+
+:global([data-theme="escuro"]) .statCard small {
+    color: #aab6d3;
+}
+
+:global([data-theme="escuro"]) .statCard span {
+    color: #8491b0;
+}
+
+:global([data-theme="escuro"]) .statCard:hover {
+    background: #1c2440;
+
+    border-color: #3a476b;
+
     box-shadow: none;
 }
 
+
 /* ======================================================
-RESPONSIVO
+   SIDE CARDS - MODO ESCURO
 ====================================================== */
 
-@media(max-width:1300px){
+:global([data-theme="escuro"]) .item {
+    border-color: #2b3555;
+}
 
-    .layout{
+:global([data-theme="escuro"]) .item strong {
+    color: #f1f5f9;
+}
 
-        grid-template-columns:1fr;
+:global([data-theme="escuro"]) .item span {
+    color: #aab6d3;
+}
 
+:global([data-theme="escuro"]) .item small {
+    color: #8491b0;
+}
+
+
+/* ======================================================
+   RESPONSIVIDADE
+====================================================== */
+
+@media (max-width: 1300px) {
+
+    .layout {
+        grid-template-columns: 1fr;
     }
 
-    .right{
-
-        order:-1;
-
+    .right {
+        order: -1;
     }
 
 }
 
-@media(max-width:950px){
 
-    .profileCard{
+@media (max-width: 950px) {
 
-        flex-direction:column;
+    .profileCard {
+        flex-direction: column;
 
-        align-items:center;
+        align-items: center;
 
-        text-align:center;
-
+        text-align: center;
     }
 
-    .profileInfo{
+    .profileInfo {
+        width: 100%;
 
-        width:100%;
-
-        align-items:center;
-
+        align-items: center;
     }
 
-    .nomeLinha{
-
-        justify-content:center;
-
+    .nomeLinha {
+        justify-content: center;
     }
 
-    .infoLinha{
-
-        justify-content:center;
-
+    .infoLinha {
+        justify-content: center;
     }
 
-    .editar{
+    .editar {
+        width: 100%;
 
-        width:100%;
+        justify-content: center;
 
-        justify-content:center;
-
-        margin-top:25px;
-
+        margin-top: 25px;
     }
 
-    .cards{
-
-        grid-template-columns:1fr;
-
+    .cards {
+        grid-template-columns: 1fr;
     }
 
 }
 
-@media(max-width:700px){
 
-    .statsGrid{
+@media (max-width: 700px) {
 
-        grid-template-columns:1fr;
-
+    .container {
+        padding: 20px;
     }
 
-    .dias{
+    .header {
+        flex-direction: column;
 
-        flex-wrap:wrap;
+        align-items: flex-start;
 
-        justify-content:center;
-
+        gap: 15px;
     }
 
-    .tabs{
+    .titulo h1 {
+        font-size: 2rem;
+    }
 
-        overflow-x:auto;
+    .statsGrid {
+        grid-template-columns: 1fr;
+    }
 
-        white-space:nowrap;
+    .dias {
+        flex-wrap: wrap;
 
-        gap:18px;
+        justify-content: center;
+    }
 
-        padding-bottom:20px;
+    .dia {
+        min-width: 60px;
+    }
 
+    .tabs {
+        overflow-x: auto;
+
+        white-space: nowrap;
+
+        gap: 18px;
+
+        padding-bottom: 20px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .circle {
+        width: 150px;
+        height: 150px;
     }
 
 }

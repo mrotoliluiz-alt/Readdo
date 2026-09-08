@@ -39,7 +39,8 @@ function Sidebar({ fechada, setFechada }) {
             <img src={logo} alt="logo" />
         </div>
 
-        {!fechada && <h2>Readduo</h2>}
+        {!fechada && <h2 className={styles.Read}>Read</h2>}
+        {!fechada && <h2>duo</h2>}
       </div>
 
       <nav className={styles.nav}>

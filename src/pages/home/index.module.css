@@ -1,34 +1,67 @@
 .Conteiner {
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
 
-    flex:1;
-    width:100%;
-    min-width:0;
-    height: 100%;
+    flex: 1;
 
-    padding: 30px;
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
 
-    background:#f8fafc;
+    padding: 50px;
+
+    box-sizing: border-box;
+
+    background: #f8fafc;
+
     color: #0f1c64;
 
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        "Open Sans",
+        "Helvetica Neue",
+        sans-serif;
 }
 
-.distaque{
+/* =========================================
+   DESTAQUE
+========================================= */
+
+.distaque {
     color: #0f1c64;
 }
 
+/* =========================================
+   HEADER
+========================================= */
 
 .header {
     margin-bottom: 20px;
+
     display: flex;
     flex-direction: row;
+
     gap: 20px;
+
     align-items: center;
+
+    width: 100%;
 }
 
+/* =========================================
+   WELCOME
+========================================= */
+
 .welcome {
+    width: 100%;
+
     background: #f5fdff;
 
     border: 1px solid #b8eef4;
@@ -37,96 +70,341 @@
 
     padding: 24px;
 
+    box-sizing: border-box;
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
-    width: 100%;
+
+    gap: 20px;
 }
+
+/* =========================================
+   ESTATÍSTICAS
+========================================= */
 
 .stats {
     display: flex;
+
     gap: 16px;
+
+    flex-wrap: wrap;
 }
 
 .statCard {
     width: 120px;
-    height: 90px;
 
-    background: white;
+    min-height: 90px;
+
+    background: #ffffff;
 
     border-radius: 16px;
 
     border: 1px solid #dbe4ee;
 
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
+
     align-items: center;
+
+    box-sizing: border-box;
 }
 
-.tituloLeitCard{
+/* =========================================
+   TÍTULO DOS CARDS DE LEITURA
+========================================= */
+
+.tituloLeitCard {
     margin: 10px 5px 2px 10px;
+    align-items: center;
 }
 
-.leitCard{
-    display: flex;
-    flex-direction: row;
+.tituloLeitCard svg {
+  margin-right: 10px;
+}
+
+/* =========================================
+   ÁREA DOS LIVROS
+========================================= */
+
+.areaLivros {
+    position: relative;
+
     width: 100%;
-    height: 400px;
-    gap:22px;
+
+    display: flex;
 
     align-items: center;
+
+    min-width: 0;
+}
+
+/* =========================================
+   CARDS DE LEITURA / SCROLL
+========================================= */
+
+.leitCard {
+    display: flex;
+
+    flex-direction: row;
+
+    width: 100%;
+
+    min-height: 400px;
+
+    gap: 22px;
+
+    align-items: center;
+
     overflow-x: auto;
     overflow-y: hidden;
+
+    padding: 10px 25px;
+
+    box-sizing: border-box;
+
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+
+    -ms-overflow-style: none;
 }
-/* =========================
+
+/* Esconde a barra no Chrome, Edge e Safari */
+
+.leitCard::-webkit-scrollbar {
+    display: none;
+}
+
+/* Evita que os cards sejam espremidos */
+
+.leitCard > * {
+    flex-shrink: 0;
+}
+
+/* =========================================
+   BOTÕES DE SCROLL
+========================================= */
+
+.botaoScroll {
+    width: 50px;
+    height: 50px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #10182f;
+
+    color: #0fa6b3;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    position: absolute;
+
+    z-index: 10;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.botaoScroll:hover {
+    background: #0fa6b3;
+
+    color: white;
+
+    transform: scale(1.08);
+}
+
+/* Botão esquerdo */
+
+.esquerdaScroll {
+    left: 5px;
+}
+
+/* Botão direito */
+
+.direitaScroll {
+    right: 5px;
+}
+
+/* =========================================
    TEMA ESCURO
-   ========================= */
+========================================= */
 
 :global([data-theme="escuro"]) .Conteiner {
-  background-color: #0f1425;
-  color: #f1f5f9;
+    background-color: #0f1425;
+
+    color: #f1f5f9;
 }
 
+/* =========================================
+   HEADER ESCURO
+========================================= */
+
 :global([data-theme="escuro"]) .header {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .header svg {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .header h1 {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
+/* =========================================
+   DESTAQUE ESCURO
+========================================= */
+
+:global([data-theme="escuro"]) .distaque {
+    color: #f1f5f9;
+}
+
+/* =========================================
+   WELCOME ESCURO
+========================================= */
+
 :global([data-theme="escuro"]) .welcome {
-  background-color: #161c33;
-  border-color: #2a3153;
+    background-color: #161c33;
+
+    border-color: #2a3153;
 }
 
 :global([data-theme="escuro"]) .welcome h2 {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .welcome p {
-  color: #a8b1cc;
+    color: #a8b1cc;
 }
 
+/* =========================================
+   STAT CARD ESCURO
+========================================= */
+
 :global([data-theme="escuro"]) .statCard {
-  background-color: #1c2340;
+    background-color: #1c2340;
+
+    border-color: #2a3153;
 }
 
 :global([data-theme="escuro"]) .statCard h3 {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .statCard span {
-  color: #a8b1cc;
+    color: #a8b1cc;
 }
+
+/* =========================================
+   TÍTULO DOS CARDS ESCURO
+========================================= */
 
 :global([data-theme="escuro"]) .tituloLeitCard {
-  color: #f1f5f9;
+    color: #f1f5f9;
 }
 
+/* =========================================
+   BOTÕES DE SCROLL - MODO ESCURO
+========================================= */
 
+:global([data-theme="escuro"]) .botaoScroll {
+    background: #1c2340;
+
+    color: #0fa6b3;
+
+    border: 1px solid #2a3153;
+}
+
+:global([data-theme="escuro"]) .botaoScroll:hover {
+    background: #0fa6b3;
+
+    color: white;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .Conteiner {
+        padding: 30px;
+    }
+
+    .welcome {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .stats {
+        width: 100%;
+    }
+
+    .botaoScroll {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .Conteiner {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .stats {
+        justify-content: center;
+    }
+
+    .statCard {
+        flex: 1;
+
+        min-width: 100px;
+    }
+
+    .leitCard {
+        min-height: 350px;
+
+        gap: 16px;
+
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .botaoScroll {
+        width: 40px;
+        height: 40px;
+    }
+
+    .esquerdaScroll {
+        left: 0;
+    }
+
+    .direitaScroll {
+        right: 0;
+    }
+}
