@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import { useNavigate } from 'react-router-dom';
 import CardLivro from "../../componentes/cardLivro";
-import TopBar from "../../componentes/Topbar";
+import TopBar from "../../componentes/topBar";
 import Mascotão from "../../assets/Mascotão.png";
 import { useRef } from "react";
 

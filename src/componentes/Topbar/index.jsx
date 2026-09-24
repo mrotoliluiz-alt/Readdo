@@ -22,7 +22,7 @@ function TopBar({ variante = "interno", children }) {
 
                 <img
                     src={logo}
-                    alt="Logo Readduo"
+                    alt="Logo Readdo"
                 />
 
                 <div className={styles.titulo}>
@@ -31,16 +31,14 @@ function TopBar({ variante = "interno", children }) {
                         Read
                     </h1>
 
-                    <h1 className={styles.logoDuo}>
-                        duo
+                    <h1 className={styles.logoDo}>
+                        do
                     </h1>
 
                 </div>
 
             </div>
 
-
-            {/* CONTEÚDO DA TOP BAR */}
             <div className={styles.conteudo}>
 
                 {variante === "landing" && (

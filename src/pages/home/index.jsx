@@ -13,23 +13,40 @@ import {
   Road,
   ChevronLeft,
   ChevronRight,
+  HatGlasses,
 } from "lucide-react";
 
 function Home() {
   // Referência da área que terá o scroll
-  const scrollRef = useRef(null);
+  const scrollRef1 = useRef(null);
+  const scrollRef2 = useRef(null);
 
   // Scroll para a esquerda
-  const scrollEsquerda = () => {
-    scrollRef.current?.scrollBy({
+  const scrollEsquerda1 = () => {
+    scrollRef1.current?.scrollBy({
       left: -400,
       behavior: "smooth",
     });
   };
 
   // Scroll para a direita
-  const scrollDireita = () => {
-    scrollRef.current?.scrollBy({
+  const scrollDireita1 = () => {
+    scrollRef1.current?.scrollBy({
+      left: 400,
+      behavior: "smooth",
+    });
+  };
+
+    const scrollEsquerda2 = () => {
+    scrollRef2.current?.scrollBy({
+      left: -400,
+      behavior: "smooth",
+    });
+  };
+
+  // Scroll para a direita
+  const scrollDireita2 = () => {
+    scrollRef2.current?.scrollBy({
       left: 400,
       behavior: "smooth",
     });
@@ -91,21 +108,21 @@ function Home() {
         Explore novos Caminhos
       </h2>
 
-      {/* ÁREA COM BOTÕES DE SCROLL */}
+      
       <div className={styles.areaLivros}>
-        {/* BOTÃO ESQUERDO */}
+       
         <button
           className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
-          onClick={scrollEsquerda}
+          onClick={scrollEsquerda1}
           aria-label="Ver livros anteriores"
         >
           <ChevronLeft size={26} />
         </button>
 
-        {/* ÁREA DOS CARDS */}
+       
         <div
           className={styles.leitCard}
-          ref={scrollRef}
+          ref={scrollRef1}
         >
           <CardLivro
             titulo="Deserto"
@@ -177,7 +194,106 @@ function Home() {
         {/* BOTÃO DIREITO */}
         <button
           className={`${styles.botaoScroll} ${styles.direitaScroll}`}
-          onClick={scrollDireita}
+          onClick={scrollDireita1}
+          aria-label="Ver próximos livros"
+        >
+          <ChevronRight size={26} />
+        </button>
+      </div>
+
+
+
+      <h2 className={styles.tituloLeitCard}>
+        <HatGlasses/>
+        Mistérios
+      </h2>
+
+      <div className={styles.areaLivros}>
+       
+        <button
+          className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
+          onClick={scrollEsquerda2}
+          aria-label="Ver livros anteriores"
+        >
+          <ChevronLeft size={26} />
+        </button>
+
+       
+        <div
+          className={styles.leitCard}
+          ref={scrollRef2}
+        >
+          <CardLivro
+            titulo="Deserto"
+            autor="Amigo loko"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+
+          <CardLivro
+            titulo="Duna"
+            autor="Frank Herbert"
+            tipo="Livro"
+          />
+        </div>
+
+        {/* BOTÃO DIREITO */}
+        <button
+          className={`${styles.botaoScroll} ${styles.direitaScroll}`}
+          onClick={scrollDireita2}
           aria-label="Ver próximos livros"
         >
           <ChevronRight size={26} />
