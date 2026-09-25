@@ -224,66 +224,77 @@ function Home() {
           ref={scrollRef2}
         >
           <CardLivro
+            id="1"
             titulo="Deserto"
             autor="Amigo loko"
             tipo="Livro"
           />
 
           <CardLivro
+            id="2"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="3"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="4"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="5"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="6"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="7"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="8"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="9"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
           <CardLivro
+            id="10"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
           />
 
-          <CardLivro
+         <CardLivro
+            id="11"
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"

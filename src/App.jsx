@@ -13,7 +13,8 @@ import Oficina from "./pages/Oficina";
 import Perfil from "./pages/Perfil";
 import Pesquisa from "./pages/Pesquisa";
 import Missoes from "./pages/Missões";
-
+import Livro from "./pages/LivroAberto";
+import Leitura from "./pages/Leitura";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Cadastro" element={<Cadastro />} />
+        <Route path="/livro/:id" element={<Livro />} />
+        <Route path="/leitura" element={<Leitura />} />
         <Route element={<Layout />}>
         <Route path="/Home" element={<Home />} />
         <Route path="/Salvos" element={<Salvos />} />

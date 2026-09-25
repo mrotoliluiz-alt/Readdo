@@ -1,0 +1,436 @@
+.container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #f8fafc;
+  color: #0f1c64;
+}
+
+
+/* ================================= */
+/*             TOPBAR                */
+/* ================================= */
+
+.topbar {
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 30px;
+
+  background: white;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 10;
+}
+
+.voltar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  border: none;
+  background: transparent;
+
+  color: #0f1c64;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.voltar:hover {
+  color: #0fa6b3;
+}
+
+
+/* ================================= */
+/*          INFORMAÇÕES              */
+/* ================================= */
+
+.infoLivro {
+  position: absolute;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+.infoLivro h1 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.infoLivro span {
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+
+/* ================================= */
+/*             AÇÕES                 */
+/* ================================= */
+
+.acoes {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.acao {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  cursor: pointer;
+}
+
+.acao:hover {
+  background: #e8fbfd;
+  color: #0fa6b3;
+}
+
+.tamanhoFonte {
+  color: #64748b;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  padding: 0 4px;
+}
+
+
+/* ================================= */
+/*          ÁREA DE LEITURA          */
+/* ================================= */
+
+.areaLeitura {
+  flex: 1;
+
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 60px 20px 100px;
+}
+
+.livro {
+  width: 100%;
+  max-width: 760px;
+}
+
+
+/* ================================= */
+/*        CABEÇALHO CAPÍTULO        */
+/* ================================= */
+
+.cabecalhoCapitulo {
+  text-align: center;
+
+  margin-bottom: 50px;
+}
+
+.numeroCapitulo {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #0fa6b3;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.cabecalhoCapitulo h2 {
+  margin: 0;
+
+  color: #0f1c64;
+
+  font-size: 32px;
+  font-weight: 700;
+}
+
+
+/* ================================= */
+/*              TEXTO                */
+/* ================================= */
+
+.texto {
+  color: #263653;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 19px;
+
+  line-height: 1.9;
+}
+
+.texto p {
+  margin: 0 0 28px;
+
+  text-align: justify;
+}
+
+.texto p::first-letter {
+  font-size: 32px;
+}
+
+
+/* ================================= */
+/*             DIVISOR               */
+/* ================================= */
+
+.divisor {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 55px 0;
+
+  color: #0fa6b3;
+}
+
+.divisor span {
+  font-size: 22px;
+}
+
+.proximoCapitulo {
+  margin: 0 0 30px;
+
+  color: #0f1c64;
+
+  font-family: inherit;
+
+  font-size: 26px;
+
+  text-align: center;
+}
+
+
+/* ================================= */
+/*              RODAPÉ               */
+/* ================================= */
+
+.rodape {
+  position: fixed;
+
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 30px;
+
+  padding: 0 30px;
+
+  background: white;
+
+  border-top: 1px solid #e2e8f0;
+
+  z-index: 10;
+}
+
+.capituloBotao {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: none;
+  background: transparent;
+
+  color: #0f1c64;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.capituloBotao:hover {
+  color: #0fa6b3;
+}
+
+.progresso {
+  flex: 1;
+
+  max-width: 500px;
+
+  margin: 0 auto;
+}
+
+.infoProgresso {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 6px;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.barra {
+  width: 100%;
+  height: 5px;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background: #e2e8f0;
+}
+
+.progressoAtual {
+  width: 35%;
+  height: 100%;
+
+  border-radius: 10px;
+
+  background: #0fa6b3;
+}
+
+/* ================================= */
+/*           MODO ESCURO             */
+/* ================================= */
+
+[data-theme="escuro"] .container {
+  background: #09122C;
+  color: #F8FAFC;
+}
+
+
+/* ---------- Topbar ---------- */
+
+[data-theme="escuro"] .topbar {
+  background: #0D1733;
+  border-color: #29385E;
+}
+
+[data-theme="escuro"] .voltar {
+  color: #D7E0F0;
+}
+
+[data-theme="escuro"] .voltar:hover {
+  color: #0FA6B3;
+}
+
+
+/* ---------- Informações do livro ---------- */
+
+[data-theme="escuro"] .infoLivro h1 {
+  color: #F8FAFC;
+}
+
+[data-theme="escuro"] .infoLivro span {
+  color: #AAB7D1;
+}
+
+
+/* ---------- Botões ---------- */
+
+[data-theme="escuro"] .acao {
+  color: #AAB7D1;
+}
+
+[data-theme="escuro"] .acao:hover {
+  background: #123B48;
+  color: #0FA6B3;
+}
+
+[data-theme="escuro"] .tamanhoFonte {
+  color: #AAB7D1;
+}
+
+
+/* ---------- Capítulo ---------- */
+
+[data-theme="escuro"] .numeroCapitulo {
+  color: #0FA6B3;
+}
+
+[data-theme="escuro"] .cabecalhoCapitulo h2 {
+  color: #F8FAFC;
+}
+
+
+/* ---------- Texto ---------- */
+
+[data-theme="escuro"] .texto {
+  color: #D7E0F0;
+}
+
+[data-theme="escuro"] .proximoCapitulo {
+  color: #F8FAFC;
+}
+
+
+/* ---------- Divisor ---------- */
+
+[data-theme="escuro"] .divisor {
+  color: #0FA6B3;
+}
+
+
+/* ---------- Rodapé ---------- */
+
+[data-theme="escuro"] .rodape {
+  background: #0D1733;
+  border-color: #29385E;
+}
+
+[data-theme="escuro"] .capituloBotao {
+  color: #D7E0F0;
+}
+
+[data-theme="escuro"] .capituloBotao:hover {
+  color: #0FA6B3;
+}
+
+
+/* ---------- Barra de progresso ---------- */
+
+[data-theme="escuro"] .infoProgresso {
+  color: #AAB7D1;
+}
+
+[data-theme="escuro"] .barra {
+  background: #29385E;
+}
+
+[data-theme="escuro"] .progressoAtual {
+  background: #0FA6B3;
+}

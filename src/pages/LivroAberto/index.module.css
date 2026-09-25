@@ -1,477 +1,256 @@
-
-.landing {
-    width: 100%;
-    min-height: 100vh;
-    height: auto;
-    box-sizing: border-box;
-    
-
-    background: #ffffff;
-    color: #06101a;
-
-    font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-        "Open Sans", "Helvetica Neue", sans-serif;
-
-        
-
-    overflow-x: hidden;
-}
-/* =====================================================
-   LOGO
-===================================================== */
-
-.logo {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.container {
+  min-height: 100vh;
+  padding: 35px;
+  background: #f8fafc;
+  color: #0f1c64;
 }
 
-.logo img {
-    width: 70px;
-    height: 70px;
-    object-fit: contain;
+.voltar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: none;
+  background: transparent;
+
+  color: #0f1c64;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  margin-bottom: 30px;
 }
 
-.titulo {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
+.voltar:hover {
+  color: #0fa6b3;
 }
 
-.logoRead,
-.logoDuo {
-    margin: 0;
+.livro {
+  display: flex;
+  gap: 50px;
 
-    font-size: 30px;
-    font-weight: 800;
+  width: 100%;
+  max-width: 1100px;
 
-    line-height: 1;
+  margin: 0 auto;
+  padding: 40px;
+
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
 }
 
-.logoRead {
-    color: #0FA6B3;
+.capa {
+  width: 280px;
+  min-width: 280px;
 }
 
-.logoDuo {
-    color: #0f1820;
+.capaLivro {
+  width: 280px;
+  height: 400px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #155873,
+    #0f1c64
+  );
+
+  color: white;
+  font-weight: 700;
+
+  box-shadow: 0 10px 30px rgba(15, 28, 100, 0.2);
 }
 
-
-.conteudoPrincipal {
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-
-    min-height: 0;
-    height: auto;
-
-    padding: 0 100px;
+.informacoes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+.tipo {
+  width: fit-content;
 
-/* =====================================================
-   LADO ESQUERDO
-===================================================== */
+  padding: 6px 12px;
 
-.esquerda {
-    width: 55%;
-    flex-shrink: 0;
+  border-radius: 20px;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  background: #e8fbfd;
+  color: #0fa6b3;
 
-    padding-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
+.informacoes h1 {
+  margin: 15px 0 5px;
 
-/* =====================================================
-   TEXTOS
-===================================================== */
-
-.Textos {
-    margin-top: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 10px;
+  font-size: 40px;
 }
 
-.Textos h2 {
-    margin: 0;
+.informacoes h2 {
+  margin: 0 0 25px;
 
-    font-size: 85px;
-    line-height: 1.15;
-    font-weight: 750;
+  color: #64748b;
 
-    color: #151c24;
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.Textos h3 {
-    margin: 15px 0 0;
+.descricao {
+  max-width: 600px;
 
-    display: flex;
-    flex-direction: row;
+  color: #64748b;
 
-    font-size: 25px;
-    line-height: 1.2;
-
-    gap: 6px;
-
-    color: #151a24;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
+.botoes {
+  display: flex;
+  gap: 15px;
 
-/* =====================================================
-   DESTAQUES
-===================================================== */
-
-.destaque {
-    font-size: 1.05em;
-    color: #0FA6B3;
+  margin-top: 30px;
 }
 
-.destaqueMenor {
-    font-size: 1em;
-    color: #0FA6B3;
+.ler,
+.salvar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
 }
 
+.ler {
+  border: none;
 
-/* =====================================================
-   BENEFÍCIOS
-===================================================== */
-
-.conteinerSinb {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    gap: 10px;
-
-    width: fit-content;
-
-    margin-top: 30px;
-    margin-bottom: 20px;
+  background: #0fa6b3;
+  color: white;
 }
 
-.sinb {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    flex-direction: row;
-
-    height: 48px;
-
-    min-width: 0;
-
-    padding: 0 18px;
-
-    margin: 0;
-
-    border-radius: 10px;
-
-    background: #e5e8f0;
-    border: 1px solid #29385E;
-
-    color: #161b24;
-
-    white-space: nowrap;
+.ler:hover {
+  background: #0d8e9a;
 }
 
-.sinb p {
-    margin: 0;
+.salvar {
+  border: 1px solid #0fa6b3;
 
-    font-size: 16px;
-    font-weight: 500;
-
-    line-height: 1.2;
-
-    color: #090c11;
+  background: white;
+  color: #0fa6b3;
 }
 
-.sinb svg {
-    width: 20px;
-    height: 20px;
+.salvar:hover {
+  background: #e8fbfd;
+}
 
-    flex-shrink: 0;
+/* ========================================= */
+/*              MODO ESCURO                  */
+/* ========================================= */
+
+/* ---------- Container ---------- */
+
+[data-theme="escuro"] .container {
+  background: #09122C;
+  color: #F8FAFC;
 }
 
 
+/* ---------- Botão voltar ---------- */
 
-.direita {
-    width: 45%;
+[data-theme="escuro"] .voltar {
+  color: #D7E0F0;
+}
 
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 0;
-    height: auto;
-
-    padding-right: 50px;
-    padding-top: 20px;
+[data-theme="escuro"] .voltar:hover {
+  color: #0FA6B3;
 }
 
 
+/* ---------- Área principal do livro ---------- */
 
-
-.direita img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+[data-theme="escuro"] .livro {
+  background: #111A35;
+  border-color: #29385E;
 }
 
 
+/* ---------- Capa ---------- */
 
-/* =====================================================
-   PARTE DE BAIXO — LIVROS
-===================================================== */
+[data-theme="escuro"] .capaLivro {
+  background: linear-gradient(
+    135deg,
+    #087F8A 0%,
+    #173F9E 100%
+  );
 
-.baixo {
-    width: 100%;
+  color: #F8FAFC;
 
-    margin: 0;
-    padding: 0 100px;
-
-    background: #ffffff;
-
-    color: #162029;
-    
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 
-/* =====================================================
-   TÍTULO DOS LIVROS
-===================================================== */
+/* ---------- Tipo do livro ---------- */
 
-.livraria {
-    margin: 0 0 15px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-        "Open Sans", "Helvetica Neue", sans-serif;
-
-    font-size: 30px;
-    line-height: 1.2;
-
-    color: #151b22;
+[data-theme="escuro"] .tipo {
+  background: #123B48;
+  color: #5EE7EF;
 }
 
 
-/* =====================================================
-   CARDS DOS LIVROS
-===================================================== */
+/* ---------- Título ---------- */
 
-.leitCard {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 22px;
-
-    padding: 0 10px 20px;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    scroll-behavior: smooth;
-
-    /* Esconde a barra no Firefox */
-    scrollbar-width: none;
-}
-
-/* Esconde a barra no Chrome, Edge e Safari */
-.leitCard::-webkit-scrollbar {
-    display: none;
-}
-
-.areaLivros {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.botaoScroll {
-    width: 50px;
-    height: 50px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: #10182F;
-    color: #0FA6B3;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    cursor: pointer;
-
-    position: absolute;
-    z-index: 10;
-
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        color 0.2s ease;
-}
-
-.esquerdaScroll {
-    left: -20px;
-}
-
-.direitaScroll {
-    right: -20px;
-}
-
-.botaoScroll:hover {
-    background: #0FA6B3;
-    color: white;
-
-    transform: scale(1.08);
+[data-theme="escuro"] .informacoes h1 {
+  color: #F8FAFC;
 }
 
 
+/* ---------- Autor ---------- */
 
-/* =====================================================
-   MODO ESCURO
-===================================================== */
-
-[data-theme="escuro"] .landing {
-    background: #070d20;
-    color: #F8FAFC;
-}
-
-[data-theme="escuro"] .navbar {
-    background: #10182F;
-    border-bottom: 1px solid #273353;
-}
-
-[data-theme="escuro"] .logoRead {
-    color: #0FA6B3;
-}
-
-[data-theme="escuro"] .logoDuo {
-    color: #F8FAFC;
-}
-
-[data-theme="escuro"] .Textos h2 {
-    color: #F8FAFC;
-}
-
-[data-theme="escuro"] .Textos h3 {
-    color: #D7E0F0;
-}
-
-[data-theme="escuro"] .destaque,
-[data-theme="escuro"] .destaqueMenor {
-    color: #0FA6B3;
-}
-
-[data-theme="escuro"] .sinb {
-    background: #151F3B;
-    border-color: #29385E;
-    color: #D7E0F0;
-}
-
-[data-theme="escuro"] .sinb p {
-    color: #D7E0F0;
-}
-
-[data-theme="escuro"] .livraria {
-    color: #F8FAFC;
-}
-
-[data-theme="escuro"] .baixo {
-    background: #070d20;
-    color: #F8FAFC;
-}
-
-[data-theme="escuro"] .botaoScroll {
-    background: #151F3B;
-    color: #0FA6B3;
-
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme="escuro"] .botaoScroll:hover {
-    background: #0FA6B3;
-    color: #FFFFFF;
+[data-theme="escuro"] .informacoes h2 {
+  color: #AAB7D1;
 }
 
 
-/* =====================================================
-   RESPONSIVIDADE
-===================================================== */
+/* ---------- Descrição ---------- */
 
-@media (max-width: 1000px) {
-
-    .conteudoPrincipal {
-        flex-direction: column;
-    }
-
-    .esquerda,
-    .direita {
-        width: 100%;
-    }
-
-    .direita {
-        min-height: 300px;
-    }
-
-    .Textos h2 {
-        font-size: 48px;
-    }
+[data-theme="escuro"] .descricao {
+  color: #AAB7D1;
 }
 
 
-@media (max-width: 700px) {
+/* ---------- Botão Ler ---------- */
 
-    .landing {
-        padding: 0 20px;
-    }
+[data-theme="escuro"] .ler {
+  background: #0FA6B3;
+  color: #F8FAFC;
+}
 
-    .navbar {
-        padding: 0;
-    }
+[data-theme="escuro"] .ler:hover {
+  background: #0D8E9A;
+}
 
-    .Textos h2 {
-        font-size: 38px;
-    }
 
-    .Textos h3 {
-        font-size: 20px;
-    }
+/* ---------- Botão Salvar ---------- */
 
-    .conteinerSinb {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+[data-theme="escuro"] .salvar {
+  background: #111A35;
+  border-color: #0FA6B3;
+  color: #0FA6B3;
+}
 
-    .sinb {
-        width: fit-content;
-    }
-
-    .livraria {
-        font-size: 24px;
-    }
-
-    .leitCard {
-        gap: 15px;
-    }
+[data-theme="escuro"] .salvar:hover {
+  background: #123B48;
 }

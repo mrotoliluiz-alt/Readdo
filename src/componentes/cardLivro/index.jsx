@@ -1,17 +1,22 @@
 import styles from "./index.module.css";
 
 import { Bookmark, BookOpen, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function CardLivro({
   titulo,
   autor,
   tipo,
   imagem,
-  corTag,
+  id,
   favorito = false,
 }) {
+
+  const navigate = useNavigate();
+
   return (
-    <div className={styles.card}>
+    <div className={styles.card}
+    onClick={() => navigate(`/livro/${id}`)}>
       <div className={styles.imagemContainer}>
         {imagem ? (
           <img
