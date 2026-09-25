@@ -125,6 +125,7 @@ function Home() {
           ref={scrollRef1}
         >
           <CardLivro
+            id="2"
             titulo="Deserto"
             autor="Amigo loko"
             tipo="Livro"
