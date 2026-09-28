@@ -758,6 +758,431 @@
   background: #3b4668;
 }
 
+/* =========================================================
+   OFICINA AUTORAL — FUNCIONALIDADES
+   ========================================================= */
+
+/* ---------- BOTÃO NOVA OBRA ---------- */
+
+.novaObra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px 22px;
+
+    border: none;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    color: white;
+    font-weight: 600;
+
+    background: linear-gradient(
+        90deg,
+        #7c3aed,
+        #ec4899
+    );
+
+    transition: .25s;
+}
+
+.novaObra:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 18px rgba(124, 58, 237, .25);
+}
+
+/* ---------- EDITOR VAZIO ---------- */
+
+.editorVazio {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    color: #64748b;
+}
+
+.editorVazio svg {
+    color: #0fa6b3;
+}
+
+.editorVazio h2 {
+    margin: 0;
+
+    color: #0f1c64;
+
+    font-size: 2rem;
+}
+
+.editorVazio p {
+    margin: 0 0 10px;
+
+    color: #64748b;
+}
+
+/* ---------- EDITOR EDITÁVEL ---------- */
+
+.textEditor {
+    cursor: text;
+
+    min-height: 300px;
+
+    white-space: pre-wrap;
+}
+
+.textEditor:focus {
+    outline: none;
+}
+
+.textEditor h1 {
+    margin-top: 0;
+}
+
+/* ---------- MENSAGEM SEM OBRAS ---------- */
+
+.semObras {
+    padding: 20px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+/* ---------- MODAL ---------- */
+
+.modalOverlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(15, 28, 100, .45);
+
+    backdrop-filter: blur(5px);
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+
+    background: white;
+
+    border: 1px solid #dbe4ee;
+
+    border-radius: 20px;
+
+    padding: 26px;
+
+    box-shadow:
+        0 25px 70px rgba(15, 28, 100, .2);
+
+    animation: abrirModal .2s ease;
+}
+
+@keyframes abrirModal {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+/* ---------- CABEÇALHO MODAL ---------- */
+
+.modalHeader {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-bottom: 25px;
+}
+
+.modalHeader h2 {
+    margin: 0 0 6px;
+
+    color: #0f1c64;
+
+    font-size: 1.8rem;
+}
+
+.modalHeader p {
+    margin: 0;
+
+    color: #64748b;
+}
+
+.fecharModal {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.fecharModal:hover {
+    background: #f1f5f9;
+
+    color: #0f1c64;
+}
+
+/* ---------- FORMULÁRIO ---------- */
+
+.modalForm {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.modalForm label {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    color: #0f1c64;
+
+    font-weight: 600;
+}
+
+.modalForm input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    border: 1px solid #dbe4ee;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    color: #0f1c64;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    transition: .2s;
+}
+
+.modalForm input:focus {
+    border-color: #0fa6b3;
+
+    background: white;
+
+    box-shadow:
+        0 0 0 3px rgba(15, 166, 179, .1);
+}
+
+/* ---------- BOTÕES DO MODAL ---------- */
+
+.modalButtons {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 28px;
+}
+
+.cancelar,
+.confirmar {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border-radius: 11px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.cancelar {
+    border: 1px solid #dbe4ee;
+
+    background: white;
+
+    color: #64748b;
+}
+
+.cancelar:hover {
+    background: #f8fafc;
+
+    color: #0f1c64;
+}
+
+.confirmar {
+    border: none;
+
+    background: #0fa6b3;
+
+    color: white;
+}
+
+.confirmar:hover {
+    background: #0d8e9a;
+
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   TEMA ESCURO — FUNCIONALIDADES
+   ========================================================= */
+
+:global([data-theme="escuro"]) .editorVazio {
+    background: #161c33;
+
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editorVazio h2 {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .editorVazio p {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .semObras {
+    color: #7d86a8;
+}
+
+/* ---------- MODAL ESCURO ---------- */
+
+:global([data-theme="escuro"]) .modalOverlay {
+    background: rgba(4, 8, 20, .7);
+}
+
+:global([data-theme="escuro"]) .modal {
+    background: #161c33;
+
+    border-color: #2a3153;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .45);
+}
+
+:global([data-theme="escuro"]) .modalHeader h2 {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .modalHeader p {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .fecharModal {
+    color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .fecharModal:hover {
+    background: #1c2340;
+
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .modalForm label {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .modalForm input {
+    background: #1c2340;
+
+    border-color: #2a3153;
+
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .modalForm input::placeholder {
+    color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .modalForm input:focus {
+    background: #1c2340;
+
+    border-color: #0fa6b3;
+}
+
+:global([data-theme="escuro"]) .cancelar {
+    background: #161c33;
+
+    border-color: #2a3153;
+
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .cancelar:hover {
+    background: #1c2340;
+
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .confirmar {
+    background: #0fa6b3;
+
+    color: white;
+}
+
+:global([data-theme="escuro"]) .confirmar:hover {
+    background: #0d8e9a;
+}
+
+/* ---------- NOVA OBRA NO TEMA ESCURO ---------- */
+
+:global([data-theme="escuro"]) .novaObra {
+    color: white;
+}
+
 /* ================= RESPONSIVO ================= */
 
 @media(max-width:1100px){
