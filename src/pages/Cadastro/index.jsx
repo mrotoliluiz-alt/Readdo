@@ -87,7 +87,7 @@ function Cadastro() {
             </h2>
 
             <h2>
-              duo
+              do
             </h2>
           </div>
 
@@ -147,7 +147,7 @@ function Cadastro() {
 
             <input
               type="text"
-              placeholder="Nome completo"
+              placeholder="Nome do usuário"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               required

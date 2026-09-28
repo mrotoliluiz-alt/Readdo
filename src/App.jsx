@@ -24,7 +24,7 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route path="/livro/:id" element={<Livro />} />
-        <Route path="/leitura" element={<Leitura />} />
+        <Route path="/livro/:id/ler" element={<Leitura />} />
         <Route element={<Layout />}>
         <Route path="/Home" element={<Home />} />
         <Route path="/Salvos" element={<Salvos />} />

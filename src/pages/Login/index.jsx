@@ -49,7 +49,7 @@ function Login() {
           
           
           <h2 className={styles.titulo}>Read</h2>
-          <h2 >duo</h2>
+          <h2 >do</h2>
         </div>
 
         
