@@ -260,14 +260,16 @@ function Oficina() {
   };
 
   const aplicarFonte = (fonte) => {
-    editorRef.current?.focus();
+  editorRef.current?.focus();
 
-    document.execCommand("fontName", false, fonte);
+  document.execCommand("fontName", false, fonte);
 
-    setMenuFonte(false);
+  document.getElementById("nomeFonte").textContent = fonte;
 
-    atualizarConteudo();
-  };
+  setMenuFonte(false);
+
+  atualizarConteudo();
+};
 
 
   // ==========================================
@@ -714,7 +716,7 @@ function Oficina() {
                     setMenuEstilo(false);
                   }}
                 >
-                  Arial
+                  <span id="nomeFonte">Arial</span>
                   <ChevronDown size={15} />
                 </button>
 
