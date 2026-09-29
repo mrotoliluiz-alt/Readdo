@@ -845,6 +845,35 @@
 
 .textEditor h1 {
     margin-top: 0;
+    margin-bottom: 30px;
+
+    color: #0F1C64;
+
+    font-size: 4rem;
+}
+
+.textEditor h2 {
+    margin-top: 25px;
+    margin-bottom: 20px;
+
+    color: #0F1C64;
+
+    font-size: 3rem;
+}
+
+.textEditor h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+
+    color: #0F1C64;
+
+    font-size: 2.3rem;
+}
+
+.textEditor p {
+    margin-bottom: 28px;
+
+    color: #334155;
 }
 
 /* ---------- MENSAGEM SEM OBRAS ---------- */
@@ -965,6 +994,8 @@
 
 /* ---------- FORMULÁRIO ---------- */
 
+
+
 .modalForm {
     display: flex;
 
@@ -1077,6 +1108,159 @@
 }
 
 /* =========================================================
+   MENUS DA BARRA DE FERRAMENTAS
+   ========================================================= */
+
+.dropdown {
+    position: relative;
+}
+
+/* BOTÃO */
+
+.dropdownBotao {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    min-width: 100px;
+
+    border: none;
+
+    background: #0fa6b3;
+
+    color: white;
+
+    cursor: pointer;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    transition: .2s;
+}
+
+.dropdownBotao:hover {
+    background: #0d8e9a;
+}
+
+/* MENU */
+
+.dropdownMenu {
+    position: absolute;
+
+    top: calc(100% + 6px);
+    left: 0;
+
+    z-index: 1000;
+
+    min-width: 180px;
+
+    padding: 6px;
+
+    background: white;
+
+    border: 1px solid #dbe4ee;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(15, 28, 100, .15);
+
+    animation: abrirDropdown .15s ease;
+}
+
+@keyframes abrirDropdown {
+
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* OPÇÕES */
+
+.dropdownMenu button {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #0f1c64;
+
+    cursor: pointer;
+
+    padding: 9px 10px;
+
+    border-radius: 7px;
+
+    text-align: left;
+
+    transition: .15s;
+}
+
+.dropdownMenu button:hover {
+    background: #f0fbfd;
+
+    color: #0fa6b3;
+}
+
+/* PRÉVIA DOS TÍTULOS */
+
+.previewH1 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.previewH2 {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.previewH3 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   TEMA ESCURO
+   ========================================================= */
+
+:global([data-theme="escuro"]) .dropdownMenu {
+    background: #161c33;
+
+    border-color: #2a3153;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, .35);
+}
+
+:global([data-theme="escuro"]) .dropdownMenu button {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .dropdownMenu button:hover {
+    background: #1c2340;
+
+    color: #0fa6b3;
+}
+
+/* =========================================================
    TEMA ESCURO — FUNCIONALIDADES
    ========================================================= */
 
@@ -1096,6 +1280,16 @@
 
 :global([data-theme="escuro"]) .semObras {
     color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .textEditor h1,
+:global([data-theme="escuro"]) .textEditor h2,
+:global([data-theme="escuro"]) .textEditor h3 {
+    color: #f8fafc;
+}
+
+:global([data-theme="escuro"]) .textEditor p {
+    color: #cbd5e1;
 }
 
 /* ---------- MODAL ESCURO ---------- */

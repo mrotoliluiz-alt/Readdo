@@ -124,6 +124,49 @@ function Oficina() {
 
   const [salvando, setSalvando] = useState(false);
 
+  const [menuEstilo, setMenuEstilo] = useState(false);
+  const [menuFonte, setMenuFonte] = useState(false);
+
+  const aplicarEstilo = (estilo) => {
+  editorRef.current?.focus();
+
+  if (estilo === "titulo1") {
+    document.execCommand(
+      "formatBlock",
+      false,
+      "H1"
+    );
+  }
+
+  if (estilo === "titulo2") {
+    document.execCommand(
+      "formatBlock",
+      false,
+      "H2"
+    );
+  }
+
+  if (estilo === "titulo3") {
+    document.execCommand(
+      "formatBlock",
+      false,
+      "H3"
+    );
+  }
+
+  if (estilo === "paragrafo") {
+    document.execCommand(
+      "formatBlock",
+      false,
+      "P"
+    );
+  }
+
+  setMenuEstilo(false);
+
+  atualizarConteudo();
+};
+
   const obraAtiva = obras.find(
     (obra) => obra.id === obraAtivaId
   );
@@ -215,6 +258,17 @@ function Oficina() {
 
     atualizarConteudo();
   };
+
+  const aplicarFonte = (fonte) => {
+    editorRef.current?.focus();
+
+    document.execCommand("fontName", false, fonte);
+
+    setMenuFonte(false);
+
+    atualizarConteudo();
+  };
+
 
   // ==========================================
   // CRIAR NOVA OBRA
@@ -584,21 +638,177 @@ function Oficina() {
               {/* BARRA DE FERRAMENTAS */}
               <div className={styles.toolbar}>
 
+                <div className={styles.dropdown}>
+
+                  <button
+                    className={styles.dropdownBotao}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setMenuEstilo(!menuEstilo);
+                      setMenuFonte(false);
+                    }}
+                  >
+                    Título 1
+                    <ChevronDown size={15} />
+                  </button>
+
+                  {menuEstilo && (
+                    <div className={styles.dropdownMenu}>
+
+                      <button
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() =>
+                          aplicarEstilo("titulo1")
+                        }
+                      >
+                        <span className={styles.previewH1}>
+                          Título 1
+                        </span>
+                      </button>
+
+                      <button
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() =>
+                          aplicarEstilo("titulo2")
+                        }
+                      >
+                        <span className={styles.previewH2}>
+                          Título 2
+                        </span>
+                      </button>
+
+                      <button
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() =>
+                          aplicarEstilo("titulo3")
+                        }
+                      >
+                        <span className={styles.previewH3}>
+                          Título 3
+                        </span>
+                      </button>
+
+                      <button
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() =>
+                          aplicarEstilo("paragrafo")
+                        }
+                      >
+                        <span>
+                          Parágrafo
+                        </span>
+                      </button>
+
+                    </div>
+                  )}
+
+                </div>
+
+                <div className={styles.dropdown}>
+
                 <button
-                  title="Título"
-                  onMouseDown={(e) =>
-                    e.preventDefault()
-                  }
-                  onClick={() =>
-                    formatarTexto(
-                      "formatBlock",
-                      "H1"
-                    )
-                  }
+                  className={styles.dropdownBotao}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setMenuFonte(!menuFonte);
+                    setMenuEstilo(false);
+                  }}
                 >
-                  Título 1
+                  Arial
                   <ChevronDown size={15} />
                 </button>
+
+                {menuFonte && (
+                  <div className={styles.dropdownMenu}>
+
+                    <button
+                      style={{
+                        fontFamily: "Arial",
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Arial")
+                      }
+                    >
+                      Arial
+                    </button>
+
+                    <button
+                      style={{
+                        fontFamily: "Georgia",
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Georgia")
+                      }
+                    >
+                      Georgia
+                    </button>
+
+                    <button
+                      style={{
+                        fontFamily: '"Times New Roman"',
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Times New Roman")
+                      }
+                    >
+                      Times New Roman
+                    </button>
+
+                    <button
+                      style={{
+                        fontFamily: "Verdana",
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Verdana")
+                      }
+                    >
+                      Verdana
+                    </button>
+
+                    <button
+                      style={{
+                        fontFamily: '"Trebuchet MS"',
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Trebuchet MS")
+                      }
+                    >
+                      Trebuchet MS
+                    </button>
+
+                    <button
+                      style={{
+                        fontFamily: '"Courier New"',
+                      }}
+                      onMouseDown={(e) =>
+                        e.preventDefault()
+                      }
+                      onClick={() =>
+                        aplicarFonte("Courier New")
+                      }
+                    >
+                      Courier New
+                    </button>
+
+                  </div>
+                )}
+
+              </div>
 
                 <button
                   title="Negrito"
