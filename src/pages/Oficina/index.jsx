@@ -7,7 +7,6 @@ import {
   Upload,
   Plus,
   Search,
-  Tag,
   ChevronDown,
   Bold,
   Italic,
@@ -20,6 +19,10 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Image,
+  Pencil,
+  Save,
+  Camera,
 } from "lucide-react";
 
 const obrasIniciais = [
@@ -27,6 +30,8 @@ const obrasIniciais = [
     id: 1,
     titulo: "Ecos de Éter",
     genero: "Fantasia",
+    imagem: '',
+    descrição: '',
     capitulo: "Cap. 8",
     data: "12/05/2024",
     conteudo: `
@@ -49,6 +54,8 @@ const obrasIniciais = [
     id: 2,
     titulo: "O Último Sussurro",
     genero: "Terror",
+    imagem: '',
+    descrição: '',
     capitulo: "Cap. 3",
     data: "10/05/2024",
     conteudo: `
@@ -67,6 +74,8 @@ const obrasIniciais = [
     id: 3,
     titulo: "Cidades de Néon",
     genero: "Ficção Científica",
+    imagem: '',
+    descrição: '',
     capitulo: "Cap. 5",
     data: "08/05/2024",
     conteudo: `
@@ -81,6 +90,8 @@ const obrasIniciais = [
     id: 4,
     titulo: "Flores no Concreto",
     genero: "Romance",
+    imagem: '',
+    descrição: '',
     capitulo: "Cap. 2",
     data: "05/05/2024",
     conteudo: `
@@ -127,6 +138,49 @@ function Oficina() {
   const [menuEstilo, setMenuEstilo] = useState(false);
   const [menuFonte, setMenuFonte] = useState(false);
 
+  const [editandoInfo, setEditandoInfo] = useState(false);
+
+  const [infoEditada, setInfoEditada] = useState({
+    titulo: "",
+    descricao: "",
+  });
+
+  const imagemInputRef = useRef(null);
+
+const iniciarEdicaoInfo = () => {
+  if (!obraAtiva) return;
+
+  setInfoEditada({
+    titulo: obraAtiva.titulo || "",
+    descricao: obraAtiva.descricao || "",
+  });
+
+  setEditandoInfo(true);
+};
+
+const salvarInfo = () => {
+  if (!obraAtiva) return;
+
+  if (!infoEditada.titulo.trim()) {
+    alert("O título da obra não pode ficar vazio.");
+    return;
+  }
+
+  setObras((obrasAtuais) =>
+    obrasAtuais.map((obra) =>
+      obra.id === obraAtivaId
+        ? {
+            ...obra,
+            titulo: infoEditada.titulo.trim(),
+            descricao: infoEditada.descricao.trim(),
+          }
+        : obra
+    )
+  );
+
+  setEditandoInfo(false);
+};
+
   const aplicarEstilo = (estilo) => {
   editorRef.current?.focus();
 
@@ -165,6 +219,39 @@ function Oficina() {
   setMenuEstilo(false);
 
   atualizarConteudo();
+};
+
+
+const adicionarImagem = (event) => {
+  const arquivo = event.target.files?.[0];
+
+  if (!arquivo || !obraAtiva) return;
+
+  if (!arquivo.type.startsWith("image/")) {
+    alert("Selecione uma imagem válida.");
+    return;
+  }
+
+  const leitor = new FileReader();
+
+  leitor.onload = (e) => {
+    const imagem = e.target.result;
+
+    setObras((obrasAtuais) =>
+      obrasAtuais.map((obra) =>
+        obra.id === obraAtivaId
+          ? {
+              ...obra,
+              imagem,
+            }
+          : obra
+      )
+    );
+  };
+
+  leitor.readAsDataURL(arquivo);
+
+  event.target.value = "";
 };
 
   const obraAtiva = obras.find(

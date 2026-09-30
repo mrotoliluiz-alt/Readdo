@@ -1,106 +1,179 @@
+/* =====================================================
+   CONTAINER PRINCIPAL
+===================================================== */
+
 .container {
-    width: 100%;
-    min-height: 100vh;
+  width: 100%;
+  min-height: 100vh;
 
-    box-sizing: border-box;
+  box-sizing: border-box;
 
-    background: #f8fafc;
-    color: #0f1c64;
+  padding: 0 34px 30px;
 
-    padding: 0 35px 45px;
+  background: #f8fafc;
+  color: #0f1c64;
 
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  display: flex;
+  flex-direction: column;
 }
 
 
 /* =====================================================
-   TOPO
+   CABEÇALHO
 ===================================================== */
 
 .topo {
-    width: 100%;
+  width: 100%;
+  min-height: 82px;
 
-    min-height: 72px;
+  display: flex;
+  align-items: center;
 
-    display: flex;
-    align-items: center;
+  gap: 24px;
 
-    gap: 30px;
+  border-bottom: 1px solid #e2e8f0;
 
-    border-bottom: 1px solid #e2e8f0;
+  box-sizing: border-box;
 }
 
+
+/* =====================================================
+   BOTÃO VOLTAR
+===================================================== */
 
 .voltar {
-    display: flex;
-    align-items: center;
+  height: 42px;
 
-    gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    padding: 9px 12px;
+  gap: 8px;
 
-    border: none;
-    border-radius: 8px;
+  padding: 0 15px;
 
-    background: transparent;
+  border: 1px solid #d9e4ec;
+  border-radius: 10px;
 
-    color: #0f1c64;
+  background: #ffffff;
 
-    font-size: 15px;
-    font-weight: 600;
+  color: #0f1c64;
 
-    cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
 
-    transition: 0.2s;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-
 
 .voltar:hover {
-    background: #e9fbfd;
+  background: #effcff;
 
-    color: #0fa6b3;
+  border-color: #0fa6b3;
+
+  box-shadow:
+    0 4px 12px rgba(15, 166, 179, 0.12);
+
+  transform: translateY(-1px);
+}
+
+.voltar:active {
+  transform: translateY(0);
 }
 
 
-.titulo {
-    display: flex;
-    align-items: center;
+/* =====================================================
+   INFORMAÇÕES DO LIVRO
+===================================================== */
 
-    gap: 12px;
+.informacoesLivro {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  flex: 1;
 }
 
 
-.titulo > svg {
-    color: #0fa6b3;
+.iconeLivro {
+  width: 42px;
+  height: 42px;
 
-    flex-shrink: 0;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: linear-gradient(
+    135deg,
+    #0fa6b3,
+    #155873
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgba(15, 166, 179, 0.2);
 }
 
 
-.titulo h1 {
-    margin: 0;
+.textosLivro {
+  min-width: 0;
 
-    font-size: 17px;
-    font-weight: 700;
+  display: flex;
+  flex-direction: column;
 
-    color: #0f1c64;
+  gap: 3px;
 }
 
 
-.titulo span {
-    display: block;
+.textosLivro h1 {
+  margin: 0;
 
-    margin-top: 2px;
+  max-width: 520px;
 
-    font-size: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
-    color: #64748b;
+  color: #0f1c64;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+
+.textosLivro span {
+  max-width: 520px;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  color: #64748b;
+
+  font-size: 13px;
 }
 
 
@@ -109,205 +182,319 @@
 ===================================================== */
 
 .status {
-    width: 100%;
+  flex-shrink: 0;
 
-    max-width: 1200px;
+  min-height: 34px;
 
-    margin: 20px auto;
+  display: flex;
+  align-items: center;
 
-    display: flex;
-    justify-content: flex-end;
+  gap: 8px;
+
+  padding: 0 13px;
+
+  border: 1px solid #b8eef4;
+
+  border-radius: 20px;
+
+  background: #f0fdff;
+
+  color: #0f6471;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
 }
 
 
-.status div {
-    display: flex;
-    align-items: center;
+.statusPonto {
+  width: 7px;
+  height: 7px;
 
-    gap: 10px;
+  border-radius: 50%;
 
-    padding: 8px 13px;
+  background: #0fa6b3;
 
-    border-radius: 8px;
-
-    background: #eafcff;
-
-    border: 1px solid #b8eef4;
-}
-
-
-.status strong {
-    font-size: 13px;
-
-    color: #0f1c64;
-}
-
-
-.status span {
-    font-size: 12px;
-
-    color: #0fa6b3;
+  box-shadow:
+    0 0 0 3px rgba(15, 166, 179, 0.12);
 }
 
 
 /* =====================================================
-   LEITOR GOOGLE BOOKS
+   ÁREA DE LEITURA
 ===================================================== */
 
-.leitorWrapper {
-    position: relative;
+.areaLeitura {
+  width: 100%;
+  max-width: 1250px;
 
-    width: 100%;
-    max-width: 1200px;
+  margin: 0 auto;
 
-    height: calc(100vh - 155px);
+  padding-top: 26px;
 
-    min-height: 600px;
+  display: flex;
+  flex-direction: column;
 
-    margin: 0 auto;
-
-    overflow: hidden;
-
-    background: #ffffff;
-
-    border: 1px solid #dce6ed;
-
-    border-radius: 14px;
-
-    box-shadow:
-        0 10px 35px rgba(15, 28, 100, 0.08);
+  flex: 1;
 }
 
 
-.viewer {
-    width: 100%;
-    height: 100%;
+/* =====================================================
+   TÍTULO DA ÁREA
+===================================================== */
+
+.tituloArea {
+  width: 100%;
+
+  margin-bottom: 15px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.tituloArea > div:first-child {
+  min-width: 0;
+}
+
+
+.tituloArea span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #0fa6b3;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+
+.tituloArea h2 {
+  margin: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #0f1c64;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+.indicadorLeitura {
+  flex-shrink: 0;
+
+  display: flex !important;
+  align-items: center;
+
+  gap: 7px;
+
+  margin: 0 !important;
+
+  color: #64748b !important;
+
+  font-size: 12px !important;
+  font-weight: 500 !important;
+
+  letter-spacing: 0 !important;
+}
+
+
+/* =====================================================
+   ÁREA DO GOOGLE BOOKS
+===================================================== */
+
+.leitorWrapper {
+  position: relative;
+
+  width: 100%;
+
+  height: calc(100vh - 190px);
+
+  min-height: 600px;
+
+  overflow: hidden;
+
+  border: 1px solid #dbe5eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 35px rgba(15, 28, 100, 0.08);
+
+  box-sizing: border-box;
 }
 
 
 /*
-   A Google Books controla o conteúdo
-   interno do visualizador.
+   O Google Books ocupa todo o espaço
+   disponível dentro da moldura.
 */
 
-.viewer > div {
-    width: 100% !important;
-    height: 100% !important;
+.viewer {
+  width: 100%;
+  height: 100%;
+
+  background: #ffffff;
 }
 
 
 /* =====================================================
-   LOADING DO VISUALIZADOR
+   CARREGAMENTO DO VIEWER
 ===================================================== */
 
 .carregandoViewer {
-    position: absolute;
+  position: absolute;
 
-    inset: 0;
+  inset: 0;
 
-    z-index: 10;
+  z-index: 5;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-    gap: 12px;
+  background: #ffffff;
 
-    background: #ffffff;
+  color: #0f1c64;
 
-    color: #0fa6b3;
+  text-align: center;
+}
+
+
+.carregandoIcone {
+  width: 64px;
+  height: 64px;
+
+  margin-bottom: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #effcff;
+
+  color: #0fa6b3;
+}
+
+
+.carregandoViewer h3 {
+  margin: 0 0 6px;
+
+  font-size: 17px;
+  font-weight: 700;
 }
 
 
 .carregandoViewer p {
-    margin: 0;
+  margin: 0;
 
-    color: #64748b;
+  color: #64748b;
 
-    font-size: 14px;
-}
-
-
-.spinner {
-    animation: girar 1s linear infinite;
-}
-
-
-@keyframes girar {
-
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-
+  font-size: 13px;
 }
 
 
 /* =====================================================
-   ERRO
+   SPINNER
+===================================================== */
+
+.spinner {
+  animation: girar 1s linear infinite;
+}
+
+
+@keyframes girar {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =====================================================
+   ERRO DO VIEWER
 ===================================================== */
 
 .erroViewer,
 .semVisualizacao {
-    width: 100%;
-    max-width: 700px;
+  position: absolute;
 
-    min-height: 400px;
+  inset: 0;
 
-    margin: 60px auto;
+  z-index: 6;
 
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
-    padding: 50px 35px;
+  align-items: center;
+  justify-content: center;
 
-    display: flex;
-    flex-direction: column;
+  padding: 30px;
 
-    align-items: center;
-    justify-content: center;
+  box-sizing: border-box;
 
-    text-align: center;
+  background: #ffffff;
 
-    border-radius: 16px;
+  color: #0f1c64;
 
-    background: #ffffff;
-
-    border: 1px solid #e2e8f0;
-
-    color: #0f1c64;
-}
-
-
-.erroViewer > svg,
-.semVisualizacao > svg {
-    margin-bottom: 15px;
-
-    color: #0fa6b3;
+  text-align: center;
 }
 
 
 .erroViewer h2,
 .semVisualizacao h2 {
-    margin: 0 0 10px;
+  margin: 15px 0 8px;
 
-    font-size: 22px;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 
 .erroViewer p,
 .semVisualizacao p {
-    max-width: 550px;
+  max-width: 470px;
 
-    margin: 0 0 25px;
+  margin: 0 0 20px;
 
-    color: #64748b;
+  color: #64748b;
 
-    line-height: 1.6;
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+.erroIcone {
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  background: #effcff;
+
+  color: #0fa6b3;
 }
 
 
@@ -316,198 +503,358 @@
 ===================================================== */
 
 .botaoGoogle {
-    display: inline-flex;
-    align-items: center;
+  min-height: 42px;
 
-    gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    padding: 11px 17px;
+  gap: 8px;
 
-    border-radius: 9px;
+  padding: 0 18px;
 
-    background: #0fa6b3;
+  border-radius: 10px;
 
-    color: white;
+  background: #0fa6b3;
 
-    text-decoration: none;
+  color: #ffffff;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 13px;
+  font-weight: 600;
 
-    transition: 0.2s;
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
 .botaoGoogle:hover {
-    background: #087f8a;
+  background: #0d8f9b;
 
-    transform: translateY(-1px);
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 14px rgba(15, 166, 179, 0.25);
 }
 
 
 /* =====================================================
-   CARREGANDO DA PÁGINA
+   RODAPÉ
 ===================================================== */
 
-.estado {
-    min-height: 80vh;
+.rodape {
+  width: 100%;
+  max-width: 1250px;
 
-    display: flex;
-    flex-direction: column;
+  margin: 14px auto 0;
 
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    gap: 12px;
+  gap: 20px;
 
-    text-align: center;
+  color: #94a3b8;
+
+  font-size: 11px;
 }
 
 
-.estado svg {
-    color: #0fa6b3;
+.rodape > div {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+.rodape svg {
+  color: #0fa6b3;
+}
+
+
+/* =====================================================
+   ESTADO DE CARREGAMENTO / ERRO DA PÁGINA
+===================================================== */
+
+.estado {
+  width: 100%;
+  min-height: 70vh;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+
+.estado svg:not(.spinner) {
+  color: #0fa6b3;
+
+  margin-bottom: 12px;
 }
 
 
 .estado h2 {
-    margin: 0;
+  margin: 8px 0;
 
-    font-size: 22px;
+  color: #0f1c64;
+
+  font-size: 21px;
 }
 
 
 .estado p {
-    margin: 0;
+  max-width: 450px;
 
-    color: #64748b;
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
 }
 
 
 /* =====================================================
-   MODO ESCURO
+   RESPONSIVIDADE
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .container {
+    padding: 0 20px 25px;
+  }
+
+  .topo {
+    gap: 14px;
+  }
+
+  .textosLivro h1 {
+    max-width: 300px;
+  }
+
+  .textosLivro span {
+    max-width: 300px;
+  }
+
+  .leitorWrapper {
+    min-height: 550px;
+    height: calc(100vh - 210px);
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .container {
+    padding: 0 14px 20px;
+  }
+
+  .topo {
+    min-height: auto;
+
+    padding: 16px 0;
+
+    flex-wrap: wrap;
+  }
+
+  .informacoesLivro {
+    order: 3;
+
+    width: 100%;
+  }
+
+  .textosLivro h1 {
+    max-width: 100%;
+  }
+
+  .textosLivro span {
+    max-width: 100%;
+  }
+
+  .status {
+    margin-left: auto;
+  }
+
+  .areaLeitura {
+    padding-top: 20px;
+  }
+
+  .tituloArea {
+    align-items: flex-start;
+  }
+
+  .tituloArea h2 {
+    font-size: 18px;
+  }
+
+  .indicadorLeitura {
+    display: none !important;
+  }
+
+  .leitorWrapper {
+    min-height: 500px;
+
+    height: calc(100vh - 250px);
+
+    border-radius: 12px;
+  }
+
+  .rodape {
+    display: none;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .voltar {
+    padding: 0 11px;
+  }
+
+  .voltar span {
+    display: none;
+  }
+
+  .iconeLivro {
+    width: 38px;
+    height: 38px;
+  }
+
+  .textosLivro h1 {
+    font-size: 16px;
+  }
+
+  .textosLivro span {
+    font-size: 12px;
+  }
+
+  .status {
+    padding: 0 10px;
+
+    font-size: 11px;
+  }
+
+  .leitorWrapper {
+    min-height: 450px;
+  }
+
+}
+
+
+/* =====================================================
+   TEMA ESCURO
 ===================================================== */
 
 :global([data-theme="escuro"]) .container {
-    background: #0f1425;
+  background: #0b1020;
 
-    color: #f1f5f9;
+  color: #e7f4ff;
 }
 
 
 :global([data-theme="escuro"]) .topo {
-    border-color: #293550;
+  border-color: #202b42;
 }
 
 
 :global([data-theme="escuro"]) .voltar {
-    color: #e2e8f0;
+  border-color: #26344d;
+
+  background: #11182a;
+
+  color: #e7f4ff;
 }
 
 
 :global([data-theme="escuro"]) .voltar:hover {
-    background: #18243b;
+  background: #142333;
 
-    color: #5ed5df;
+  border-color: #0fa6b3;
 }
 
 
-:global([data-theme="escuro"]) .titulo h1 {
-    color: #f1f5f9;
+:global([data-theme="escuro"]) .textosLivro h1 {
+  color: #e7f4ff;
 }
 
 
-:global([data-theme="escuro"]) .titulo span {
-    color: #94a3b8;
+:global([data-theme="escuro"]) .textosLivro span {
+  color: #94a8bd;
 }
 
 
-:global([data-theme="escuro"]) .status div {
-    background: #142d35;
+:global([data-theme="escuro"]) .status {
+  border-color: #174f59;
 
-    border-color: #24545c;
+  background: #102b34;
+
+  color: #8ee8ef;
 }
 
 
-:global([data-theme="escuro"]) .status strong {
-    color: #e2e8f0;
+:global([data-theme="escuro"]) .tituloArea h2 {
+  color: #e7f4ff;
+}
+
+
+:global([data-theme="escuro"]) .indicadorLeitura {
+  color: #94a8bd !important;
 }
 
 
 :global([data-theme="escuro"]) .leitorWrapper {
-    background: #151d31;
+  border-color: #26344d;
 
-    border-color: #293550;
+  background: #ffffff;
 
-    box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 
-:global([data-theme="escuro"]) .carregandoViewer {
-    background: #151d31;
-}
-
-
-:global([data-theme="escuro"]) .carregandoViewer p {
-    color: #94a3b8;
-}
-
-
+:global([data-theme="escuro"]) .carregandoViewer,
 :global([data-theme="escuro"]) .erroViewer,
 :global([data-theme="escuro"]) .semVisualizacao {
-    background: #151d31;
+  background: #11182a;
 
-    border-color: #293550;
-
-    color: #f1f5f9;
+  color: #e7f4ff;
 }
 
 
+:global([data-theme="escuro"]) .carregandoViewer p,
 :global([data-theme="escuro"]) .erroViewer p,
 :global([data-theme="escuro"]) .semVisualizacao p {
-    color: #94a3b8;
+  color: #94a8bd;
 }
 
 
-/* =====================================================
-   RESPONSIVO
-===================================================== */
-
-@media (max-width: 768px) {
-
-    .container {
-        padding: 0 15px 30px;
-    }
+:global([data-theme="escuro"]) .carregandoIcone,
+:global([data-theme="escuro"]) .erroIcone {
+  background: #102b34;
+}
 
 
-    .topo {
-        min-height: 65px;
-
-        gap: 15px;
-    }
+:global([data-theme="escuro"]) .rodape {
+  color: #64748b;
+}
 
 
-    .titulo h1 {
-        font-size: 15px;
-    }
+:global([data-theme="escuro"]) .estado h2 {
+  color: #e7f4ff;
+}
 
 
-    .titulo span {
-        font-size: 12px;
-    }
-
-
-    .status {
-        justify-content: flex-start;
-    }
-
-
-    .leitorWrapper {
-        height: calc(100vh - 155px);
-
-        min-height: 500px;
-
-        border-radius: 10px;
-    }
-
+:global([data-theme="escuro"]) .estado p {
+  color: #94a8bd;
 }

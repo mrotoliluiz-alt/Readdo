@@ -73,84 +73,102 @@ function Leitura() {
   // =====================================================
 
   useEffect(() => {
-    if (!livro || !viewerRef.current) {
-      return;
+  if (!livro || !viewerRef.current) {
+    return;
+  }
+
+  let intervalo;
+  let timeout;
+
+  setCarregandoViewer(true);
+  setErroViewer(false);
+
+  const iniciarViewer = () => {
+    if (
+      !window.google ||
+      !window.google.books ||
+      !window.google.books.DefaultViewer
+    ) {
+      return false;
     }
 
-    let intervalo;
+    try {
+      viewerRef.current.innerHTML = "";
 
-    setCarregandoViewer(true);
-    setErroViewer(false);
-
-    const iniciarViewer = () => {
-      if (
-        !window.google ||
-        !window.google.books ||
-        !window.google.books.DefaultViewer
-      ) {
-        return false;
-      }
-
-      try {
-        viewerRef.current.innerHTML = "";
-
-        const viewer =
-          new window.google.books.DefaultViewer(
-            viewerRef.current
-          );
-
-        viewer.load(
-          id,
-
-          // Erro
-          () => {
-            console.error(
-              "A Google Books não conseguiu incorporar este livro."
-            );
-
-            setCarregandoViewer(false);
-            setErroViewer(true);
-          },
-
-          // Sucesso
-          () => {
-            console.log(
-              "Livro carregado com sucesso no Google Books Viewer."
-            );
-
-            setCarregandoViewer(false);
-            setErroViewer(false);
-          }
+      const viewer =
+        new window.google.books.DefaultViewer(
+          viewerRef.current
         );
 
-        return true;
-      } catch (error) {
-        console.error(
-          "Erro ao inicializar Google Books Viewer:",
-          error
+      viewer.load(
+        id,
+
+        // Caso o Google não consiga abrir o livro
+        () => {
+          console.error(
+            "A Google Books não conseguiu incorporar este livro."
+          );
+
+          setCarregandoViewer(false);
+          setErroViewer(true);
+        },
+
+        // Caso carregue corretamente
+        () => {
+          console.log(
+            "Livro carregado com sucesso no Google Books Viewer."
+          );
+
+          setCarregandoViewer(false);
+          setErroViewer(false);
+        }
+      );
+
+      /*
+       * Segurança:
+       * não deixamos o carregamento ficar infinito.
+       *
+       * Se o Google demorar demais para responder,
+       * removemos a tela de carregamento e deixamos
+       * o próprio Viewer aparecer.
+       */
+      timeout = setTimeout(() => {
+        console.log(
+          "Google Books demorou para responder. Removendo carregamento."
         );
 
         setCarregandoViewer(false);
-        setErroViewer(true);
+      }, 10000);
 
-        return true;
-      }
-    };
+      return true;
+    } catch (error) {
+      console.error(
+        "Erro ao inicializar Google Books Viewer:",
+        error
+      );
 
-    const verificarAPI = () => {
-      if (iniciarViewer()) {
-        clearInterval(intervalo);
-      }
-    };
+      setCarregandoViewer(false);
+      setErroViewer(true);
 
-    verificarAPI();
+      return true;
+    }
+  };
 
-    intervalo = setInterval(verificarAPI, 300);
-
-    return () => {
+  const verificarAPI = () => {
+    if (iniciarViewer()) {
       clearInterval(intervalo);
-    };
-  }, [livro, id]);
+    }
+  };
+
+  verificarAPI();
+
+  intervalo = setInterval(verificarAPI, 300);
+
+  return () => {
+    clearInterval(intervalo);
+    clearTimeout(timeout);
+  };
+}, [livro, id]);
 
   // =====================================================
   // CARREGANDO
