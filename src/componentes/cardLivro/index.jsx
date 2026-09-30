@@ -9,10 +9,21 @@ function CardLivro({
   tipo,
   imagem,
   id,
+  link,
   favorito = false,
 }) {
-
   const navigate = useNavigate();
+
+  const abrirLivro = () => {
+  if (link) {
+    window.open(link, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  if (id) {
+    navigate(`/livro/${id}`);
+  }
+};
 
   return (
     <div className={styles.card}

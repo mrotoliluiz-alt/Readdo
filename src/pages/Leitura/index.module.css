@@ -1,436 +1,513 @@
 .container {
-  min-height: 100vh;
+    width: 100%;
+    min-height: 100vh;
 
-  display: flex;
-  flex-direction: column;
+    box-sizing: border-box;
 
-  background: #f8fafc;
-  color: #0f1c64;
+    background: #f8fafc;
+    color: #0f1c64;
+
+    padding: 0 35px 45px;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
 
-/* ================================= */
-/*             TOPBAR                */
-/* ================================= */
+/* =====================================================
+   TOPO
+===================================================== */
 
-.topbar {
-  height: 70px;
+.topo {
+    width: 100%;
 
-  display: flex;
-  align-items: center;
+    min-height: 72px;
 
-  padding: 0 30px;
+    display: flex;
+    align-items: center;
 
-  background: white;
+    gap: 30px;
 
-  border-bottom: 1px solid #e2e8f0;
-
-  position: sticky;
-  top: 0;
-
-  z-index: 10;
+    border-bottom: 1px solid #e2e8f0;
 }
+
 
 .voltar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+    display: flex;
+    align-items: center;
 
-  border: none;
-  background: transparent;
+    gap: 8px;
 
-  color: #0f1c64;
+    padding: 9px 12px;
 
-  font-size: 14px;
-  font-weight: 600;
+    border: none;
+    border-radius: 8px;
 
-  cursor: pointer;
+    background: transparent;
+
+    color: #0f1c64;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
 }
+
 
 .voltar:hover {
-  color: #0fa6b3;
+    background: #e9fbfd;
+
+    color: #0fa6b3;
 }
 
 
-/* ================================= */
-/*          INFORMAÇÕES              */
-/* ================================= */
+.titulo {
+    display: flex;
+    align-items: center;
 
-.infoLivro {
-  position: absolute;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  text-align: center;
-}
-
-.infoLivro h1 {
-  margin: 0;
-
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.infoLivro span {
-  color: #64748b;
-
-  font-size: 12px;
+    gap: 12px;
 }
 
 
-/* ================================= */
-/*             AÇÕES                 */
-/* ================================= */
+.titulo > svg {
+    color: #0fa6b3;
 
-.acoes {
-  margin-left: auto;
-
-  display: flex;
-  align-items: center;
-
-  gap: 5px;
-}
-
-.acao {
-  width: 36px;
-  height: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #64748b;
-
-  cursor: pointer;
-}
-
-.acao:hover {
-  background: #e8fbfd;
-  color: #0fa6b3;
-}
-
-.tamanhoFonte {
-  color: #64748b;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  padding: 0 4px;
+    flex-shrink: 0;
 }
 
 
-/* ================================= */
-/*          ÁREA DE LEITURA          */
-/* ================================= */
+.titulo h1 {
+    margin: 0;
 
-.areaLeitura {
-  flex: 1;
+    font-size: 17px;
+    font-weight: 700;
 
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-
-  padding: 60px 20px 100px;
-}
-
-.livro {
-  width: 100%;
-  max-width: 760px;
+    color: #0f1c64;
 }
 
 
-/* ================================= */
-/*        CABEÇALHO CAPÍTULO        */
-/* ================================= */
+.titulo span {
+    display: block;
 
-.cabecalhoCapitulo {
-  text-align: center;
+    margin-top: 2px;
 
-  margin-bottom: 50px;
-}
+    font-size: 13px;
 
-.numeroCapitulo {
-  display: block;
-
-  margin-bottom: 12px;
-
-  color: #0fa6b3;
-
-  font-size: 13px;
-  font-weight: 800;
-
-  letter-spacing: 2px;
-}
-
-.cabecalhoCapitulo h2 {
-  margin: 0;
-
-  color: #0f1c64;
-
-  font-size: 32px;
-  font-weight: 700;
+    color: #64748b;
 }
 
 
-/* ================================= */
-/*              TEXTO                */
-/* ================================= */
+/* =====================================================
+   STATUS
+===================================================== */
 
-.texto {
-  color: #263653;
+.status {
+    width: 100%;
 
-  font-family: Georgia, "Times New Roman", serif;
+    max-width: 1200px;
 
-  font-size: 19px;
+    margin: 20px auto;
 
-  line-height: 1.9;
-}
-
-.texto p {
-  margin: 0 0 28px;
-
-  text-align: justify;
-}
-
-.texto p::first-letter {
-  font-size: 32px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 
-/* ================================= */
-/*             DIVISOR               */
-/* ================================= */
+.status div {
+    display: flex;
+    align-items: center;
 
-.divisor {
-  display: flex;
+    gap: 10px;
 
-  align-items: center;
-  justify-content: center;
+    padding: 8px 13px;
 
-  margin: 55px 0;
+    border-radius: 8px;
 
-  color: #0fa6b3;
-}
+    background: #eafcff;
 
-.divisor span {
-  font-size: 22px;
-}
-
-.proximoCapitulo {
-  margin: 0 0 30px;
-
-  color: #0f1c64;
-
-  font-family: inherit;
-
-  font-size: 26px;
-
-  text-align: center;
+    border: 1px solid #b8eef4;
 }
 
 
-/* ================================= */
-/*              RODAPÉ               */
-/* ================================= */
+.status strong {
+    font-size: 13px;
 
-.rodape {
-  position: fixed;
-
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  height: 70px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 30px;
-
-  padding: 0 30px;
-
-  background: white;
-
-  border-top: 1px solid #e2e8f0;
-
-  z-index: 10;
-}
-
-.capituloBotao {
-  display: flex;
-  align-items: center;
-
-  gap: 5px;
-
-  border: none;
-  background: transparent;
-
-  color: #0f1c64;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-.capituloBotao:hover {
-  color: #0fa6b3;
-}
-
-.progresso {
-  flex: 1;
-
-  max-width: 500px;
-
-  margin: 0 auto;
-}
-
-.infoProgresso {
-  display: flex;
-  justify-content: space-between;
-
-  margin-bottom: 6px;
-
-  color: #64748b;
-
-  font-size: 11px;
-}
-
-.barra {
-  width: 100%;
-  height: 5px;
-
-  overflow: hidden;
-
-  border-radius: 10px;
-
-  background: #e2e8f0;
-}
-
-.progressoAtual {
-  width: 35%;
-  height: 100%;
-
-  border-radius: 10px;
-
-  background: #0fa6b3;
-}
-
-/* ================================= */
-/*           MODO ESCURO             */
-/* ================================= */
-
-[data-theme="escuro"] .container {
-  background: #09122C;
-  color: #F8FAFC;
+    color: #0f1c64;
 }
 
 
-/* ---------- Topbar ---------- */
+.status span {
+    font-size: 12px;
 
-[data-theme="escuro"] .topbar {
-  background: #0D1733;
-  border-color: #29385E;
-}
-
-[data-theme="escuro"] .voltar {
-  color: #D7E0F0;
-}
-
-[data-theme="escuro"] .voltar:hover {
-  color: #0FA6B3;
+    color: #0fa6b3;
 }
 
 
-/* ---------- Informações do livro ---------- */
+/* =====================================================
+   LEITOR GOOGLE BOOKS
+===================================================== */
 
-[data-theme="escuro"] .infoLivro h1 {
-  color: #F8FAFC;
-}
+.leitorWrapper {
+    position: relative;
 
-[data-theme="escuro"] .infoLivro span {
-  color: #AAB7D1;
-}
+    width: 100%;
+    max-width: 1200px;
 
+    height: calc(100vh - 155px);
 
-/* ---------- Botões ---------- */
+    min-height: 600px;
 
-[data-theme="escuro"] .acao {
-  color: #AAB7D1;
-}
+    margin: 0 auto;
 
-[data-theme="escuro"] .acao:hover {
-  background: #123B48;
-  color: #0FA6B3;
-}
+    overflow: hidden;
 
-[data-theme="escuro"] .tamanhoFonte {
-  color: #AAB7D1;
-}
+    background: #ffffff;
 
+    border: 1px solid #dce6ed;
 
-/* ---------- Capítulo ---------- */
+    border-radius: 14px;
 
-[data-theme="escuro"] .numeroCapitulo {
-  color: #0FA6B3;
-}
-
-[data-theme="escuro"] .cabecalhoCapitulo h2 {
-  color: #F8FAFC;
+    box-shadow:
+        0 10px 35px rgba(15, 28, 100, 0.08);
 }
 
 
-/* ---------- Texto ---------- */
-
-[data-theme="escuro"] .texto {
-  color: #D7E0F0;
-}
-
-[data-theme="escuro"] .proximoCapitulo {
-  color: #F8FAFC;
+.viewer {
+    width: 100%;
+    height: 100%;
 }
 
 
-/* ---------- Divisor ---------- */
+/*
+   A Google Books controla o conteúdo
+   interno do visualizador.
+*/
 
-[data-theme="escuro"] .divisor {
-  color: #0FA6B3;
+.viewer > div {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
-/* ---------- Rodapé ---------- */
+/* =====================================================
+   LOADING DO VISUALIZADOR
+===================================================== */
 
-[data-theme="escuro"] .rodape {
-  background: #0D1733;
-  border-color: #29385E;
+.carregandoViewer {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    background: #ffffff;
+
+    color: #0fa6b3;
 }
 
-[data-theme="escuro"] .capituloBotao {
-  color: #D7E0F0;
+
+.carregandoViewer p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
 }
 
-[data-theme="escuro"] .capituloBotao:hover {
-  color: #0FA6B3;
+
+.spinner {
+    animation: girar 1s linear infinite;
 }
 
 
-/* ---------- Barra de progresso ---------- */
+@keyframes girar {
 
-[data-theme="escuro"] .infoProgresso {
-  color: #AAB7D1;
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
 }
 
-[data-theme="escuro"] .barra {
-  background: #29385E;
+
+/* =====================================================
+   ERRO
+===================================================== */
+
+.erroViewer,
+.semVisualizacao {
+    width: 100%;
+    max-width: 700px;
+
+    min-height: 400px;
+
+    margin: 60px auto;
+
+    box-sizing: border-box;
+
+    padding: 50px 35px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    color: #0f1c64;
 }
 
-[data-theme="escuro"] .progressoAtual {
-  background: #0FA6B3;
+
+.erroViewer > svg,
+.semVisualizacao > svg {
+    margin-bottom: 15px;
+
+    color: #0fa6b3;
+}
+
+
+.erroViewer h2,
+.semVisualizacao h2 {
+    margin: 0 0 10px;
+
+    font-size: 22px;
+}
+
+
+.erroViewer p,
+.semVisualizacao p {
+    max-width: 550px;
+
+    margin: 0 0 25px;
+
+    color: #64748b;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   BOTÃO GOOGLE
+===================================================== */
+
+.botaoGoogle {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 9px;
+
+    background: #0fa6b3;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+
+.botaoGoogle:hover {
+    background: #087f8a;
+
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   CARREGANDO DA PÁGINA
+===================================================== */
+
+.estado {
+    min-height: 80vh;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    text-align: center;
+}
+
+
+.estado svg {
+    color: #0fa6b3;
+}
+
+
+.estado h2 {
+    margin: 0;
+
+    font-size: 22px;
+}
+
+
+.estado p {
+    margin: 0;
+
+    color: #64748b;
+}
+
+
+/* =====================================================
+   MODO ESCURO
+===================================================== */
+
+:global([data-theme="escuro"]) .container {
+    background: #0f1425;
+
+    color: #f1f5f9;
+}
+
+
+:global([data-theme="escuro"]) .topo {
+    border-color: #293550;
+}
+
+
+:global([data-theme="escuro"]) .voltar {
+    color: #e2e8f0;
+}
+
+
+:global([data-theme="escuro"]) .voltar:hover {
+    background: #18243b;
+
+    color: #5ed5df;
+}
+
+
+:global([data-theme="escuro"]) .titulo h1 {
+    color: #f1f5f9;
+}
+
+
+:global([data-theme="escuro"]) .titulo span {
+    color: #94a3b8;
+}
+
+
+:global([data-theme="escuro"]) .status div {
+    background: #142d35;
+
+    border-color: #24545c;
+}
+
+
+:global([data-theme="escuro"]) .status strong {
+    color: #e2e8f0;
+}
+
+
+:global([data-theme="escuro"]) .leitorWrapper {
+    background: #151d31;
+
+    border-color: #293550;
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+
+:global([data-theme="escuro"]) .carregandoViewer {
+    background: #151d31;
+}
+
+
+:global([data-theme="escuro"]) .carregandoViewer p {
+    color: #94a3b8;
+}
+
+
+:global([data-theme="escuro"]) .erroViewer,
+:global([data-theme="escuro"]) .semVisualizacao {
+    background: #151d31;
+
+    border-color: #293550;
+
+    color: #f1f5f9;
+}
+
+
+:global([data-theme="escuro"]) .erroViewer p,
+:global([data-theme="escuro"]) .semVisualizacao p {
+    color: #94a3b8;
+}
+
+
+/* =====================================================
+   RESPONSIVO
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: 0 15px 30px;
+    }
+
+
+    .topo {
+        min-height: 65px;
+
+        gap: 15px;
+    }
+
+
+    .titulo h1 {
+        font-size: 15px;
+    }
+
+
+    .titulo span {
+        font-size: 12px;
+    }
+
+
+    .status {
+        justify-content: flex-start;
+    }
+
+
+    .leitorWrapper {
+        height: calc(100vh - 155px);
+
+        min-height: 500px;
+
+        border-radius: 10px;
+    }
+
 }

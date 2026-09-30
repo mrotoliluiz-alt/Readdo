@@ -257,22 +257,27 @@ function Pesquisa() {
   // --------------------------------------------------
 
   const renderizarLivro = (livro) => {
-    const info = livro.volumeInfo || {};
+  const info = livro.volumeInfo || {};
 
-    return (
-      <CardLivro
-        key={livro.id}
-        id={livro.id}
-        titulo={info.title || "Título desconhecido"}
-        autor={
-          info.authors?.join(", ") ||
-          "Autor desconhecido"
-        }
-        tipo="Livro"
-        imagem={info.imageLinks?.thumbnail}
-      />
-    );
-  };
+  return (
+    <CardLivro
+      key={livro.id}
+      id={livro.id}
+      titulo={info.title || "Título desconhecido"}
+      autor={
+        info.authors?.join(", ") ||
+        "Autor desconhecido"
+      }
+      tipo="Livro"
+      imagem={info.imageLinks?.thumbnail}
+      link={
+        info.previewLink ||
+        info.infoLink ||
+        info.canonicalVolumeLink
+      }
+    />
+  );
+};
 
   // --------------------------------------------------
   // FILEIRA DE LIVROS

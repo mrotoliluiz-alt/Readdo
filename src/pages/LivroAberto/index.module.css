@@ -156,19 +156,13 @@
   background: #e8fbfd;
 }
 
-/* ========================================= */
-/*              MODO ESCURO                  */
-/* ========================================= */
 
-/* ---------- Container ---------- */
 
 [data-theme="escuro"] .container {
   background: #09122C;
   color: #F8FAFC;
 }
 
-
-/* ---------- Botão voltar ---------- */
 
 [data-theme="escuro"] .voltar {
   color: #D7E0F0;
@@ -179,7 +173,6 @@
 }
 
 
-/* ---------- Área principal do livro ---------- */
 
 [data-theme="escuro"] .livro {
   background: #111A35;
@@ -187,7 +180,6 @@
 }
 
 
-/* ---------- Capa ---------- */
 
 [data-theme="escuro"] .capaLivro {
   background: linear-gradient(
@@ -202,36 +194,30 @@
 }
 
 
-/* ---------- Tipo do livro ---------- */
-
 [data-theme="escuro"] .tipo {
   background: #123B48;
   color: #5EE7EF;
 }
 
 
-/* ---------- Título ---------- */
 
 [data-theme="escuro"] .informacoes h1 {
   color: #F8FAFC;
 }
 
 
-/* ---------- Autor ---------- */
 
 [data-theme="escuro"] .informacoes h2 {
   color: #AAB7D1;
 }
 
 
-/* ---------- Descrição ---------- */
 
 [data-theme="escuro"] .descricao {
   color: #AAB7D1;
 }
 
 
-/* ---------- Botão Ler ---------- */
 
 [data-theme="escuro"] .ler {
   background: #0FA6B3;
@@ -243,7 +229,6 @@
 }
 
 
-/* ---------- Botão Salvar ---------- */
 
 [data-theme="escuro"] .salvar {
   background: #111A35;
