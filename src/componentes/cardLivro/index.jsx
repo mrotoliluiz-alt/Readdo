@@ -54,7 +54,10 @@ function CardLivro({
       </div>
 
       <div className={styles.info}>
-        <h3>{titulo}</h3>
+        <h3> {titulo.length > 25
+              ? titulo.substring(0, 25) + "..."
+              : titulo}
+        </h3>
 
         <p>{autor}</p>
 

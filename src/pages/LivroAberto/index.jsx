@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import { BookOpen, ArrowLeft } from "lucide-react";
+import { BookOpen, ArrowLeft, Bookmark } from "lucide-react";
 
 function LivroAberto() {
     const { id } = useParams();
@@ -159,9 +159,10 @@ function LivroAberto() {
                     )}
 
 
-                    {/* BOTÃO DE LEITURA */}
+                    {/* Botões */}
+                    <div className={styles.botoes}>
 
-                    <button
+                        <button
                         className={styles.ler}
                         onClick={() =>
                             navigate(`/livro/${id}/ler`)
@@ -172,6 +173,14 @@ function LivroAberto() {
                         Começar a ler
                     </button>
 
+                    <button
+                    className={styles.salvar}>
+                        <Bookmark size={20} />
+
+                    </button>
+
+                    </div>
+                    
                 </div>
 
             </div>
