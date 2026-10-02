@@ -2,7 +2,7 @@ import styles from './index.module.css';
 import { useNavigate } from 'react-router-dom';
 import CardLivro from "../../componentes/cardLivro";
 import TopBar from "../../componentes/Topbar";
-import Mascotão from "../../assets/Mascotão.png";
+import Mascotão from "../../assets/Animação Readdo inteiro.gif";
 import { useRef } from "react";
 
 import {
@@ -115,11 +115,12 @@ function Landing() {
                 <div className={styles.direita}>
 
                    
-                        <img
-                            src={Mascotão}
-                            alt="Ilustração do Readduo"
-                        />
-
+                        <img 
+                        src={Mascotão} 
+                        alt="Minha animação GIF" 
+                        width="600" 
+                        height="300" 
+                    />
                 </div>
 
             </div>
