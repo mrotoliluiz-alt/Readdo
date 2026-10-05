@@ -2,7 +2,8 @@ import styles from './index.module.css';
 import { useNavigate } from 'react-router-dom';
 import CardLivro from "../../componentes/cardLivro";
 import TopBar from "../../componentes/Topbar";
-import Mascotão from "../../assets/Animação Readdo inteiro.gif";
+import MascotãoClaro from "../../assets/Animação tema claro.mp4";
+import MascotãoEscuro from "../../assets/Animação tema escuro.mp4";
 import { useRef } from "react";
 
 import {
@@ -115,11 +116,26 @@ function Landing() {
                 <div className={styles.direita}>
 
                    
-                        <img 
-                        src={Mascotão} 
-                        alt="Minha animação GIF" 
-                        width="600" 
-                        height="300" 
+                         <video
+                        className={styles.videoClaro}
+                        src={MascotãoClaro}
+                        width={540}
+                        height={600}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                    />
+
+                    <video
+                        className={styles.videoEscuro}
+                        src={MascotãoEscuro}
+                        width={540}
+                        height={600}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
                     />
                 </div>
 

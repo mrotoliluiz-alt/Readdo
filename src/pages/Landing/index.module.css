@@ -219,7 +219,9 @@
     padding-top: 20px;
 }
 
-
+.videoEscuro {
+  display: none;
+}
 
 
 .direita img {
@@ -360,6 +362,14 @@
 [data-theme="escuro"] .navbar {
     background: #10182F;
     border-bottom: 1px solid #273353;
+}
+
+[data-theme="escuro"] .videoClaro {
+  display: none;
+}
+
+[data-theme="escuro"] .videoEscuro {
+  display: block;
 }
 
 [data-theme="escuro"] .logoRead {
