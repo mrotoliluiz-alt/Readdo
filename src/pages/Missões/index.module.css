@@ -1,168 +1,380 @@
-.container{
-    width:100%;
-    min-height:100vh;
-    background:#fafafa;
+/* =========================================================
+   CONTAINER
+   ========================================================= */
 
-    padding:32px;
-    display:flex;
-    flex-direction:column;
-    gap:28px;
+.container {
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 32px 36px 60px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 28px;
+
+  background: #f8fafc;
+
+  color: #0f172a;
 }
 
-/* ================= HEADER ================= */
-
-.header{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.titulo{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.titulo svg{
-    color:#0FA6B3;
-}
-
-.titulo h1{
-    font-size:34px;
-    font-weight:700;
-    color:#0F172A;
-}
-
-.header p{
-    color:#64748B;
-    font-size:16px;
-}
-
-/* ================= CARDS ================= */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-}
-
-.card{
-    background:#fff;
-    border:2px solid;
-    border-radius:22px;
-    padding:24px;
-
-    display:flex;
-    align-items:center;
-    gap:18px;
-
-    transition:.25s;
-}
-
-.card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 12px 30px rgba(0,0,0,.06);
-}
-
-.cardIcon{
-    width:58px;
-    height:58px;
-    border-radius:18px;
-    background:#F8FAFC;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.card h2{
-    font-size:32px;
-    color:#0F172A;
-}
-
-.card span{
-    display:block;
-    font-weight:600;
-    color:#334155;
-}
-
-.card small{
-    color:#64748B;
-}
-
-/* ================= TABS ================= */
-
-.tabs{
-    display:flex;
-    gap:28px;
-    border-bottom:1px solid #E2E8F0;
-}
-
-.tabs button{
-    background:none;
-    border:none;
-    padding:14px 0;
-
-    font-size:16px;
-    cursor:pointer;
-
-    color:#64748B;
-    transition:.25s;
-}
-
-.tabs button:hover{
-    color:#0FA6B3;
-}
-
-.active{
-    color:#0FA6B3!important;
-    border-bottom:3px solid #0FA6B3;
-}
-
-/* ================= LAYOUT ================= */
-
-.layout{
-    display:grid;
-    grid-template-columns:1fr 320px;
-    gap:28px;
-}
 
 /* =========================================================
-   TRILHA DE MISSÕES
+   HEADER
    ========================================================= */
+
+.header {
+  width: 100%;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+}
+
+.tituloIcone {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  border-radius: 16px;
+
+  background: #e5f9fb;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tituloIcone svg {
+  width: 28px;
+  height: 28px;
+
+  color: #0fa6b3;
+}
+
+.titulo h1 {
+  margin: 0;
+
+  font-size: 32px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  color: #0f172a;
+}
+
+.titulo p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.cards {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.card {
+  min-width: 0;
+
+  min-height: 108px;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 12px 25px rgba(15, 23, 42, 0.07);
+}
+
+.cardIcone {
+  width: 53px;
+  height: 53px;
+
+  flex-shrink: 0;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardIcone svg {
+  width: 27px;
+  height: 27px;
+}
+
+.card span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #64748b;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card strong {
+  display: block;
+
+  color: #0f172a;
+
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.card small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* CORES DOS CARDS */
+
+.cardLaranja {
+  border-top: 3px solid #fb923c;
+}
+
+.cardLaranja .cardIcone {
+  background: #fff3e8;
+  color: #fb923c;
+}
+
+.cardAmarelo {
+  border-top: 3px solid #facc15;
+}
+
+.cardAmarelo .cardIcone {
+  background: #fffbea;
+  color: #eab308;
+}
+
+.cardTeal {
+  border-top: 3px solid #0fa6b3;
+}
+
+.cardTeal .cardIcone {
+  background: #e7f9fb;
+  color: #0fa6b3;
+}
+
+.cardRoxo {
+  border-top: 3px solid #8b5cf6;
+}
+
+.cardRoxo .cardIcone {
+  background: #f1edff;
+  color: #8b5cf6;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tabs {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 30px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabs button {
+  position: relative;
+
+  padding: 12px 3px 14px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease;
+}
+
+.tabs button:hover {
+  color: #0fa6b3;
+}
+
+.tabAtiva {
+  color: #0fa6b3 !important;
+}
+
+.tabAtiva::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 3px;
+
+  border-radius: 5px 5px 0 0;
+
+  background: #0fa6b3;
+}
+
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.layout {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    320px;
+
+  gap: 32px;
+
+  align-items: start;
+}
+
+.conteudoPrincipal {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   ÁREA DA TRILHA
+   ========================================================= */
+
+.areaTrilha {
+  width: 100%;
+}
 
 .trilha {
   width: 100%;
+
   min-height: 850px;
-  padding: 30px 20px 80px;
+
+  padding: 35px 0 80px;
 
   display: flex;
+
   justify-content: center;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
 }
 
 .trilhaCaminho {
   position: relative;
 
-  width: min(700px, 100%);
-  min-height: 800px;
+  width: 620px;
+
+  max-width: 100%;
+
+  padding: 20px 0 40px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  padding: 20px 0;
 }
 
 
 /* =========================================================
-   CADA MISSÃO
+   LINHA CENTRAL
+   ========================================================= */
+
+.trilhaCaminho::before {
+  content: "";
+
+  position: absolute;
+
+  top: 45px;
+  bottom: 55px;
+
+  left: 50%;
+
+  width: 7px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+
+  background: #dbe4eb;
+
+  z-index: 0;
+}
+
+
+/* =========================================================
+   MISSÃO
    ========================================================= */
 
 .missao {
   position: relative;
 
   width: 100%;
-  min-height: 170px;
+
+  min-height: 180px;
 
   display: flex;
   flex-direction: column;
@@ -170,185 +382,247 @@
   align-items: center;
 
   z-index: 2;
+
+  transition:
+    transform 0.25s ease;
 }
 
-
-/* =========================================================
-   ALTERNÂNCIA DA TRILHA
-   ========================================================= */
-
 .missaoEsquerda {
-  transform: translateX(-120px);
+  transform: translateX(-105px);
 }
 
 .missaoDireita {
-  transform: translateX(120px);
+  transform: translateX(105px);
 }
 
 
 /* =========================================================
-   CÍRCULO / CASINHA
-   ========================================================= */
-
-.circulo {
-  width: 92px;
-  height: 92px;
-
-  border: none;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: white;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 8px 0 rgba(0, 0, 0, 0.12),
-    0 14px 25px rgba(0, 0, 0, 0.15);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.circulo:hover:not(:disabled) {
-  transform: translateY(-5px) scale(1.05);
-
-  box-shadow:
-    0 11px 0 rgba(0, 0, 0, 0.12),
-    0 18px 30px rgba(0, 0, 0, 0.18);
-}
-
-.circulo:active:not(:disabled) {
-  transform: translateY(3px);
-
-  box-shadow:
-    0 3px 0 rgba(0, 0, 0, 0.12),
-    0 8px 15px rgba(0, 0, 0, 0.12);
-}
-
-
-/* =========================================================
-   ESTADOS
-   ========================================================= */
-
-.atual {
-  background: #0FA6B3;
-
-  border: 5px solid #0FA6B3;
-}
-
-.concluida {
-  background: #22C55E;
-
-  border: 5px solid #22C55E;
-}
-
-.bloqueada {
-  background: #252B43;
-
-  border: 5px solid #343B5C;
-
-  color: #737C9E;
-
-  cursor: not-allowed;
-
-  box-shadow: none;
-}
-
-.bonus {
-  background: #8B5CF6;
-
-  border: 5px solid #8B5CF6;
-}
-
-
-/* =========================================================
-   CONECTOR DA TRILHA
+   CONECTORES
    ========================================================= */
 
 .conector {
   position: absolute;
 
-  top: 92px;
+  top: 42px;
 
-  width: 150px;
-  height: 6px;
+  width: 145px;
+  height: 7px;
 
-  border-radius: 20px;
+  border-radius: 999px;
 
-  background: #CBD5E1;
+  background: #cbd5e1;
 
   z-index: -1;
+
+  transition:
+    background 0.25s ease;
 }
 
-
-/* Da esquerda para direita */
-
 .conectorDireita {
-  left: calc(50% + 20px);
+  left: calc(50% + 5px);
 
   transform:
     rotate(25deg)
-    translateY(35px);
+    translateY(25px);
 }
 
-
-/* Da direita para esquerda */
-
 .conectorEsquerda {
-  right: calc(50% + 20px);
+  right: calc(50% + 5px);
 
   transform:
     rotate(-25deg)
-    translateY(35px);
+    translateY(25px);
+}
+
+.conectorAtivo {
+  background: #0fa6b3;
 }
 
 
 /* =========================================================
-   INFORMAÇÕES
+   NÓ DA MISSÃO
    ========================================================= */
 
-.info {
-  margin-top: 14px;
+.noMissao {
+  position: relative;
 
-  text-align: center;
+  width: 92px;
+  height: 92px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  border: 5px solid;
+
+  outline: none;
+
+  font-family: inherit;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  color: #ffffff;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 7px 0 rgba(15, 23, 42, 0.13),
+    0 14px 25px rgba(15, 23, 42, 0.13);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.noMissao:hover {
+  transform: translateY(-5px) scale(1.04);
+
+  box-shadow:
+    0 11px 0 rgba(15, 23, 42, 0.13),
+    0 18px 30px rgba(15, 23, 42, 0.16);
+}
+
+.noMissao:active {
+  transform: translateY(2px);
+}
+
+.noMissao:focus-visible {
+  outline: 4px solid rgba(15, 166, 179, 0.25);
+  outline-offset: 5px;
+}
+
+
+/* =========================================================
+   ESTADOS DOS NÓS
+   ========================================================= */
+
+.noDisponivel {
+  background: #0fa6b3;
+
+  border-color: #0fa6b3;
+}
+
+.noConcluido {
+  background: #22c55e;
+
+  border-color: #22c55e;
+}
+
+.noBloqueado {
+  background: #242b43;
+
+  border-color: #39415e;
+
+  color: #78839f;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 0 rgba(15, 23, 42, 0.08);
+}
+
+.noBloqueado:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 7px 0 rgba(15, 23, 42, 0.08);
+}
+
+.noBonus {
+  background: #8b5cf6;
+
+  border-color: #8b5cf6;
+
+  border-radius: 24px;
+}
+
+
+/* =========================================================
+   PULSO DO NÓ DISPONÍVEL
+   ========================================================= */
+
+.noDisponivel::after {
+  content: "";
+
+  position: absolute;
+
+  inset: -10px;
+
+  border-radius: 50%;
+
+  border: 2px solid rgba(15, 166, 179, 0.22);
+
+  animation: pulsar 2s infinite;
+}
+
+@keyframes pulsar {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.94);
+  }
+
+  70% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA MISSÃO
+   ========================================================= */
+
+.infoMissao {
+  width: 220px;
+
+  margin-top: 13px;
 
   display: flex;
   flex-direction: column;
 
   align-items: center;
 
+  text-align: center;
+
   gap: 5px;
+}
 
+.infoMissao h3 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 18px;
+  line-height: 1.2;
+
+  font-weight: 750;
+}
+
+.infoMissao p {
   max-width: 220px;
-}
 
-.info h3 {
   margin: 0;
 
-  font-size: 21px;
+  color: #64748b;
 
-  color: #0F172A;
-}
-
-.info p {
-  margin: 0;
-
-  color: #64748B;
-
-  font-size: 14px;
-
+  font-size: 12px;
   line-height: 1.4;
 }
 
-.info strong {
-  color: #16A34A;
+.infoMissao strong {
+  color: #0fa6b3;
 
-  font-size: 16px;
+  font-size: 13px;
 }
 
 
@@ -356,227 +630,1029 @@
    BADGES
    ========================================================= */
 
-.badge,
+.badgeComecar,
 .badgeConcluida,
-.badgeBloqueada {
-  padding: 5px 13px;
+.badgeBloqueada,
+.badgeBonus {
+  padding: 4px 10px;
 
-  border-radius: 20px;
+  border-radius: 999px;
 
-  font-size: 11px;
+  font-size: 9px;
 
   font-weight: 800;
 
   letter-spacing: 0.4px;
 }
 
-.badge {
-  background: #DBF4FF;
+.badgeComecar {
+  background: #dff8fa;
 
-  color: #0284C7;
+  color: #087d89;
 }
 
 .badgeConcluida {
-  background: #DCFCE7;
+  background: #dcfce7;
 
-  color: #16A34A;
+  color: #15803d;
 }
 
 .badgeBloqueada {
-  background: #EEF2F7;
+  background: #e9edf3;
 
-  color: #64748B;
+  color: #64748b;
 }
 
-/* ================= SIDEBAR ================= */
+.badgeBonus {
+  background: #eee8ff;
 
-.sidebar{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+  color: #7c3aed;
 }
-
-.sideCard{
-    background:#fff;
-    border:1px solid #E2E8F0;
-    border-radius:22px;
-    padding:24px;
-
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-}
-
-.sideTitulo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.sideTitulo svg{
-    color:#0FA6B3;
-}
-
-.sideCard h2{
-    font-size:42px;
-    text-align:center;
-    color:#0F172A;
-}
-
-.sideCard h3{
-    color:#0F172A;
-}
-
-.sideCard h4{
-    text-align:center;
-    font-size:22px;
-    color:#0F172A;
-}
-
-.sideCard p{
-    color:#64748B;
-    text-align:center;
-}
-
-.sideCard span{
-    text-align:center;
-    color:#64748B;
-    font-size:14px;
-}
-
-/* ================= PROGRESS ================= */
-
-.progress{
-    width:100%;
-    height:10px;
-
-    background:#E2E8F0;
-    border-radius:30px;
-    overflow:hidden;
-}
-
-.progressFill{
-    width:40%;
-    height:100%;
-    background:#0FA6B3;
-    border-radius:30px;
-}
-
-/* ================= LEVEL ================= */
-
-.levelCircle{
-    width:100px;
-    height:100px;
-
-    margin:auto;
-
-    border-radius:50%;
-
-    background:#0FA6B3;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    color:white;
-    font-size:38px;
-    font-weight:700;
-}
-
-/* ================= BONUS ================= */
-
-.bonus{
-    background:#EEF9FF;
-    border:1px solid #BEE3F8;
-    border-radius:22px;
-    padding:22px;
-
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-}
-
-.bonus svg{
-    color:#0FA6B3;
-}
-
-.bonus strong{
-    color:#0F172A;
-    font-size:18px;
-}
-
-.bonus p{
-    color:#64748B;
-    line-height:1.6;
-}
-
-.bonus button{
-    height:46px;
-
-    border:none;
-    border-radius:14px;
-
-    background:#0FA6B3;
-    color:white;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-
-    cursor:pointer;
-
-    font-size:15px;
-    font-weight:600;
-
-    transition:.25s;
-}
-
-.bonus button:hover{
-    background:#0D94A0;
-}  
-
 
 
 /* =========================================================
-   TEMA ESCURO
+   PAINEL DA MISSÃO SELECIONADA
+   ========================================================= */
+
+.painelMissao {
+  width: 100%;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  border-radius: 20px;
+
+  border: 1px solid #dce5eb;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 25px rgba(15, 23, 42, 0.06);
+
+  animation:
+    aparecerPainel 0.25s ease;
+}
+
+@keyframes aparecerPainel {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.painelMissaoTopo {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 20px;
+}
+
+.painelTitulo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.painelIcone {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: #e7f9fb;
+
+  color: #0fa6b3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.painelTitulo span {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #0fa6b3;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+}
+
+.painelTitulo h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 20px;
+}
+
+.botaoFechar {
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.botaoFechar:hover {
+  background: #e2e8f0;
+
+  color: #0f172a;
+}
+
+.painelDescricao {
+  margin: 17px 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.painelRodape {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+}
+
+.recompensa {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #eab308;
+}
+
+.recompensa strong {
+  color: #334155;
+
+  font-size: 14px;
+}
+
+.botaoComecar {
+  min-height: 42px;
+
+  padding: 0 17px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #0fa6b3;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.botaoComecar:hover {
+  background: #0d94a0;
+
+  transform: translateY(-2px);
+}
+
+.mensagemBloqueada,
+.mensagemConcluida {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 13px;
+
+  font-weight: 650;
+}
+
+.mensagemBloqueada {
+  color: #64748b;
+}
+
+.mensagemConcluida {
+  color: #16a34a;
+}
+
+
+/* =========================================================
+   ESTADOS DAS ABAS
+   ========================================================= */
+
+.estadoAba {
+  min-height: 520px;
+
+  padding: 50px 30px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 24px;
+
+  background: #ffffff;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.estadoIcone {
+  width: 75px;
+  height: 75px;
+
+  margin-bottom: 20px;
+
+  border-radius: 22px;
+
+  background: #e7f9fb;
+
+  color: #0fa6b3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.estadoIcone svg {
+  width: 38px;
+  height: 38px;
+}
+
+.estadoAba h2 {
+  margin: 0 0 10px;
+
+  color: #0f172a;
+
+  font-size: 23px;
+}
+
+.estadoAba p {
+  max-width: 500px;
+
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.estadoAba > span {
+  margin-top: 20px;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  background: #e7f9fb;
+
+  color: #0fa6b3;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   CONQUISTAS
+   ========================================================= */
+
+.conquistas {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.conquistaCard {
+  padding: 25px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  display: flex;
+
+  gap: 17px;
+
+  align-items: center;
+}
+
+.conquistaIcone {
+  width: 58px;
+  height: 58px;
+
+  flex-shrink: 0;
+
+  border-radius: 17px;
+
+  background: #f1edff;
+
+  color: #8b5cf6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conquistaCard h3 {
+  margin: 0 0 5px;
+
+  color: #0f172a;
+
+  font-size: 17px;
+}
+
+.conquistaCard p {
+  margin: 0 0 8px;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.conquistaCard strong {
+  color: #0fa6b3;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RECOMPENSAS
+   ========================================================= */
+
+.recompensas {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    260px;
+
+  gap: 18px;
+}
+
+.recompensaGrande {
+  min-height: 300px;
+
+  padding: 35px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f2edff,
+      #ffffff
+    );
+
+  border: 1px solid #ddd3ff;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+}
+
+.recompensaGrande > svg {
+  color: #8b5cf6;
+
+  margin-bottom: 8px;
+}
+
+.recompensaGrande h2 {
+  margin: 0 0 8px;
+
+  color: #0f172a;
+
+  font-size: 24px;
+}
+
+.recompensaGrande p {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: #64748b;
+
+  line-height: 1.6;
+
+  font-size: 14px;
+}
+
+.progressoRecompensa {
+  width: min(400px, 100%);
+
+  height: 10px;
+
+  margin-top: 22px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #ddd6fe;
+}
+
+.progressoRecompensa div {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #8b5cf6;
+
+  transition: width 0.3s ease;
+}
+
+.recompensaGrande > span {
+  margin-top: 8px;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.recompensaXP {
+  padding: 25px;
+
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+}
+
+.recompensaXP > svg {
+  color: #facc15;
+}
+
+.recompensaXP strong {
+  display: block;
+
+  color: #0f172a;
+
+  font-size: 24px;
+}
+
+.recompensaXP span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+  width: 320px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+
+/* =========================================================
+   HORA DA LEITURA
+   ========================================================= */
+
+.leituraCard {
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #dce5eb;
+
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.leituraTopo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.leituraIcone {
+  width: 43px;
+  height: 43px;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: #e7f9fb;
+
+  color: #0fa6b3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leituraIcone svg {
+  width: 22px;
+  height: 22px;
+}
+
+.leituraTopo span {
+  display: block;
+
+  color: #0fa6b3;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.6px;
+}
+
+.leituraTopo h3 {
+  margin: 3px 0 0;
+
+  color: #0f172a;
+
+  font-size: 15px;
+}
+
+.livroAtual {
+  margin-top: 18px;
+
+  padding: 12px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+.capaMiniatura {
+  width: 46px;
+  height: 58px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 7px;
+
+  background: #e2e8f0;
+
+  color: #0fa6b3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capaMiniatura img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.livroAtual strong {
+  display: block;
+
+  color: #0f172a;
+
+  font-size: 13px;
+
+  line-height: 1.3;
+}
+
+.livroAtual span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.semLivro {
+  margin-top: 17px;
+
+  padding: 18px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.semLivro svg {
+  flex-shrink: 0;
+
+  color: #0fa6b3;
+}
+
+.semLivro p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.botaoLeitura {
+  width: 100%;
+
+  min-height: 42px;
+
+  margin-top: 12px;
+
+  padding: 0 13px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #0fa6b3;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.botaoLeitura:hover {
+  background: #0d94a0;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   SIDECARDS
+   ========================================================= */
+
+.sideCard {
+  padding: 22px;
+
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+}
+
+.sideTitulo,
+.nivelTitulo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.sideTitulo svg,
+.nivelTitulo svg {
+  width: 19px;
+  height: 19px;
+
+  color: #0fa6b3;
+}
+
+.sideTitulo span,
+.nivelTitulo span {
+  color: #0f172a;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+.contador {
+  display: block;
+
+  margin: 15px 0 5px;
+
+  text-align: center;
+
+  color: #0f172a;
+
+  font-size: 31px;
+
+  letter-spacing: 1px;
+}
+
+.sideCard > p {
+  margin: 0 0 15px;
+
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.progress {
+  width: 100%;
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #e2e8f0;
+}
+
+.progressFill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #0fa6b3;
+
+  transition: width 0.3s ease;
+}
+
+.progressTexto {
+  display: block;
+
+  margin-top: 8px;
+
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   NÍVEL
+   ========================================================= */
+
+.levelCircle {
+  width: 82px;
+  height: 82px;
+
+  margin: 18px auto 8px;
+
+  border-radius: 50%;
+
+  border: 3px solid #0fa6b3;
+
+  background: #e9fbfd;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #0fa6b3;
+
+  font-size: 30px;
+
+  font-weight: 750;
+}
+
+.nivelNumero {
+  margin: 0;
+
+  text-align: center;
+
+  color: #0f172a;
+
+  font-size: 17px;
+}
+
+.nivelNome {
+  margin: 4px 0 15px;
+
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   DICA
+   ========================================================= */
+
+.dicaCard {
+  padding: 17px;
+
+  border-radius: 18px;
+
+  background: #eafafd;
+
+  border: 1px solid #c6edf1;
+
+  display: flex;
+
+  gap: 11px;
+
+  align-items: flex-start;
+}
+
+.dicaIcone {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #d4f5f8;
+
+  color: #0fa6b3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dicaIcone svg {
+  width: 17px;
+  height: 17px;
+}
+
+.dicaCard strong {
+  display: block;
+
+  color: #0f172a;
+
+  font-size: 12px;
+}
+
+.dicaCard p {
+  margin: 4px 0 0;
+
+  color: #64748b;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   DARK MODE
    ========================================================= */
 
 :global([data-theme="escuro"]) .container {
   background: #0f1425;
+
   color: #f1f5f9;
 }
 
-/* ---------- HEADER ---------- */
 
-:global([data-theme="escuro"]) .header {
-  color: #f1f5f9;
+/* HEADER */
+
+:global([data-theme="escuro"]) .tituloIcone {
+  background: #123c43;
 }
 
-:global([data-theme="escuro"]) .titulo {
-  color: #f1f5f9;
+:global([data-theme="escuro"]) .tituloIcone svg {
+  color: #4dd4e0;
 }
 
 :global([data-theme="escuro"]) .titulo h1 {
   color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .titulo svg {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .header p {
+:global([data-theme="escuro"]) .titulo p {
   color: #a8b1cc;
 }
 
-/* ---------- CARDS DE RESUMO ---------- */
+
+/* CARDS */
 
 :global([data-theme="escuro"]) .card {
   background: #161c33;
+
   border-color: #2a3153;
 }
 
-:global([data-theme="escuro"]) .card h2 {
+:global([data-theme="escuro"]) .card strong {
   color: #f1f5f9;
 }
 
@@ -588,10 +1664,14 @@
   color: #7d86a8;
 }
 
-/* ---------- TABS ---------- */
+:global([data-theme="escuro"]) .cardIcone {
+  background: #1c2340;
+}
+
+
+/* TABS */
 
 :global([data-theme="escuro"]) .tabs {
-  background: #161c33;
   border-color: #2a3153;
 }
 
@@ -600,158 +1680,555 @@
 }
 
 :global([data-theme="escuro"]) .tabs button:hover {
-  background: #1c2340;
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .tabs .active {
-  
-  color: #ffffff;
-}
-
-/* ---------- TRILHA DE MISSÕES ---------- */
-
-:global([data-theme="escuro"]) .missao {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .info h3 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .info p {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .info strong {
-  color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .linha {
-  background: #2a3153;
-}
-
-/* ---------- CÍRCULOS ---------- */
-
-:global([data-theme="escuro"]) .circulo {
-  border-color: #2a3153;
-  background: #161c33;
-}
-
-/* Missão atual */
-:global([data-theme="escuro"]) .circulo.atual {
-  background: #0fa6b3;
-  color: #ffffff;
-}
-
-/* Missão concluída */
-:global([data-theme="escuro"]) .circulo.concluida {
-  background: #16a34a;
-  color: #ffffff;
-}
-
-/* Missão bloqueada */
-:global([data-theme="escuro"]) .circulo.bloqueada {
-  background: #252b43;
-  color: #64748b;
-}
-
-/* Bônus */
-:global([data-theme="escuro"]) .circulo.bonus {
-  background: #2b2345;
-  color: #a78bfa;
-}
-
-/* ---------- BADGE COMEÇAR ---------- */
-
-:global([data-theme="escuro"]) .badge {
-  background: #123c43;
   color: #4dd4e0;
 }
 
-/* ---------- SIDEBAR / PAINEL DIREITO ---------- */
+:global([data-theme="escuro"]) .tabAtiva {
+  color: #4dd4e0 !important;
+}
 
-:global([data-theme="escuro"]) .sidebar {
+
+/* TRILHA */
+
+:global([data-theme="escuro"]) .trilhaCaminho::before {
+  background: #2a3153;
+}
+
+:global([data-theme="escuro"]) .conector {
+  background: #343b5c;
+}
+
+:global([data-theme="escuro"]) .conectorAtivo {
+  background: #0fa6b3;
+}
+
+:global([data-theme="escuro"]) .infoMissao h3 {
   color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .sideCard {
-  background: #161c33;
-  border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .sideCard h3 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .sideCard h2 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .sideCard h4 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .sideCard p {
+:global([data-theme="escuro"]) .infoMissao p {
   color: #a8b1cc;
 }
 
-:global([data-theme="escuro"]) .sideCard span {
+:global([data-theme="escuro"]) .infoMissao strong {
+  color: #4dd4e0;
+}
+
+
+/* NÓS */
+
+:global([data-theme="escuro"]) .noBloqueado {
+  background: #252b43;
+
+  border-color: #343b5c;
+
+  color: #68738f;
+}
+
+
+/* BADGES */
+
+:global([data-theme="escuro"]) .badgeComecar {
+  background: #123c43;
+
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .badgeConcluida {
+  background: #143b28;
+
+  color: #4ade80;
+}
+
+:global([data-theme="escuro"]) .badgeBloqueada {
+  background: #252b43;
+
   color: #7d86a8;
 }
 
-/* ---------- TÍTULO DO PAINEL ---------- */
+:global([data-theme="escuro"]) .badgeBonus {
+  background: #2b2345;
 
-:global([data-theme="escuro"]) .sideTitulo {
+  color: #c4b5fd;
+}
+
+
+/* PAINEL DA MISSÃO */
+
+:global([data-theme="escuro"]) .painelMissao {
+  background: #161c33;
+
+  border-color: #2a3153;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+:global([data-theme="escuro"]) .painelIcone {
+  background: #123c43;
+
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .painelTitulo h2 {
   color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .sideTitulo svg {
-  color: #0fa6b3;
+:global([data-theme="escuro"]) .painelTitulo span {
+  color: #4dd4e0;
 }
 
-/* ---------- PROGRESSO ---------- */
+:global([data-theme="escuro"]) .painelDescricao {
+  color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .botaoFechar {
+  background: #252b43;
+
+  color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .botaoFechar:hover {
+  background: #343b5c;
+
+  color: #ffffff;
+}
+
+:global([data-theme="escuro"]) .recompensa strong {
+  color: #d8deed;
+}
+
+:global([data-theme="escuro"]) .mensagemBloqueada {
+  color: #7d86a8;
+}
+
+
+/* ABAS VAZIAS */
+
+:global([data-theme="escuro"]) .estadoAba {
+  background: #161c33;
+
+  border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .estadoIcone {
+  background: #123c43;
+
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .estadoAba h2 {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .estadoAba p {
+  color: #a8b1cc;
+}
+
+
+/* CONQUISTAS */
+
+:global([data-theme="escuro"]) .conquistaCard {
+  background: #161c33;
+
+  border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .conquistaCard h3 {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .conquistaCard p {
+  color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .conquistaIcone {
+  background: #2b2345;
+}
+
+
+/* RECOMPENSAS */
+
+:global([data-theme="escuro"]) .recompensaGrande {
+  background: #1b1830;
+
+  border-color: #3d3562;
+}
+
+:global([data-theme="escuro"]) .recompensaGrande h2 {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .recompensaGrande p {
+  color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .recompensaGrande > span {
+  color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .recompensaXP {
+  background: #161c33;
+
+  border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .recompensaXP strong {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .recompensaXP span {
+  color: #a8b1cc;
+}
+
+
+/* LEITURA */
+
+:global([data-theme="escuro"]) .leituraCard {
+  background: #161c33;
+
+  border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .leituraIcone {
+  background: #123c43;
+
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .leituraTopo span {
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .leituraTopo h3 {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .livroAtual,
+:global([data-theme="escuro"]) .semLivro {
+  background: #1c2340;
+}
+
+:global([data-theme="escuro"]) .livroAtual strong {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .livroAtual span,
+:global([data-theme="escuro"]) .semLivro p {
+  color: #a8b1cc;
+}
+
+
+/* SIDEBAR */
+
+:global([data-theme="escuro"]) .sideCard {
+  background: #161c33;
+
+  border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .sideTitulo span,
+:global([data-theme="escuro"]) .nivelTitulo span {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .contador {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .sideCard > p {
+  color: #a8b1cc;
+}
 
 :global([data-theme="escuro"]) .progress {
   background: #252b43;
 }
 
-:global([data-theme="escuro"]) .progressFill {
-  background: #0fa6b3;
+:global([data-theme="escuro"]) .progressTexto {
+  color: #7d86a8;
 }
 
-/* ---------- BÔNUS ---------- */
 
-:global([data-theme="escuro"]) .bonus {
-  background: #161c33;
-  border-color: #2a3153;
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .bonus svg {
-  color: #a78bfa;
-}
-
-:global([data-theme="escuro"]) .bonus strong {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .bonus p {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .bonus button {
-  color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .bonus button:hover {
-  background: #1c2340;
-}
-
-/* ---------- NÍVEL ---------- */
+/* NÍVEL */
 
 :global([data-theme="escuro"]) .levelCircle {
   background: #1c2340;
+
   border-color: #0fa6b3;
+
   color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .nivelNumero {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .nivelNome {
+  color: #a8b1cc;
+}
+
+
+/* DICA */
+
+:global([data-theme="escuro"]) .dicaCard {
+  background: #123039;
+
+  border-color: #24515b;
+}
+
+:global([data-theme="escuro"]) .dicaIcone {
+  background: #16424c;
+}
+
+:global([data-theme="escuro"]) .dicaCard strong {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .dicaCard p {
+  color: #a8b1cc;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 1250px) {
+
+  .layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      290px;
+
+    gap: 24px;
+  }
+
+  .sidebar {
+    width: 290px;
+  }
+
+  .cards {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 1000px) {
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    align-items: start;
+  }
+
+  .dicaCard {
+    grid-column: span 2;
+  }
+}
+
+
+@media (max-width: 760px) {
+
+  .container {
+    padding: 24px 18px 50px;
+
+    gap: 22px;
+  }
+
+  .titulo h1 {
+    font-size: 28px;
+  }
+
+  .titulo p {
+    font-size: 13px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    gap: 22px;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs button {
+    flex-shrink: 0;
+  }
+
+  .trilha {
+    padding-top: 25px;
+  }
+
+  .trilhaCaminho {
+    width: 100%;
+  }
+
+  .missaoEsquerda {
+    transform: translateX(-55px);
+  }
+
+  .missaoDireita {
+    transform: translateX(55px);
+  }
+
+  .conector {
+    width: 110px;
+  }
+
+  .noMissao {
+    width: 80px;
+    height: 80px;
+  }
+
+  .infoMissao {
+    width: 190px;
+  }
+
+  .infoMissao h3 {
+    font-size: 16px;
+  }
+
+  .conquistas {
+    grid-template-columns: 1fr;
+  }
+
+  .recompensas {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .dicaCard {
+    grid-column: auto;
+  }
+}
+
+
+@media (max-width: 500px) {
+
+  .container {
+    padding:
+      20px
+      13px
+      40px;
+  }
+
+  .tituloIcone {
+    width: 44px;
+    height: 44px;
+  }
+
+  .titulo h1 {
+    font-size: 25px;
+  }
+
+  .cards {
+    gap: 12px;
+  }
+
+  .card {
+    min-height: 94px;
+
+    padding: 16px;
+  }
+
+  .cardIcone {
+    width: 47px;
+    height: 47px;
+  }
+
+  .card strong {
+    font-size: 21px;
+  }
+
+  .tabs {
+    gap: 17px;
+  }
+
+  .trilhaCaminho::before {
+    width: 5px;
+  }
+
+  .missao {
+    min-height: 165px;
+  }
+
+  .missaoEsquerda {
+    transform: translateX(-32px);
+  }
+
+  .missaoDireita {
+    transform: translateX(32px);
+  }
+
+  .noMissao {
+    width: 70px;
+    height: 70px;
+
+    border-width: 4px;
+  }
+
+  .noMissao svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .conector {
+    width: 75px;
+  }
+
+  .infoMissao {
+    width: 160px;
+  }
+
+  .infoMissao h3 {
+    font-size: 15px;
+  }
+
+  .infoMissao p {
+    font-size: 11px;
+  }
+
+  .painelMissao {
+    padding: 17px;
+  }
+
+  .painelTitulo h2 {
+    font-size: 17px;
+  }
+
+  .painelRodape {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .botaoComecar {
+    width: 100%;
+  }
+
+  .leituraCard,
+  .sideCard {
+    padding: 18px;
+  }
 }

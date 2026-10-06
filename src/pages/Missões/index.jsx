@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -18,177 +18,248 @@ import {
   ChevronRight,
   X,
   Play,
+  Award,
   BookMarked,
+  RotateCcw,
 } from "lucide-react";
 
 /* =========================================================
-   DADOS DE EXEMPLO
-   ---------------------------------------------------------
-   Futuramente esses dados podem vir diretamente do backend.
-   A ideia é manter o formato dos objetos igual ao que a API
-   deverá retornar.
+   CONFIGURAÇÕES
    ========================================================= */
 
-const missoesIniciais = [
+const CHAVE_MISSOES_CONCLUIDAS = "readduo_missoes_concluidas";
+
+const ABAS = [
   {
-    id: 1,
-    titulo: "Leitura diária",
-    descricao: "Leia por 30 minutos",
-    xp: 50,
-    status: "atual",
-    tipo: "leitura",
-    icone: "book",
-
-    objetivo: {
-      tipo: "tempo_leitura",
-      valor: 30,
-      unidade: "minutos",
-    },
-
-    conteudo: {
-      titulo: "Hora da leitura!",
-      descricao:
-        "Continue sua jornada literária lendo seu último livro por 30 minutos.",
-      instrucoes:
-        "Clique em começar para abrir seu último livro lido.",
-    },
+    id: "diarias",
+    nome: "Diárias",
   },
-
   {
-    id: 2,
-    titulo: "Escrita do dia",
-    descricao: "Escreva 500 palavras",
-    xp: 75,
-    status: "bloqueada",
-    tipo: "escrita",
-    icone: "pen",
-
-    objetivo: {
-      tipo: "palavras_escritas",
-      valor: 500,
-      unidade: "palavras",
-    },
-
-    conteudo: {
-      titulo: "Desafio de escrita",
-      descricao:
-        "Coloque sua criatividade em prática e escreva pelo menos 500 palavras.",
-      instrucoes:
-        "Realize essa missão através da Oficina Autoral.",
-    },
+    id: "semanais",
+    nome: "Semanais",
   },
-
   {
-    id: 3,
-    titulo: "Aprendizado",
-    descricao: "Conclua uma lição",
-    xp: 100,
-    status: "bloqueada",
-    tipo: "licao",
-    icone: "graduation",
-
-    objetivo: {
-      tipo: "licao",
-      valor: 1,
-      unidade: "lição",
-    },
-
-    conteudo: {
-      titulo: "Hora de aprender!",
-      descricao:
-        "Complete uma lição da sua trilha de aprendizado.",
-      instrucoes:
-        "Conclua as missões anteriores para desbloquear esta.",
-    },
+    id: "conquistas",
+    nome: "Conquistas",
   },
-
   {
-    id: 4,
-    titulo: "Vocabulário",
-    descricao: "Aprenda 5 novas palavras",
-    xp: 100,
-    status: "bloqueada",
-    tipo: "licao",
-    icone: "graduation",
-
-    objetivo: {
-      tipo: "vocabulario",
-      valor: 5,
-      unidade: "palavras",
-    },
-
-    conteudo: {
-      titulo: "Expanda seu vocabulário",
-      descricao:
-        "Aprenda novas palavras e aumente seu conhecimento.",
-      instrucoes:
-        "Complete a lição para continuar sua trilha.",
-    },
-  },
-
-  {
-    id: 5,
-    titulo: "Baú Diário",
-    descricao: "Complete todas as missões",
-    xp: 500,
-    status: "bonus",
-    tipo: "bonus",
-    icone: "gift",
-
-    objetivo: {
-      tipo: "todas_missoes",
-      valor: 4,
-      unidade: "missões",
-    },
-
-    conteudo: {
-      titulo: "Baú diário",
-      descricao:
-        "Complete todas as missões do dia para receber sua recompensa.",
-      instrucoes:
-        "Finalize todas as missões disponíveis.",
-    },
+    id: "recompensas",
+    nome: "Recompensas",
   },
 ];
 
+
+/* =========================================================
+   MISSÕES MOCK
+   ---------------------------------------------------------
+   Essa estrutura foi feita para ser fácil de trocar pela API.
+   Os nomes Ms_ID, Ms_titulo etc. são compatíveis com o banco.
+   ========================================================= */
+
+const missoesMock = [
+  {
+    Ms_ID: 1,
+    Ms_titulo: "Leitura diária",
+    Ms_descricao: "Leia por 30 minutos.",
+    Ms_recompensasXP: 50,
+    Ms_tipo: "leitura",
+    ordem: 1,
+  },
+  {
+    Ms_ID: 2,
+    Ms_titulo: "Escrita do dia",
+    Ms_descricao: "Escreva 500 palavras.",
+    Ms_recompensasXP: 75,
+    Ms_tipo: "escrita",
+    ordem: 2,
+  },
+  {
+    Ms_ID: 3,
+    Ms_titulo: "Aprendizado",
+    Ms_descricao: "Conclua uma lição.",
+    Ms_recompensasXP: 100,
+    Ms_tipo: "licao",
+    ordem: 3,
+  },
+  {
+    Ms_ID: 4,
+    Ms_titulo: "Vocabulário",
+    Ms_descricao: "Aprenda 5 novas palavras.",
+    Ms_recompensasXP: 100,
+    Ms_tipo: "vocabulario",
+    ordem: 4,
+  },
+  {
+    Ms_ID: 5,
+    Ms_titulo: "Baú Diário",
+    Ms_descricao: "Complete todas as missões do dia.",
+    Ms_recompensasXP: 500,
+    Ms_tipo: "bonus",
+    ordem: 5,
+    bonus: true,
+  },
+];
+
+
+/* =========================================================
+   ÍCONE DE CADA TIPO DE MISSÃO
+   ========================================================= */
+
+function IconeMissao({ tipo, tamanho = 30 }) {
+  const props = {
+    size: tamanho,
+    strokeWidth: 2.3,
+  };
+
+  switch (tipo) {
+    case "leitura":
+      return <BookOpen {...props} />;
+
+    case "escrita":
+      return <PenTool {...props} />;
+
+    case "licao":
+      return <GraduationCap {...props} />;
+
+    case "vocabulario":
+      return <BookMarked {...props} />;
+
+    case "bonus":
+      return <Gift {...props} />;
+
+    default:
+      return <Target {...props} />;
+  }
+}
+
+
+/* =========================================================
+   NORMALIZADOR
+   ---------------------------------------------------------
+   Aceita tanto os nomes do banco quanto os nomes do frontend.
+   ========================================================= */
+
+function normalizarMissao(missao, index) {
+  return {
+    id:
+      missao.id ??
+      missao.Ms_ID ??
+      index + 1,
+
+    titulo:
+      missao.titulo ??
+      missao.Ms_titulo ??
+      "Missão",
+
+    descricao:
+      missao.descricao ??
+      missao.Ms_descricao ??
+      "",
+
+    xp: Number(
+      missao.xp ??
+      missao.Ms_recompensasXP ??
+      0
+    ),
+
+    tipo:
+      missao.tipo ??
+      missao.Ms_tipo ??
+      "geral",
+
+    ordem:
+      Number(
+        missao.ordem ??
+        index + 1
+      ),
+
+    bonus:
+      Boolean(missao.bonus),
+
+    concluida:
+      Boolean(
+        missao.concluida ||
+        missao.status === "concluida"
+      ),
+  };
+}
+
+
+/* =========================================================
+   BUSCAR MISSÕES
+   ---------------------------------------------------------
+   FUTURO BACKEND:
+
+   const resposta = await fetch("http://localhost:3000/missoes");
+   const json = await resposta.json();
+   return json.dados.map(normalizarMissao);
+
+   Por enquanto usamos o mock.
+   ========================================================= */
+
+async function buscarMissoes() {
+  return missoesMock.map(normalizarMissao);
+}
+
+
 /* =========================================================
    ÚLTIMO LIVRO LIDO
-   ---------------------------------------------------------
-   Futuramente poderá vir do banco:
-   GET /usuarios/:id/ultimo-livro
    ========================================================= */
 
-const ultimoLivroInicial = {
-  id: "example-book-1",
-  titulo: "O Último Sussurro",
-  autor: "Marina Silveira",
-  progresso: 68,
-  capa: "",
-};
+function obterUltimoLivro() {
+  const chaves = [
+    "readduo_ultimo_livro",
+    "readduo_ultimo_livro_lido",
+    "ultimoLivroLido",
+  ];
+
+  for (const chave of chaves) {
+    const salvo = localStorage.getItem(chave);
+
+    if (!salvo) {
+      continue;
+    }
+
+    try {
+      const livro = JSON.parse(salvo);
+
+      if (livro?.id) {
+        return livro;
+      }
+    } catch {
+      // Ignora dados inválidos.
+    }
+  }
+
+  return null;
+}
+
 
 /* =========================================================
-   FUNÇÃO PARA PEGAR ÍCONE
+   FORMATAR TEMPO
    ========================================================= */
 
-function IconeMissao({ tipo, size = 28 }) {
-  if (tipo === "book") {
-    return <BookOpen size={size} />;
-  }
+function formatarTempo(segundos) {
+  const horas = Math.floor(segundos / 3600);
 
-  if (tipo === "pen") {
-    return <PenTool size={size} />;
-  }
+  const minutos = Math.floor(
+    (segundos % 3600) / 60
+  );
 
-  if (tipo === "graduation") {
-    return <GraduationCap size={size} />;
-  }
+  const segundosRestantes =
+    segundos % 60;
 
-  if (tipo === "gift") {
-    return <Gift size={size} />;
-  }
-
-  return <Target size={size} />;
+  return [
+    horas,
+    minutos,
+    segundosRestantes,
+  ]
+    .map((numero) =>
+      String(numero).padStart(2, "0")
+    )
+    .join(":");
 }
+
 
 /* =========================================================
    COMPONENTE
@@ -197,936 +268,1443 @@ function IconeMissao({ tipo, size = 28 }) {
 function Missoes() {
   const navigate = useNavigate();
 
-  const [missoes, setMissoes] = useState(missoesIniciais);
+  /* -------------------------------------------------------
+     ESTADOS
+     ------------------------------------------------------- */
 
-  const [ultimoLivro, setUltimoLivro] =
-    useState(ultimoLivroInicial);
+  const [missoes, setMissoes] = useState([]);
 
-  const [abaAtiva, setAbaAtiva] = useState("diarias");
+  const [concluidasIds, setConcluidasIds] =
+    useState([]);
 
   const [missaoSelecionada, setMissaoSelecionada] =
     useState(null);
 
-  const [tempoRestante, setTempoRestante] =
-    useState(8 * 60 * 60 + 42 * 60 + 17);
+  const [abaAtiva, setAbaAtiva] =
+    useState("diarias");
 
-  /* =========================================================
+  const [ultimoLivro, setUltimoLivro] =
+    useState(null);
+
+  const [segundosRestantes, setSegundosRestantes] =
+    useState(8 * 60 * 60 + 41 * 60 + 46);
+
+  /* -------------------------------------------------------
+     CARREGAR DADOS
+     ------------------------------------------------------- */
+
+  useEffect(() => {
+    const carregar = async () => {
+      try {
+        const dados = await buscarMissoes();
+
+        setMissoes(dados);
+
+        const salvo = localStorage.getItem(
+          CHAVE_MISSOES_CONCLUIDAS
+        );
+
+        let concluidasSalvas = [];
+
+        if (salvo) {
+          try {
+            const parsed = JSON.parse(salvo);
+
+            if (Array.isArray(parsed)) {
+              concluidasSalvas = parsed.map(String);
+            }
+          } catch {
+            concluidasSalvas = [];
+          }
+        }
+
+        const concluidasDoBanco = dados
+          .filter((missao) => missao.concluida)
+          .map((missao) =>
+            String(missao.id)
+          );
+
+        const todas = [
+          ...concluidasSalvas,
+          ...concluidasDoBanco,
+        ];
+
+        setConcluidasIds([
+          ...new Set(todas),
+        ]);
+      } catch (erro) {
+        console.error(
+          "Erro ao carregar missões:",
+          erro
+        );
+      }
+    };
+
+    carregar();
+
+    setUltimoLivro(
+      obterUltimoLivro()
+    );
+  }, []);
+
+
+  /* -------------------------------------------------------
      CONTADOR
-     ========================================================= */
+     ------------------------------------------------------- */
 
   useEffect(() => {
     const intervalo = setInterval(() => {
-      setTempoRestante((tempo) => {
-        if (tempo <= 0) {
+      setSegundosRestantes((valor) => {
+        if (valor <= 0) {
           return 24 * 60 * 60;
         }
 
-        return tempo - 1;
+        return valor - 1;
       });
     }, 1000);
 
     return () => clearInterval(intervalo);
   }, []);
 
-  /* =========================================================
-     FORMATAR TEMPO
-     ========================================================= */
 
-  const formatarTempo = (segundos) => {
-    const horas = Math.floor(segundos / 3600);
+  /* -------------------------------------------------------
+     MISSÕES ORDENADAS
+     ------------------------------------------------------- */
 
-    const minutos = Math.floor(
-      (segundos % 3600) / 60
+  const missoesOrdenadas = useMemo(() => {
+    return [...missoes].sort(
+      (a, b) =>
+        a.ordem - b.ordem
     );
+  }, [missoes]);
 
-    const segundosRestantes = segundos % 60;
 
-    return [
-      horas,
-      minutos,
-      segundosRestantes,
-    ]
-      .map((numero) =>
-        String(numero).padStart(2, "0")
+  /* -------------------------------------------------------
+     STATUS DE CADA MISSÃO
+     ------------------------------------------------------- */
+
+  const obterStatusMissao = (
+    missao,
+    index
+  ) => {
+    const id = String(missao.id);
+
+    /* Já concluída */
+    if (concluidasIds.includes(id)) {
+      return "concluida";
+    }
+
+    /* Bônus */
+    if (missao.bonus) {
+      const missoesNormais =
+        missoesOrdenadas.filter(
+          (item) => !item.bonus
+        );
+
+      const todasConcluidas =
+        missoesNormais.length > 0 &&
+        missoesNormais.every(
+          (item) =>
+            concluidasIds.includes(
+              String(item.id)
+            )
+        );
+
+      if (todasConcluidas) {
+        return "bonus";
+      }
+
+      return "bloqueada";
+    }
+
+    /* Primeira missão */
+    if (index === 0) {
+      return "disponivel";
+    }
+
+    /* Missão anterior */
+    const anterior =
+      missoesOrdenadas[index - 1];
+
+    if (
+      concluidasIds.includes(
+        String(anterior.id)
       )
-      .join(":");
+    ) {
+      return "disponivel";
+    }
+
+    return "bloqueada";
   };
 
-  /* =========================================================
-     MISSÕES CONCLUÍDAS
-     ========================================================= */
 
-  const missoesConcluidas = missoes.filter(
-    (missao) => missao.status === "concluida"
-  ).length;
+  /* -------------------------------------------------------
+     MISSÕES COM STATUS
+     ------------------------------------------------------- */
 
-  const totalMissoes = missoes.filter(
-    (missao) => missao.tipo !== "bonus"
-  ).length;
+  const missoesComStatus = useMemo(() => {
+    return missoesOrdenadas.map(
+      (missao, index) => ({
+        ...missao,
+        status:
+          obterStatusMissao(
+            missao,
+            index
+          ),
+      })
+    );
+  }, [
+    missoesOrdenadas,
+    concluidasIds,
+  ]);
 
-  const xpHoje = missoes
-    .filter((missao) => missao.status === "concluida")
+
+  /* -------------------------------------------------------
+     CONTADORES
+     ------------------------------------------------------- */
+
+  const quantidadeConcluidas =
+    concluidasIds.length;
+
+  const quantidadeTotal =
+    missoesOrdenadas.length;
+
+  const xpHoje = missoesComStatus
+    .filter((missao) =>
+      concluidasIds.includes(
+        String(missao.id)
+      )
+    )
     .reduce(
-      (total, missao) => total + missao.xp,
+      (total, missao) =>
+        total + missao.xp,
       0
     );
 
-  /* =========================================================
+  const todasNormaisConcluidas =
+    missoesComStatus
+      .filter((missao) => !missao.bonus)
+      .every((missao) =>
+        concluidasIds.includes(
+          String(missao.id)
+        )
+      );
+
+  /* -------------------------------------------------------
+     CONCLUIR MISSÃO
+     ------------------------------------------------------- */
+
+  const concluirMissao = (id) => {
+    const idString = String(id);
+
+    setConcluidasIds((anteriores) => {
+      const novas = [
+        ...new Set([
+          ...anteriores,
+          idString,
+        ]),
+      ];
+
+      localStorage.setItem(
+        CHAVE_MISSOES_CONCLUIDAS,
+        JSON.stringify(novas)
+      );
+
+      return novas;
+    });
+
+    setMissaoSelecionada((atual) => {
+      if (!atual) {
+        return atual;
+      }
+
+      if (
+        String(atual.id) === idString
+      ) {
+        return {
+          ...atual,
+          status: "concluida",
+        };
+      }
+
+      return atual;
+    });
+  };
+
+
+  /* -------------------------------------------------------
      ABRIR MISSÃO
-     ========================================================= */
+     ------------------------------------------------------- */
 
   const abrirMissao = (missao) => {
-    if (missao.status === "bloqueada") {
-      return;
-    }
-
     setMissaoSelecionada(missao);
   };
 
-  /* =========================================================
-     INICIAR MISSÃO
-     ========================================================= */
 
-  const iniciarMissao = () => {
-    if (!missaoSelecionada) return;
+  /* -------------------------------------------------------
+     AÇÃO DA MISSÃO
+     ------------------------------------------------------- */
+
+  const executarMissao = (missao) => {
+    const status =
+      obterStatusMissao(
+        missao,
+        missoesComStatus.findIndex(
+          (item) =>
+            item.id === missao.id
+        )
+      );
+
+    if (status === "bloqueada") {
+      return;
+    }
 
     /*
-      MISSÃO DE LEITURA
+      No protótipo, iniciar a missão
+      também marca como concluída.
 
-      Futuramente o ID virá do banco.
+      Quando o backend estiver pronto,
+      essa função deve fazer um POST
+      para USUARIO_MISSAO.
     */
 
+    concluirMissao(missao.id);
+
+    /* Leitura */
     if (
-      missaoSelecionada.tipo === "leitura" &&
-      ultimoLivro?.id
+      missao.tipo === "leitura" ||
+      missao.tipo === "revisao"
     ) {
-      setMissaoSelecionada(null);
-
-      navigate(`/livro/${ultimoLivro.id}/ler`);
+      if (ultimoLivro?.id) {
+        navigate(
+          `/livro/${ultimoLivro.id}/ler`
+        );
+      } else {
+        navigate("/pesquisa");
+      }
 
       return;
     }
 
-    /*
-      MISSÃO DE ESCRITA
-
-      Podemos levar o usuário para a Oficina.
-    */
-
-    if (missaoSelecionada.tipo === "escrita") {
-      setMissaoSelecionada(null);
-
+    /* Escrita */
+    if (missao.tipo === "escrita") {
       navigate("/oficina");
+      return;
+    }
+
+    /* Outras missões */
+    setMissaoSelecionada({
+      ...missao,
+      status: "concluida",
+    });
+  };
+
+
+  /* -------------------------------------------------------
+     CONTINUAR ÚLTIMO LIVRO
+     ------------------------------------------------------- */
+
+  const continuarLeitura = () => {
+    if (ultimoLivro?.id) {
+      navigate(
+        `/livro/${ultimoLivro.id}/ler`
+      );
 
       return;
     }
 
-    /*
-      OUTRAS MISSÕES
-
-      Por enquanto continuam no modal.
-    */
-
-    concluirMissao(missaoSelecionada.id);
+    navigate("/pesquisa");
   };
 
-  /* =========================================================
-     CONCLUIR MISSÃO
-     ========================================================= */
 
-  const concluirMissao = (id) => {
-    setMissoes((missoesAtuais) =>
-      missoesAtuais.map((missao) =>
-        missao.id === id
-          ? {
-              ...missao,
-              status: "concluida",
+  /* -------------------------------------------------------
+     CLASSE DO NÓ
+     ------------------------------------------------------- */
+
+  const obterClasseNo = (status) => {
+    switch (status) {
+      case "concluida":
+        return styles.noConcluido;
+
+      case "bloqueada":
+        return styles.noBloqueado;
+
+      case "bonus":
+        return styles.noBonus;
+
+      default:
+        return styles.noDisponivel;
+    }
+  };
+
+
+  /* -------------------------------------------------------
+     RENDER DA TRILHA
+     ------------------------------------------------------- */
+
+  const renderizarTrilha = () => {
+    return (
+      <div className={styles.trilha}>
+        <div className={styles.trilhaCaminho}>
+
+          {missoesComStatus.map(
+            (missao, index) => {
+              const status =
+                missao.status;
+
+              const lado =
+                index % 2 === 0
+                  ? styles.missaoEsquerda
+                  : styles.missaoDireita;
+
+              const proxima =
+                index <
+                missoesComStatus.length - 1;
+
+              const statusAnterior =
+                index > 0
+                  ? missoesComStatus[
+                      index - 1
+                    ].status
+                  : null;
+
+              return (
+                <div
+                  className={`${styles.missao} ${lado}`}
+                  key={missao.id}
+                >
+
+                  {/* CONECTOR */}
+                  {proxima && (
+                    <div
+                      className={`${styles.conector} ${
+                        index % 2 === 0
+                          ? styles.conectorDireita
+                          : styles.conectorEsquerda
+                      } ${
+                        status === "concluida" &&
+                        statusAnterior !== "bloqueada"
+                          ? styles.conectorAtivo
+                          : ""
+                      }`}
+                    />
+                  )}
+
+                  {/* NÓ */}
+                  <button
+                    type="button"
+                    className={`${styles.noMissao} ${obterClasseNo(
+                      status
+                    )}`}
+                    onClick={() =>
+                      abrirMissao(
+                        missao
+                      )
+                    }
+                    aria-label={`Abrir missão ${missao.titulo}`}
+                  >
+
+                    {status ===
+                    "concluida" ? (
+                      <Check
+                        size={36}
+                        strokeWidth={3}
+                      />
+                    ) : status ===
+                      "bloqueada" ? (
+                      <Lock
+                        size={30}
+                      />
+                    ) : (
+                      <IconeMissao
+                        tipo={
+                          missao.tipo
+                        }
+                        tamanho={34}
+                      />
+                    )}
+
+                  </button>
+
+                  {/* INFORMAÇÕES */}
+                  <div
+                    className={
+                      styles.infoMissao
+                    }
+                  >
+
+                    {status ===
+                      "disponivel" && (
+                      <span
+                        className={
+                          styles.badgeComecar
+                        }
+                      >
+                        COMEÇAR
+                      </span>
+                    )}
+
+                    {status ===
+                      "concluida" && (
+                      <span
+                        className={
+                          styles.badgeConcluida
+                        }
+                      >
+                        CONCLUÍDA
+                      </span>
+                    )}
+
+                    {status ===
+                      "bloqueada" && (
+                      <span
+                        className={
+                          styles.badgeBloqueada
+                        }
+                      >
+                        BLOQUEADA
+                      </span>
+                    )}
+
+                    {status ===
+                      "bonus" && (
+                      <span
+                        className={
+                          styles.badgeBonus
+                        }
+                      >
+                        RECOMPENSA
+                      </span>
+                    )}
+
+                    <h3>
+                      {missao.titulo}
+                    </h3>
+
+                    <p>
+                      {missao.descricao}
+                    </p>
+
+                    <strong>
+                      +{missao.xp} XP
+                    </strong>
+                  </div>
+                </div>
+              );
             }
-          : missao
-      )
-    );
+          )}
 
-    setMissaoSelecionada(null);
-
-    /*
-      FUTURO BACKEND:
-
-      Aqui poderá entrar algo como:
-
-      await fetch("/missoes/concluir", {
-        method: "POST",
-        body: JSON.stringify({
-          missaoId: id,
-          usuarioId: usuarioId
-        })
-      });
-
-    */
-  };
-
-  /* =========================================================
-     IR PARA O ÚLTIMO LIVRO
-     ========================================================= */
-
-  const continuarUltimoLivro = () => {
-    if (!ultimoLivro?.id) return;
-
-    navigate(`/livro/${ultimoLivro.id}/ler`);
-  };
-
-  /* =========================================================
-     CARDS
-     ========================================================= */
-
-  const cards = [
-    {
-      titulo: "Sequência",
-      valor: "8 dias",
-      subtitulo: "Melhor sequência",
-      cor: "#FB923C",
-      icone: <Flame size={28} />,
-    },
-
-    {
-      titulo: "XP Hoje",
-      valor: `+${xpHoje} XP`,
-      subtitulo: "Ganhos hoje",
-      cor: "#FACC15",
-      icone: <Star size={28} />,
-    },
-
-    {
-      titulo: "Missões",
-      valor: `${missoesConcluidas} / ${totalMissoes}`,
-      subtitulo: "Concluídas",
-      cor: "#0FA6B3",
-      icone: <Trophy size={28} />,
-    },
-
-    {
-      titulo: "Baú",
-      valor:
-        missoesConcluidas >= totalMissoes
-          ? "1"
-          : "0",
-      subtitulo: "Disponível",
-      cor: "#8B5CF6",
-      icone: <Gift size={28} />,
-    },
-  ];
-
-  /* =========================================================
-     RENDER
-     ========================================================= */
-
-  return (
-    <div className={styles.container}>
-
-      {/* =====================================================
-          HEADER
-          ===================================================== */}
-
-      <div className={styles.header}>
-        <div className={styles.titulo}>
-          <Target />
-
-          <h1>Missões</h1>
         </div>
-
-        <p>
-          Complete desafios diários, ganhe XP e evolua
-          no Readduo.
-        </p>
       </div>
+    );
+  };
 
-      {/* =====================================================
-          CARDS
-          ===================================================== */}
 
-      <section className={styles.cards}>
-        {cards.map((card, index) => (
+  /* =======================================================
+     CONTEÚDO DAS ABAS
+     ======================================================= */
+
+  const renderizarConteudoAba =
+    () => {
+
+      /* ---------------------------------------------------
+         DIÁRIAS
+         --------------------------------------------------- */
+
+      if (abaAtiva === "diarias") {
+        return (
+          <div className={styles.areaTrilha}>
+
+            {missaoSelecionada && (
+              <div
+                className={
+                  styles.painelMissao
+                }
+              >
+
+                <div
+                  className={
+                    styles.painelMissaoTopo
+                  }
+                >
+
+                  <div
+                    className={
+                      styles.painelTitulo
+                    }
+                  >
+
+                    <div
+                      className={
+                        styles.painelIcone
+                      }
+                    >
+                      <IconeMissao
+                        tipo={
+                          missaoSelecionada.tipo
+                        }
+                        tamanho={25}
+                      />
+                    </div>
+
+                    <div>
+                      <span>
+                        MISSÃO
+                      </span>
+
+                      <h2>
+                        {
+                          missaoSelecionada.titulo
+                        }
+                      </h2>
+                    </div>
+
+                  </div>
+
+                  <button
+                    type="button"
+                    className={
+                      styles.botaoFechar
+                    }
+                    onClick={() =>
+                      setMissaoSelecionada(
+                        null
+                      )
+                    }
+                  >
+                    <X size={20} />
+                  </button>
+
+                </div>
+
+
+                <p
+                  className={
+                    styles.painelDescricao
+                  }
+                >
+                  {
+                    missaoSelecionada.descricao
+                  }
+                </p>
+
+
+                <div
+                  className={
+                    styles.painelRodape
+                  }
+                >
+
+                  <div
+                    className={
+                      styles.recompensa
+                    }
+                  >
+                    <Star
+                      size={18}
+                    />
+
+                    <strong>
+                      +{
+                        missaoSelecionada.xp
+                      }{" "}
+                      XP
+                    </strong>
+                  </div>
+
+
+                  {missaoSelecionada.status ===
+                    "bloqueada" ? (
+                    <div
+                      className={
+                        styles.mensagemBloqueada
+                      }
+                    >
+                      <Lock size={17} />
+                      Complete a missão
+                      anterior para
+                      desbloquear.
+                    </div>
+                  ) : missaoSelecionada.status ===
+                    "concluida" ? (
+                    <div
+                      className={
+                        styles.mensagemConcluida
+                      }
+                    >
+                      <Check
+                        size={18}
+                      />
+                      Missão concluída!
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className={
+                        styles.botaoComecar
+                      }
+                      onClick={() =>
+                        executarMissao(
+                          missaoSelecionada
+                        )
+                      }
+                    >
+                      <Play
+                        size={18}
+                        fill="currentColor"
+                      />
+
+                      Começar missão
+
+                      <ChevronRight
+                        size={18}
+                      />
+                    </button>
+                  )}
+
+                </div>
+
+              </div>
+            )}
+
+            {renderizarTrilha()}
+
+          </div>
+        );
+      }
+
+
+      /* ---------------------------------------------------
+         SEMANAIS
+         --------------------------------------------------- */
+
+      if (abaAtiva === "semanais") {
+        return (
           <div
-            key={index}
-            className={styles.card}
-            style={{
-              borderColor: card.cor,
-            }}
+            className={
+              styles.estadoAba
+            }
           >
             <div
-              className={styles.cardIcon}
-              style={{
-                color: card.cor,
-              }}
+              className={
+                styles.estadoIcone
+              }
             >
-              {card.icone}
+              <Target />
             </div>
 
-            <div>
-              <h2>{card.valor}</h2>
+            <h2>
+              Missões semanais
+            </h2>
 
-              <span>{card.titulo}</span>
+            <p>
+              As missões semanais serão
+              carregadas do banco de dados
+              quando essa etapa estiver
+              integrada ao backend.
+            </p>
 
-              <small>
-                {card.subtitulo}
-              </small>
-            </div>
+            <span>
+              Em breve
+            </span>
           </div>
-        ))}
-      </section>
+        );
+      }
 
-      {/* =====================================================
-          TABS
-          ===================================================== */}
 
-      <div className={styles.tabs}>
+      /* ---------------------------------------------------
+         CONQUISTAS
+         --------------------------------------------------- */
 
-        <button
-          className={
-            abaAtiva === "diarias"
-              ? styles.active
-              : ""
-          }
-          onClick={() =>
-            setAbaAtiva("diarias")
-          }
-        >
-          Diárias
-        </button>
+      if (abaAtiva === "conquistas") {
+        return (
+          <div
+            className={
+              styles.conquistas
+            }
+          >
 
-        <button
-          className={
-            abaAtiva === "semanais"
-              ? styles.active
-              : ""
-          }
-          onClick={() =>
-            setAbaAtiva("semanais")
-          }
-        >
-          Semanais
-        </button>
+            <div
+              className={
+                styles.conquistaCard
+              }
+            >
+              <div
+                className={
+                  styles.conquistaIcone
+                }
+              >
+                <Award />
+              </div>
 
-        <button
-          className={
-            abaAtiva === "conquistas"
-              ? styles.active
-              : ""
-          }
-          onClick={() =>
-            setAbaAtiva("conquistas")
-          }
-        >
-          Conquistas
-        </button>
+              <div>
+                <h3>
+                  Primeiro passo
+                </h3>
 
-        <button
-          className={
-            abaAtiva === "recompensas"
-              ? styles.active
-              : ""
-          }
-          onClick={() =>
-            setAbaAtiva("recompensas")
-          }
-        >
-          Recompensas
-        </button>
+                <p>
+                  Complete sua primeira
+                  missão.
+                </p>
 
-      </div>
+                <strong>
+                  {quantidadeConcluidas >=
+                  1
+                    ? "Desbloqueada"
+                    : "Bloqueada"}
+                </strong>
+              </div>
+            </div>
 
-      {/* =====================================================
-          CONTEÚDO
-          ===================================================== */}
 
-      {abaAtiva === "diarias" && (
-        <div className={styles.layout}>
+            <div
+              className={
+                styles.conquistaCard
+              }
+            >
+              <div
+                className={
+                  styles.conquistaIcone
+                }
+              >
+                <Trophy />
+              </div>
 
-          {/* =================================================
-              TRILHA
-              ================================================= */}
+              <div>
+                <h3>
+                  Mestre das missões
+                </h3>
 
-          <main className={styles.trilha}>
+                <p>
+                  Complete todas as
+                  missões diárias.
+                </p>
 
-  <div className={styles.trilhaCaminho}>
+                <strong>
+                  {todasNormaisConcluidas
+                    ? "Desbloqueada"
+                    : `${quantidadeConcluidas}/${Math.max(
+                        quantidadeTotal - 1,
+                        0
+                      )}`}
+                </strong>
+              </div>
+            </div>
 
-    {missoes.map((missao, index) => {
+          </div>
+        );
+      }
 
-      const ultima =
-        index === missoes.length - 1;
+
+      /* ---------------------------------------------------
+         RECOMPENSAS
+         --------------------------------------------------- */
 
       return (
         <div
-          key={missao.id}
-          className={`
-            ${styles.missao}
-            ${
-              index % 2 === 0
-                ? styles.missaoEsquerda
-                : styles.missaoDireita
-            }
-          `}
-        >
-
-          {/* CONEXÃO COM A PRÓXIMA ETAPA */}
-
-          {!ultima && (
-            <div
-              className={`
-                ${styles.conector}
-                ${
-                  index % 2 === 0
-                    ? styles.conectorDireita
-                    : styles.conectorEsquerda
-                }
-              `}
-            />
-          )}
-
-          {/* BOTÃO DA MISSÃO */}
-
-          <button
-            className={`
-              ${styles.circulo}
-              ${styles[missao.status]}
-            `}
-            onClick={() =>
-              abrirMissao(missao)
-            }
-            disabled={
-              missao.status ===
-              "bloqueada"
-            }
-            title={
-              missao.status ===
-              "bloqueada"
-                ? "Complete as missões anteriores"
-                : "Abrir missão"
-            }
-          >
-
-            {missao.status ===
-            "concluida" ? (
-              <Check size={32} />
-            ) : missao.status ===
-              "bloqueada" ? (
-              <Lock size={28} />
-            ) : (
-              <IconeMissao
-                tipo={missao.icone}
-                size={30}
-              />
-            )}
-
-          </button>
-
-          {/* INFORMAÇÕES DA MISSÃO */}
-
-          <div
-            className={styles.info}
-          >
-
-            {missao.status ===
-              "atual" && (
-              <span
-                className={
-                  styles.badge
-                }
-              >
-                COMEÇAR
-              </span>
-            )}
-
-            {missao.status ===
-              "concluida" && (
-              <span
-                className={
-                  styles.badgeConcluida
-                }
-              >
-                CONCLUÍDA
-              </span>
-            )}
-
-            {missao.status ===
-              "bloqueada" && (
-              <span
-                className={
-                  styles.badgeBloqueada
-                }
-              >
-                BLOQUEADA
-              </span>
-            )}
-
-            <h3>
-              {missao.titulo}
-            </h3>
-
-            <p>
-              {missao.descricao}
-            </p>
-
-            <strong>
-              +{missao.xp} XP
-            </strong>
-
-          </div>
-
-        </div>
-      );
-    })}
-
-  </div>
-
-</main>
-
-          {/* =================================================
-              SIDEBAR
-              ================================================= */}
-
-          <aside className={styles.sidebar}>
-
-            {/* ===============================================
-                ÚLTIMO LIVRO
-                =============================================== */}
-
-            <div
-              className={
-                styles.livroCard
-              }
-            >
-
-              <div
-                className={
-                  styles.livroTitulo
-                }
-              >
-                <BookMarked
-                  size={20}
-                />
-
-                <h3>
-                  Continue lendo
-                </h3>
-              </div>
-
-              <div
-                className={
-                  styles.livroConteudo
-                }
-              >
-
-                <div
-                  className={
-                    styles.livroCapa
-                  }
-                >
-                  {ultimoLivro.capa ? (
-                    <img
-                      src={
-                        ultimoLivro.capa
-                      }
-                      alt={
-                        ultimoLivro.titulo
-                      }
-                    />
-                  ) : (
-                    <BookOpen
-                      size={30}
-                    />
-                  )}
-                </div>
-
-                <div
-                  className={
-                    styles.livroInfo
-                  }
-                >
-
-                  <h4>
-                    {ultimoLivro.titulo}
-                  </h4>
-
-                  <p>
-                    {ultimoLivro.autor}
-                  </p>
-
-                  <span>
-                    {ultimoLivro.progresso}%
-                    lido
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div
-                className={
-                  styles.progress
-                }
-              >
-                <div
-                  className={
-                    styles.progressFill
-                  }
-                  style={{
-                    width: `${ultimoLivro.progresso}%`,
-                  }}
-                />
-              </div>
-
-              <button
-                className={
-                  styles.continuarLivro
-                }
-                onClick={
-                  continuarUltimoLivro
-                }
-              >
-                Continuar leitura
-
-                <ChevronRight
-                  size={18}
-                />
-              </button>
-
-            </div>
-
-            {/* ===============================================
-                RESET
-                =============================================== */}
-
-            <div
-              className={
-                styles.sideCard
-              }
-            >
-
-              <div
-                className={
-                  styles.sideTitulo
-                }
-              >
-                <Clock3 size={20} />
-
-                <h3>
-                  Reset em
-                </h3>
-              </div>
-
-              <h2>
-                {formatarTempo(
-                  tempoRestante
-                )}
-              </h2>
-
-              <p>
-                Novas missões em breve
-              </p>
-
-              <div
-                className={
-                  styles.progress
-                }
-              >
-                <div
-                  className={
-                    styles.progressFill
-                  }
-                  style={{
-                    width: `${
-                      (missoesConcluidas /
-                        totalMissoes) *
-                      100
-                    }%`,
-                  }}
-                />
-              </div>
-
-              <span>
-                {missoesConcluidas} /{" "}
-                {totalMissoes} missões
-                concluídas
-              </span>
-
-            </div>
-
-            {/* ===============================================
-                NÍVEL
-                =============================================== */}
-
-            <div
-              className={
-                styles.sideCard
-              }
-            >
-
-              <h3>
-                Seu nível
-              </h3>
-
-              <div
-                className={
-                  styles.levelCircle
-                }
-              >
-                12
-              </div>
-
-              <h4>
-                Nível 12
-              </h4>
-
-              <p>
-                Narrador Experiente
-              </p>
-
-              <div
-                className={
-                  styles.progress
-                }
-              >
-                <div
-                  className={
-                    styles.progressFill
-                  }
-                  style={{
-                    width: "84%",
-                  }}
-                />
-              </div>
-
-              <span>
-                4200 / 5000 XP
-              </span>
-
-            </div>
-
-          </aside>
-
-        </div>
-      )}
-
-      {/* =====================================================
-          SEMANAIS
-          ===================================================== */}
-
-      {abaAtiva === "semanais" && (
-        <div
           className={
-            styles.conteudoAba
+            styles.recompensas
           }
-        >
-          <Target size={50} />
-
-          <h2>
-            Missões semanais
-          </h2>
-
-          <p>
-            Aqui ficarão as missões
-            semanais do usuário.
-          </p>
-        </div>
-      )}
-
-      {/* =====================================================
-          CONQUISTAS
-          ===================================================== */}
-
-      {abaAtiva === "conquistas" && (
-        <div
-          className={
-            styles.conteudoAba
-          }
-        >
-          <Trophy size={50} />
-
-          <h2>
-            Conquistas
-          </h2>
-
-          <p>
-            Aqui aparecerão as conquistas
-            desbloqueadas pelo usuário.
-          </p>
-        </div>
-      )}
-
-      {/* =====================================================
-          RECOMPENSAS
-          ===================================================== */}
-
-      {abaAtiva === "recompensas" && (
-        <div
-          className={
-            styles.conteudoAba
-          }
-        >
-          <Gift size={50} />
-
-          <h2>
-            Recompensas
-          </h2>
-
-          <p>
-            Aqui ficarão os prêmios
-            disponíveis para o usuário.
-          </p>
-        </div>
-      )}
-
-      {/* =====================================================
-          MODAL DA MISSÃO
-          ===================================================== */}
-
-      {missaoSelecionada && (
-        <div
-          className={
-            styles.modalOverlay
-          }
-          onMouseDown={(e) => {
-            if (
-              e.target ===
-              e.currentTarget
-            ) {
-              setMissaoSelecionada(
-                null
-              );
-            }
-          }}
         >
 
           <div
             className={
-              styles.modalMissao
+              styles.recompensaGrande
             }
           >
+            <Gift
+              size={48}
+            />
 
-            <button
-              className={
-                styles.fecharModal
-              }
-              onClick={() =>
-                setMissaoSelecionada(
-                  null
-                )
-              }
-            >
-              <X size={22} />
-            </button>
+            <h2>
+              Baú diário
+            </h2>
+
+            <p>
+              Complete todas as missões
+              diárias para desbloquear
+              sua recompensa.
+            </p>
 
             <div
               className={
-                styles.modalIcone
+                styles.progressoRecompensa
               }
             >
-              <IconeMissao
-                tipo={
-                  missaoSelecionada.icone
+              <div
+                style={{
+                  width: `${
+                    quantidadeTotal > 0
+                      ? Math.min(
+                          (quantidadeConcluidas /
+                            quantidadeTotal) *
+                            100,
+                          100
+                        )
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+
+            <span>
+              {quantidadeConcluidas} de{" "}
+              {quantidadeTotal} missões
+              concluídas
+            </span>
+          </div>
+
+
+          <div
+            className={
+              styles.recompensaXP
+            }
+          >
+            <Star
+              size={36}
+            />
+
+            <div>
+              <strong>
+                +{xpHoje} XP
+              </strong>
+
+              <span>
+                conquistados hoje
+              </span>
+            </div>
+          </div>
+
+        </div>
+      );
+    };
+
+
+  /* =======================================================
+     RETORNO
+     ======================================================= */
+
+  return (
+    <div className={styles.container}>
+
+      {/* ===================================================
+          HEADER
+          =================================================== */}
+
+      <header
+        className={styles.header}
+      >
+
+        <div
+          className={styles.titulo}
+        >
+          <div
+            className={styles.tituloIcone}
+          >
+            <Target />
+          </div>
+
+          <div>
+            <h1>
+              Missões
+            </h1>
+
+            <p>
+              Complete desafios, ganhe XP
+              e avance na sua jornada
+              literária.
+            </p>
+          </div>
+        </div>
+
+      </header>
+
+
+      {/* ===================================================
+          CARDS DE STATUS
+          =================================================== */}
+
+      <section
+        className={styles.cards}
+      >
+
+        <div
+          className={`${styles.card} ${styles.cardLaranja}`}
+        >
+          <div
+            className={styles.cardIcone}
+          >
+            <Flame />
+          </div>
+
+          <div>
+            <span>
+              Sequência
+            </span>
+
+            <strong>
+              8 dias
+            </strong>
+
+            <small>
+              Melhor sequência
+            </small>
+          </div>
+        </div>
+
+
+        <div
+          className={`${styles.card} ${styles.cardAmarelo}`}
+        >
+          <div
+            className={styles.cardIcone}
+          >
+            <Star />
+          </div>
+
+          <div>
+            <span>
+              XP Hoje
+            </span>
+
+            <strong>
+              +{xpHoje} XP
+            </strong>
+
+            <small>
+              Ganhos hoje
+            </small>
+          </div>
+        </div>
+
+
+        <div
+          className={`${styles.card} ${styles.cardTeal}`}
+        >
+          <div
+            className={styles.cardIcone}
+          >
+            <Trophy />
+          </div>
+
+          <div>
+            <span>
+              Missões
+            </span>
+
+            <strong>
+              {quantidadeConcluidas} /{" "}
+              {quantidadeTotal}
+            </strong>
+
+            <small>
+              Concluídas
+            </small>
+          </div>
+        </div>
+
+
+        <div
+          className={`${styles.card} ${styles.cardRoxo}`}
+        >
+          <div
+            className={styles.cardIcone}
+          >
+            <Gift />
+          </div>
+
+          <div>
+            <span>
+              Baú
+            </span>
+
+            <strong>
+              {todasNormaisConcluidas
+                ? "1"
+                : "0"}
+            </strong>
+
+            <small>
+              Disponível
+            </small>
+          </div>
+        </div>
+
+      </section>
+
+
+      {/* ===================================================
+          ABAS
+          =================================================== */}
+
+      <nav
+        className={styles.tabs}
+      >
+        {ABAS.map((aba) => (
+          <button
+            type="button"
+            key={aba.id}
+            className={
+              abaAtiva === aba.id
+                ? styles.tabAtiva
+                : ""
+            }
+            onClick={() =>
+              setAbaAtiva(aba.id)
+            }
+          >
+            {aba.nome}
+          </button>
+        ))}
+      </nav>
+
+
+      {/* ===================================================
+          CONTEÚDO PRINCIPAL
+          =================================================== */}
+
+      <div
+        className={styles.layout}
+      >
+
+        {/* ÁREA CENTRAL */}
+        <main
+          className={styles.conteudoPrincipal}
+        >
+          {renderizarConteudoAba()}
+        </main>
+
+
+        {/* =================================================
+            SIDEBAR
+            ================================================= */}
+
+        <aside
+          className={styles.sidebar}
+        >
+
+          {/* -----------------------------------------------
+              HORA DA LEITURA
+              ----------------------------------------------- */}
+
+          <div
+            className={
+              styles.leituraCard
+            }
+          >
+
+            <div
+              className={
+                styles.leituraTopo
+              }
+            >
+              <div
+                className={
+                  styles.leituraIcone
                 }
-                size={34}
+              >
+                <BookOpen />
+              </div>
+
+              <div>
+                <span>
+                  HORA DA LEITURA
+                </span>
+
+                <h3>
+                  Continue sua jornada
+                </h3>
+              </div>
+            </div>
+
+
+            {ultimoLivro ? (
+              <>
+                <div
+                  className={
+                    styles.livroAtual
+                  }
+                >
+
+                  <div
+                    className={
+                      styles.capaMiniatura
+                    }
+                  >
+                    {ultimoLivro.imagem ? (
+                      <img
+                        src={
+                          ultimoLivro.imagem
+                        }
+                        alt=""
+                      />
+                    ) : (
+                      <BookOpen
+                        size={25}
+                      />
+                    )}
+                  </div>
+
+                  <div>
+                    <strong>
+                      {
+                        ultimoLivro.titulo ||
+                        "Último livro lido"
+                      }
+                    </strong>
+
+                    <span>
+                      Continue de onde
+                      parou.
+                    </span>
+                  </div>
+
+                </div>
+
+                <button
+                  type="button"
+                  className={
+                    styles.botaoLeitura
+                  }
+                  onClick={
+                    continuarLeitura
+                  }
+                >
+                  <Play
+                    size={17}
+                    fill="currentColor"
+                  />
+
+                  Continuar leitura
+
+                  <ChevronRight
+                    size={17}
+                  />
+                </button>
+              </>
+            ) : (
+              <>
+                <div
+                  className={
+                    styles.semLivro
+                  }
+                >
+                  <BookMarked />
+
+                  <p>
+                    Você ainda não possui
+                    um último livro salvo.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className={
+                    styles.botaoLeitura
+                  }
+                  onClick={
+                    continuarLeitura
+                  }
+                >
+                  <BookOpen
+                    size={17}
+                  />
+
+                  Encontrar um livro
+
+                  <ChevronRight
+                    size={17}
+                  />
+                </button>
+              </>
+            )}
+
+          </div>
+
+
+          {/* -----------------------------------------------
+              RESET DAS MISSÕES
+              ----------------------------------------------- */}
+
+          <div
+            className={
+              styles.sideCard
+            }
+          >
+
+            <div
+              className={
+                styles.sideTitulo
+              }
+            >
+              <Clock3 />
+
+              <span>
+                Reset em
+              </span>
+            </div>
+
+            <strong
+              className={
+                styles.contador
+              }
+            >
+              {formatarTempo(
+                segundosRestantes
+              )}
+            </strong>
+
+            <p>
+              Novas missões em breve
+            </p>
+
+            <div
+              className={
+                styles.progress
+              }
+            >
+              <div
+                className={
+                  styles.progressFill
+                }
+                style={{
+                  width: `${
+                    quantidadeTotal > 0
+                      ? Math.min(
+                          (quantidadeConcluidas /
+                            quantidadeTotal) *
+                            100,
+                          100
+                        )
+                      : 0
+                  }%`,
+                }}
               />
             </div>
 
             <span
               className={
-                styles.modalXp
+                styles.progressTexto
               }
             >
-              +{missaoSelecionada.xp} XP
+              {quantidadeConcluidas} /{" "}
+              {quantidadeTotal} missões
+              concluídas
             </span>
-
-            <h2>
-              {
-                missaoSelecionada
-                  .conteudo?.titulo
-              }
-            </h2>
-
-            <p>
-              {
-                missaoSelecionada
-                  .conteudo?.descricao
-              }
-            </p>
-
-            <div
-              className={
-                styles.instrucoes
-              }
-            >
-              <strong>
-                O que fazer?
-              </strong>
-
-              <span>
-                {
-                  missaoSelecionada
-                    .conteudo
-                    ?.instrucoes
-                }
-              </span>
-            </div>
-
-            {/* ÚLTIMO LIVRO */}
-
-            {missaoSelecionada.tipo ===
-              "leitura" && (
-              <div
-                className={
-                  styles.modalLivro
-                }
-              >
-
-                <BookOpen size={22} />
-
-                <div>
-                  <strong>
-                    Último livro lido
-                  </strong>
-
-                  <span>
-                    {ultimoLivro.titulo}
-                  </span>
-
-                  <small>
-                    {ultimoLivro.progresso}%
-                    concluído
-                  </small>
-                </div>
-
-              </div>
-            )}
-
-            <button
-              className={
-                styles.botaoComecar
-              }
-              onClick={
-                iniciarMissao
-              }
-            >
-
-              <Play
-                size={19}
-                fill="currentColor"
-              />
-
-              {missaoSelecionada.tipo ===
-              "leitura"
-                ? "Começar leitura"
-                : missaoSelecionada.tipo ===
-                  "escrita"
-                ? "Ir para Oficina"
-                : "Começar missão"}
-
-            </button>
 
           </div>
 
-        </div>
-      )}
+
+          {/* -----------------------------------------------
+              NÍVEL
+              ----------------------------------------------- */}
+
+          <div
+            className={
+              styles.sideCard
+            }
+          >
+
+            <div
+              className={
+                styles.nivelTitulo
+              }
+            >
+              <Trophy />
+
+              <span>
+                Seu nível
+              </span>
+            </div>
+
+
+            <div
+              className={
+                styles.levelCircle
+              }
+            >
+              12
+            </div>
+
+
+            <h3
+              className={
+                styles.nivelNumero
+              }
+            >
+              Nível 12
+            </h3>
+
+            <p
+              className={
+                styles.nivelNome
+              }
+            >
+              Narrador Experiente
+            </p>
+
+
+            <div
+              className={
+                styles.progress
+              }
+            >
+              <div
+                className={
+                  styles.progressFill
+                }
+                style={{
+                  width: "84%",
+                }}
+              />
+            </div>
+
+            <span
+              className={
+                styles.progressTexto
+              }
+            >
+              4200 / 5000 XP
+            </span>
+
+          </div>
+
+
+          {/* -----------------------------------------------
+              DICA
+              ----------------------------------------------- */}
+
+          <div
+            className={
+              styles.dicaCard
+            }
+          >
+
+            <div
+              className={
+                styles.dicaIcone
+              }
+            >
+              <RotateCcw />
+            </div>
+
+            <div>
+              <strong>
+                Mantenha sua sequência!
+              </strong>
+
+              <p>
+                Complete pelo menos uma
+                missão hoje para continuar
+                evoluindo.
+              </p>
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
 
     </div>
   );
