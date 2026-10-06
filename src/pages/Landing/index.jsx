@@ -2,8 +2,7 @@ import styles from './index.module.css';
 import { useNavigate } from 'react-router-dom';
 import CardLivro from "../../componentes/cardLivro";
 import TopBar from "../../componentes/Topbar";
-import MascotãoClaro from "../../assets/Animação tema claro.mp4";
-import MascotãoEscuro from "../../assets/Animação tema escuro.mp4";
+import Mascotão from "../../assets/Mascotão.png";
 import { useRef } from "react";
 
 import {
@@ -116,27 +115,9 @@ function Landing() {
                 <div className={styles.direita}>
 
                    
-                         <video
-                        className={styles.videoClaro}
-                        src={MascotãoClaro}
-                        width={540}
-                        height={600}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    />
-
-                    <video
-                        className={styles.videoEscuro}
-                        src={MascotãoEscuro}
-                        width={540}
-                        height={600}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                    />
+                         <img src={Mascotão} 
+                         height={600}
+                         width={600} />
                 </div>
 
             </div>
