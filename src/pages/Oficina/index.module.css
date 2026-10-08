@@ -449,7 +449,7 @@
 
     border:none;
 
-    background:#0fa6b3;
+    background:#0e1316;
 
     cursor:pointer;
 
@@ -462,8 +462,7 @@
 }
 
 .toolbar button:hover{
-
-    background:#99d2fa;
+    color: #0d8e9a;
 
 }
 
@@ -1606,10 +1605,6 @@
     font-weight: 700;
 }
 
-/* =========================================================
-   TEMA ESCURO
-   ========================================================= */
-
 :global([data-theme="escuro"]) .dropdownMenu {
     background: #161c33;
 
@@ -1629,9 +1624,7 @@
     color: #0fa6b3;
 }
 
-/* =========================================================
-   TEMA ESCURO — FUNCIONALIDADES
-   ========================================================= */
+/* Funcionais escuro */
 
 :global([data-theme="escuro"]) .editorVazio {
     background: #161c33;
@@ -1639,6 +1632,21 @@
     color: #a8b1cc;
 }
 
+/*Capitulos*/
+
+:global([data-theme="escuro"]) .capitulosContainer {
+    background: #161c33;
+}
+
+:global([data-theme="escuro"]) .capituloBotao {
+    background: #161c33;
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .novoCapitulo {
+    background: #161c33;
+}
+/*---*/
 :global([data-theme="escuro"]) .editorVazio h2 {
     color: #f1f5f9;
 }

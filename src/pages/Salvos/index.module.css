@@ -1,305 +1,244 @@
+/* ==================== CONTAINER ==================== */
+
 .container {
     display: flex;
     flex-direction: column;
-
     flex: 1;
     width: 100%;
     min-width: 0;
-    min-height: 100vh;
-    height: auto;
-
+    min-height: 100%;
     padding: 30px;
+    box-sizing: border-box;
 
     background: #f8fafc;
     color: #0f1c64;
 
-    font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-        "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* ================= HEADER ================= */
+/* ==================== CABEÇALHO ==================== */
 
 .header {
-
     display: flex;
-
     align-items: center;
-
-    gap: 18px;
-
-    margin-bottom: 30px;
-
+    gap: 14px;
+    margin-bottom: 28px;
 }
 
-.header svg {
-
-    color: #0F1C64;
-
+.iconeHeader {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    color: #0fa6b3;
 }
 
 .header h1 {
-
-    font-size: 3.2rem;
-
-    margin-bottom: 6px;
-
-    color: #0F1C64;
-
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 750;
+    line-height: 1.25;
+    color: #0f1c64;
 }
 
 .header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
 
+/* ==================== ÁREA DE PESQUISA ==================== */
+
+.searchArea {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 22px;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    max-width: 560px;
+    min-height: 48px;
+    padding: 0 15px;
+
+    box-sizing: border-box;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
+
+    background: #ffffff;
     color: #64748b;
 
-    font-size: 1.5rem;
-
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ================= PESQUISA ================= */
-
-.searchArea{
-
-    margin-bottom:25px;
-
+.searchBar:focus-within {
+    border-color: #0fa6b3;
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.12);
 }
 
-.searchBar{
-
-    width:450px;
-
-    height:52px;
-
-    background:white;
-
-    border:1px solid #dbe4ee;
-
-    border-radius:15px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:0 18px;
-
+.iconeBusca {
+    flex-shrink: 0;
+    color: #94a3b8;
 }
 
-.searchBar input{
+.searchBar input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 0;
 
-    flex:1;
+    border: none;
+    outline: none;
+    background: transparent;
 
-    border:none;
-
-    outline:none;
-
-    background:none;
-
-    font-size:1.5rem;
-
-    color:#334155;
-
+    color: #0f1c64;
+    font: inherit;
+    font-size: 0.9rem;
 }
 
-.searchBar svg{
-
-    color:#64748b;
-
+.searchBar input::placeholder {
+    color: #94a3b8;
 }
 
-/* ================= TABS ================= */
+.limparBusca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.tabs{
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    flex-shrink: 0;
 
-    display:flex;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #64748b;
 
-    gap:26px;
-
-    margin-bottom:28px;
-
-    border-bottom:1px solid #dbe4ee;
-
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.tabs button{
-
-    background:none;
-
-    border:none;
-
-    cursor:pointer;
-
-    padding-bottom:14px;
-
-    color:#64748b;
-
-    font-size:1.5rem;
-
-    transition:.2s;
-
+.limparBusca:hover {
+    background: #eaf5f7;
+    color: #0fa6b3;
 }
 
-.tabs button:hover{
-
-    color:#0FA6B3;
-
+.resultados {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.active{
-
-    color:#0FA6B3 !important;
-
-    border-bottom:3px solid #0FA6B3;
-
+.resultados span {
+    color: #64748b;
+    font-size: 0.82rem;
 }
 
-/* ================= TOPO ================= */
+/* ==================== GRADE DE OBRAS ==================== */
 
-.topBar{
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
 
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:28px;
-
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
 }
 
-.topBar span{
+/*
+   O CardLivro continua sendo responsável pelo visual
+   individual de cada obra.
+*/
 
-    font-size:1.6rem;
+/* ==================== ESTADO VAZIO ==================== */
 
-    color:#475569;
+.estadoVazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
+    width: 100%;
+    min-height: 300px;
+    padding: 32px;
+    box-sizing: border-box;
+
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    background: #ffffff;
+
+    text-align: center;
 }
 
-/* ================= BOTÕES ================= */
+.iconeVazio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.actions{
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
 
-    display:flex;
-
-    align-items:center;
-
-    gap:16px;
-
+    border-radius: 18px;
+    background: #e8f8fb;
+    color: #0fa6b3;
 }
 
-.actions button{
-
-    height:44px;
-
-    padding:0 18px;
-
-    border-radius:14px;
-
-    border:1px solid #dbe4ee;
-
-    background:white;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    cursor:pointer;
-
-    color:#334155;
-
-    font-size:1.4rem;
-
-    transition:.2s;
-
+.estadoVazio h2 {
+    margin: 0 0 10px;
+    color: #0f1c64;
+    font-size: 1.35rem;
+    font-weight: 750;
 }
 
-.actions button:hover{
-
-    background:#f5fdff;
-
-    border-color:#0FA6B3;
-
+.estadoVazio p {
+    max-width: 430px;
+    margin: 0;
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
 }
 
-/* ================= GRID / LISTA ================= */
+.estadoVazio button {
+    margin-top: 20px;
+    padding: 11px 18px;
 
-.viewButtons{
+    border: none;
+    border-radius: 10px;
+    background: #0fa6b3;
+    color: #ffffff;
 
-    display:flex;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 650;
 
-    overflow:hidden;
-
-    border-radius:14px;
-
-    border:1px solid #dbe4ee;
-
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.viewButtons button{
-
-    width:46px;
-
-    height:44px;
-
-    border:none;
-
-    border-right:1px solid #dbe4ee;
-
-    background:white;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    cursor:pointer;
-
+.estadoVazio button:hover {
+    background: #0b8792;
+    transform: translateY(-1px);
 }
 
-.viewButtons button:last-child{
-
-    border-right:none;
-
-}
-
-.activeView{
-
-    background:#0FA6B3 !important;
-
-    color:white !important;
-
-}
-
-/* ================= GRID ================= */
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-
-    gap:28px;
-
-    padding-bottom:30px;
-
-}
-
-/* ================================================= */
-/* ================= TEMA ESCURO ================== */
-/* ================================================= */
+/* ==================== TEMA ESCURO ==================== */
 
 :global([data-theme="escuro"]) .container {
     background: #0f1425;
-    color: #f1f5f9;
-}
-
-/* ================= HEADER ================= */
-
-:global([data-theme="escuro"]) .header svg {
     color: #f1f5f9;
 }
 
@@ -307,15 +246,20 @@
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .header p {
+:global([data-theme="escuro"]) .header p,
+:global([data-theme="escuro"]) .resultados span {
     color: #a8b1cc;
 }
 
-/* ================= PESQUISA ================= */
-
 :global([data-theme="escuro"]) .searchBar {
+    border-color: #303b5f;
     background: #161c33;
-    border-color: #2a3153;
+    color: #cbd5e1;
+}
+
+:global([data-theme="escuro"]) .searchBar:focus-within {
+    border-color: #0fa6b3;
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.12);
 }
 
 :global([data-theme="escuro"]) .searchBar input {
@@ -323,116 +267,125 @@
 }
 
 :global([data-theme="escuro"]) .searchBar input::placeholder {
-    color: #7d86a8;
+    color: #8995b4;
 }
 
-:global([data-theme="escuro"]) .searchBar svg {
+:global([data-theme="escuro"]) .iconeBusca {
     color: #a8b1cc;
 }
 
-/* ================= TABS ================= */
-
-:global([data-theme="escuro"]) .tabs {
-    border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .tabs button {
+:global([data-theme="escuro"]) .limparBusca {
     color: #a8b1cc;
 }
 
-:global([data-theme="escuro"]) .tabs button:hover {
-    color: #0FA6B3;
+:global([data-theme="escuro"]) .limparBusca:hover {
+    background: #202944;
+    color: #67d5df;
 }
 
-:global([data-theme="escuro"]) .active {
-    color: #0FA6B3 !important;
-    border-bottom-color: #0FA6B3;
-}
-
-/* ================= TOPO ================= */
-
-:global([data-theme="escuro"]) .topBar span {
-    color: #a8b1cc;
-}
-
-/* ================= BOTÕES ================= */
-
-:global([data-theme="escuro"]) .actions button {
+:global([data-theme="escuro"]) .estadoVazio {
+    border-color: #303b5f;
     background: #161c33;
-    border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .iconeVazio {
+    background: #192c43;
+    color: #67d5df;
+}
+
+:global([data-theme="escuro"]) .estadoVazio h2 {
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .actions button:hover {
-    background: #1c2340;
-    border-color: #0FA6B3;
-}
-
-/* ================= BOTÕES DE VISUALIZAÇÃO ================= */
-
-:global([data-theme="escuro"]) .viewButtons {
-    border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .viewButtons button {
-    background: #161c33;
-    border-right-color: #2a3153;
+:global([data-theme="escuro"]) .estadoVazio p {
     color: #a8b1cc;
 }
 
-:global([data-theme="escuro"]) .viewButtons button:hover {
-    color: #0FA6B3;
+/* ==================== RESPONSIVIDADE ==================== */
+
+@media (min-width: 1600px) {
+    .grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
 }
 
-:global([data-theme="escuro"]) .activeView {
-    background: #0FA6B3 !important;
-    color: #ffffff !important;
+@media (max-width: 1200px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
 }
 
-/* ================= RESPONSIVO ================= */
-
-@media(max-width:1100px){
-
-    .topBar{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:20px;
-
+@media (max-width: 850px) {
+    .container {
+        padding: 24px;
     }
 
-    .actions{
-
-        width:100%;
-
-        flex-wrap:wrap;
-
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
     }
 
+    .header h1 {
+        font-size: 1.8rem;
+    }
 }
 
-@media(max-width:700px){
-
-    .searchBar{
-
-        width:100%;
-
+@media (max-width: 520px) {
+    .container {
+        padding: 18px 14px;
     }
 
-    .tabs{
-
-        overflow-x:auto;
-
-        white-space:nowrap;
-
+    .header {
+        align-items: flex-start;
+        gap: 11px;
+        margin-bottom: 24px;
     }
 
-    .grid{
-
-        grid-template-columns:1fr;
-
+    .iconeHeader {
+        width: 26px;
+        height: 26px;
     }
 
+    .header h1 {
+        font-size: 1.45rem;
+    }
+
+    .header p {
+        font-size: 0.84rem;
+    }
+
+    .searchBar {
+        max-width: none;
+        min-height: 46px;
+        padding: 0 12px;
+    }
+
+    .searchBar input {
+        font-size: 0.84rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .estadoVazio {
+        min-height: 260px;
+        padding: 22px 16px;
+    }
+
+    .estadoVazio h2 {
+        font-size: 1.15rem;
+    }
+
+    .estadoVazio p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 340px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
 }
