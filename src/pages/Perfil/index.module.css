@@ -1,1071 +1,1763 @@
-/* ======================================================
+/* =========================================================
+   READDUO - PERFIL
+   CSS baseado diretamente no JSX atual
+   ========================================================= */
+
+/* =========================================================
    CONTAINER
-====================================================== */
+   ========================================================= */
 
 .container {
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
 
-    width: 100%;
-    flex: 1;
+  padding: 26px 30px 40px;
 
-    padding: 30px;
-    box-sizing: border-box;
-
-    background: #f8fafc;
-    color: #0f1c64;
-
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Oxygen,
-        Ubuntu,
-        Cantarell,
-        "Open Sans",
-        "Helvetica Neue",
-        sans-serif;
+  background: #0d1324;
+  color: #f8fafc;
 }
 
-
-/* ======================================================
+/* =========================================================
    HEADER
-====================================================== */
+   ========================================================= */
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 30px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
 .titulo {
-    display: flex;
-    align-items: center;
-    gap: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.titulo svg {
+  width: 23px;
+  height: 23px;
+
+  color: #f8fafc;
+  stroke-width: 2;
 }
 
 .titulo h1 {
-    font-size: 3rem;
-    font-weight: 700;
+  margin: 0;
+
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  color: #f8fafc;
 }
 
-
-/* ======================================================
-   LAYOUT
-====================================================== */
+/* =========================================================
+   LAYOUT PRINCIPAL
+   ========================================================= */
 
 .layout {
-    display: grid;
+  width: 100%;
 
-    grid-template-columns: 2.6fr 1fr;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 385px;
 
-    gap: 28px;
-
-    align-items: start;
+  gap: 18px;
+  align-items: start;
 }
 
 .left,
 .right {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+  min-width: 0;
 }
 
+/* =========================================================
+   COLUNA ESQUERDA
+   ========================================================= */
 
-/* ======================================================
-   CARD PERFIL
-====================================================== */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* =========================================================
+   CARD PRINCIPAL DO PERFIL
+   ========================================================= */
 
 .profileCard {
-    background: #ffffff;
+  position: relative;
 
-    border: 1px solid #dbe4ee;
+  width: 100%;
+  min-height: 170px;
 
-    border-radius: 22px;
+  box-sizing: border-box;
 
-    padding: 30px;
+  display: flex;
+  align-items: center;
 
-    display: flex;
+  gap: 18px;
 
-    align-items: flex-start;
+  padding: 22px 22px 45px;
 
-    gap: 25px;
+  background: #151c32;
+
+  border: 1px solid #293653;
+  border-radius: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+.profileCard:hover {
+  border-color: #344568;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
 
 .avatar {
-    width: 120px;
-    height: 120px;
+  width: 72px;
+  height: 72px;
 
-    border-radius: 50%;
+  min-width: 72px;
 
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    flex-shrink: 0;
+  border-radius: 50%;
 
-    border: 4px solid #dbe4ee;
+  background: #10182d;
+
+  border: 2px solid #34415f;
+
+  color: #e9efff;
+
+  box-shadow:
+    0 0 0 5px rgba(79, 124, 255, 0.05);
 }
 
-.avatar svg,
-.avatar img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
+.avatar svg {
+  width: 43px;
+  height: 43px;
 }
+
+/* =========================================================
+   INFORMAÇÕES DO PERFIL
+   ========================================================= */
 
 .profileInfo {
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
 
 .nomeLinha {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
 
-    margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .nomeLinha h2 {
-    font-size: 2.6rem;
-    font-weight: 700;
+  margin: 0;
+
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  color: #f8fafc;
 }
 
-.profileInfo > p:first-of-type {
-    color: #64748b;
-
-    margin-bottom: 18px;
+.nomeLinha svg {
+  flex-shrink: 0;
 }
 
+.profileInfo > p {
+  margin: 0 0 10px;
 
-/* ======================================================
-   BARRA XP
-====================================================== */
+  font-size: 11px;
+  line-height: 1.4;
+
+  color: #a9b5cf;
+}
+
+/* =========================================================
+   BARRA DE XP
+   ========================================================= */
 
 .progress {
-    width: 100%;
-    height: 10px;
+  width: 100%;
+  height: 7px;
 
-    background: #e2e8f0;
+  overflow: hidden;
 
-    border-radius: 30px;
+  border-radius: 999px;
 
-    overflow: hidden;
-
-    margin-bottom: 10px;
+  background: #29334e;
 }
 
 .progressFill {
-    width: 70%;
-    height: 100%;
+  height: 100%;
 
-    background: #0fa6b3;
+  border-radius: inherit;
 
-    border-radius: 30px;
+  background: linear-gradient(
+    90deg,
+    #0fa6b3,
+    #13b7c5
+  );
+
+  transition: width 0.5s ease;
 }
 
-.progress + span {
-    color: #64748b;
+.profileInfo > span {
+  display: block;
 
-    font-size: 14px;
+  margin-top: 6px;
+
+  font-size: 9px;
+
+  color: #8996b2;
 }
 
-
-/* ======================================================
+/* =========================================================
    BIO
-====================================================== */
+   ========================================================= */
 
 .bio {
-    margin-top: 20px;
+  margin: 10px 0 9px !important;
 
-    color: #475569;
+  font-size: 10px !important;
+  line-height: 1.4;
 
-    line-height: 1.7;
-
-    font-size: 15px;
+  color: #d2d9e8 !important;
 }
 
-
-/* ======================================================
-   INFORMAÇÕES
-====================================================== */
+/* =========================================================
+   INFORMAÇÕES EXTRAS
+   ========================================================= */
 
 .infoLinha {
-    display: flex;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 
-    flex-wrap: wrap;
+  gap: 13px;
 
-    gap: 18px;
-
-    margin-top: 22px;
+  margin-top: 5px;
 }
 
 .infoLinha span {
-    display: flex;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
-    align-items: center;
+  font-size: 9px;
 
-    gap: 8px;
-
-    color: #64748b;
-
-    font-size: 14px;
+  color: #8996b2;
 }
 
+.infoLinha svg {
+  width: 14px;
+  height: 14px;
 
-/* ======================================================
-   BOTÃO EDITAR
-====================================================== */
+  color: #73819e;
 
-.editar {
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    height: 48px;
-
-    padding: 0 20px;
-
-    border: none;
-
-    border-radius: 14px;
-
-    background: #0fa6b3;
-
-    color: white;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.25s;
+  flex-shrink: 0;
 }
 
-.editar:hover {
-    background: #0d95a1;
+/* =========================================================
+   BOTÕES DO PERFIL
+   ========================================================= */
+
+.profileButtons {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
 }
 
+.botaoPerfil {
+  height: 34px;
 
-/* ======================================================
-   TABS
-====================================================== */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.tabs {
-    display: flex;
+  gap: 6px;
 
-    gap: 30px;
+  padding: 0 13px;
 
-    border-bottom: 1px solid #dbe4ee;
+  border: 1px solid #0fa6b3;
+  border-radius: 7px;
 
-    padding-bottom: 14px;
+  background: #0fa6b3;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
-.tabs button {
-    background: none;
+.botaoPerfil:hover {
+  background: #11b8c6;
+  border-color: #11b8c6;
 
-    border: none;
-
-    color: #64748b;
-
-    font-size: 15px;
-
-    cursor: pointer;
-
-    font-weight: 500;
-
-    transition: 0.25s;
+  transform: translateY(-1px);
 }
 
-.tabs button:hover {
-    color: #0fa6b3;
+.botaoPerfil:active {
+  transform: translateY(0);
 }
 
-.active {
-    color: #0fa6b3 !important;
-
-    position: relative;
-
-    font-weight: 700 !important;
+.botaoPerfil svg {
+  width: 15px;
+  height: 15px;
 }
 
-.active::after {
-    content: "";
+/* =========================================================
+   BOTÃO SEGUINDO
+   ========================================================= */
 
-    position: absolute;
+.seguindo {
+  background: #172b39;
 
-    left: 0;
+  border-color: #2b6670;
 
-    bottom: -15px;
-
-    width: 100%;
-
-    height: 3px;
-
-    border-radius: 20px;
-
-    background: #0fa6b3;
+  color: #48c6d0;
 }
 
+.seguindo:hover {
+  background: #1c3544;
+  border-color: #3a7e89;
+}
 
-/* ======================================================
-   GRID PRINCIPAL
-====================================================== */
+/* =========================================================
+   CONTADOR DE SEGUIDORES
+   ========================================================= */
+
+.contadorSeguidores {
+  position: absolute;
+
+  left: 22px;
+  bottom: 13px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #74829f;
+
+  font-family: inherit;
+  font-size: 9px;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.contadorSeguidores:hover {
+  color: #0fa6b3;
+}
+
+.contadorSeguidores svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* =========================================================
+   CARDS - ATIVIDADE / GÊNEROS
+   ========================================================= */
 
 .cards {
-    display: grid;
+  width: 100%;
 
-    grid-template-columns: 1.4fr 1fr;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr);
 
-    gap: 24px;
+  gap: 18px;
 }
 
-
-/* ======================================================
-   CARD PADRÃO
-====================================================== */
-
 .card {
-    background: #ffffff;
+  min-width: 0;
+  min-height: 250px;
 
-    border: 1px solid #dbe4ee;
+  box-sizing: border-box;
 
-    border-radius: 22px;
+  padding: 18px 20px;
 
-    padding: 24px;
+  background: #151c32;
+
+  border: 1px solid #293653;
+  border-radius: 14px;
+}
+
+/* =========================================================
+   TÍTULO DOS CARDS
+   ========================================================= */
+
+.cardTitulo {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 10px;
 }
 
 .card h3 {
-    font-size: 2rem;
+  margin: 0;
 
-    margin-bottom: 25px;
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #f4f7fc;
 }
 
+.cardTitulo h3 {
+  flex: 1;
+}
 
-/* ======================================================
-   ATIVIDADE RECENTE
-====================================================== */
+.cardQuantidade {
+  min-width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  background: #202b45;
+
+  color: #8d9bb7;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   ATIVIDADES
+   ========================================================= */
 
 .activity {
-    display: flex;
+  min-height: 47px;
 
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
 
-    gap: 20px;
+  gap: 15px;
 
-    padding: 16px 0;
+  padding: 8px 0;
 
-    border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #27324c;
 }
 
-.activity:last-child {
-    border-bottom: none;
+.activity:last-of-type {
+  border-bottom: none;
 }
 
-.activity div {
-    display: flex;
+.activityTexto {
+  min-width: 0;
+  flex: 1;
 
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    gap: 6px;
+  gap: 3px;
 }
 
-.activity strong {
-    font-size: 15px;
+.activityTexto strong {
+  display: block;
 
-    color: #0f1c64;
+  overflow: hidden;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  line-height: 1.3;
+
+  color: #e7ecf7;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.activity span {
-    color: #64748b;
+.activityTexto span {
+  font-size: 8px;
 
-    font-size: 14px;
+  color: #7e8ca8;
 }
 
 .activity small {
-    color: #94a3b8;
+  flex-shrink: 0;
 
-    white-space: nowrap;
+  font-size: 8px;
+
+  color: #7d8aa6;
 }
 
+/* =========================================================
+   BOTÃO VER TUDO
+   ========================================================= */
+
 .verTudo {
-    margin-top: 24px;
+  width: 100%;
+  height: 30px;
 
-    width: 100%;
+  margin-top: 12px;
 
-    height: 46px;
+  border: none;
+  border-radius: 7px;
 
-    border: none;
+  background: #112f47;
 
-    border-radius: 14px;
+  color: #0fa6b3;
 
-    background: #eefcff;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 700;
 
-    color: #0fa6b3;
+  cursor: pointer;
 
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.25s;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .verTudo:hover {
-    background: #d8f7fb;
+  background: #173d59;
+  color: #36c2cc;
 }
 
+/* =========================================================
+   GÊNEROS
+   ========================================================= */
 
-/* ======================================================
-   GÊNEROS MAIS LIDOS
-====================================================== */
+.generosConteudo {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 25px;
+
+  min-height: 190px;
+}
 
 .grafico {
-    display: flex;
+  width: 150px;
+  min-width: 150px;
 
-    justify-content: center;
-
-    align-items: center;
-
-    margin: 25px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* =========================================================
+   GRÁFICO DONUT
+   ========================================================= */
+
 .circle {
-    width: 180px;
-    height: 180px;
+  position: relative;
 
-    border-radius: 50%;
+  width: 125px;
+  height: 125px;
 
-    background:
-        conic-gradient(
-            #7c3aed 0% 45%,
-            #2563eb 45% 65%,
-            #22c55e 65% 80%,
-            #ec4899 80% 90%,
-            #94a3b8 90% 100%
-        );
+  border-radius: 50%;
 
-    position: relative;
+  background: conic-gradient(
+    #7c3aed 0deg 162deg,
+    #2563eb 162deg 234deg,
+    #22c55e 234deg 288deg,
+    #ec4899 288deg 324deg,
+    #94a3b8 324deg 360deg
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .circle::after {
-    content: "";
+  content: "";
 
-    position: absolute;
+  position: absolute;
 
-    inset: 28px;
+  width: 82px;
+  height: 82px;
 
-    border-radius: 50%;
+  border-radius: 50%;
 
-    background: #ffffff;
+  background: #151c32;
 }
 
+.circleCentro {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 2px;
+}
+
+.circleCentro strong {
+  font-size: 18px;
+
+  color: #f8fafc;
+}
+
+.circleCentro span {
+  font-size: 8px;
+
+  color: #7f8ca7;
+}
+
+/* =========================================================
+   LISTA DE GÊNEROS
+   ========================================================= */
+
 .generos {
-    list-style: none;
+  flex: 1;
 
-    display: flex;
+  display: flex;
+  flex-direction: column;
 
-    flex-direction: column;
+  gap: 12px;
 
-    gap: 14px;
+  margin: 0;
+  padding: 0;
 
-    padding: 0;
-
-    margin-top: 25px;
+  list-style: none;
 }
 
 .generos li {
-    color: #475569;
+  display: grid;
 
-    font-size: 15px;
+  grid-template-columns: 8px 1fr auto;
 
-    display: flex;
+  align-items: center;
 
-    justify-content: space-between;
+  gap: 7px;
+
+  font-size: 9px;
+
+  color: #aab5cb;
 }
 
+.generos li strong {
+  font-size: 9px;
 
-/* ======================================================
-   SEQUÊNCIA DE LEITURA
-====================================================== */
+  color: #f1f4fa;
+}
+
+/* =========================================================
+   PONTOS DO GRÁFICO
+   ========================================================= */
+
+.pontoFantasia,
+.pontoDistopia,
+.pontoMisterio,
+.pontoFiccao,
+.pontoOutros {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.pontoFantasia {
+  background: #7c3aed;
+}
+
+.pontoDistopia {
+  background: #2563eb;
+}
+
+.pontoMisterio {
+  background: #22c55e;
+}
+
+.pontoFiccao {
+  background: #ec4899;
+}
+
+.pontoOutros {
+  background: #94a3b8;
+}
+
+/* =========================================================
+   SEQUÊNCIA
+   ========================================================= */
 
 .sequencia {
-    background: #ffffff;
+  width: 100%;
 
-    border: 1px solid #dbe4ee;
+  box-sizing: border-box;
 
-    border-radius: 22px;
+  padding: 18px 20px;
 
-    padding: 24px;
+  background: #151c32;
+
+  border: 1px solid #293653;
+  border-radius: 14px;
 }
 
 .seqTitulo {
-    display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    align-items: center;
+  margin-bottom: 20px;
+}
 
-    gap: 12px;
+.seqTitulo > div {
+  display: flex;
+  align-items: center;
 
-    margin-bottom: 28px;
+  gap: 8px;
 }
 
 .seqTitulo h2 {
-    flex: 1;
+  margin: 0;
 
-    font-size: 2rem;
+  font-size: 12px;
+  font-weight: 700;
 
-    color: #0f1c64;
+  color: #f4f7fc;
 }
 
 .seqTitulo span {
-    color: #fb923c;
+  font-size: 10px;
+  font-weight: 700;
 
-    font-weight: 700;
-
-    font-size: 18px;
+  color: #fb923c;
 }
 
+/* =========================================================
+   DIAS
+   ========================================================= */
+
 .dias {
-    display: flex;
+  width: 100%;
 
-    justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
 
-    gap: 14px;
+  gap: 10px;
 }
 
 .dia {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 10px;
-
-    flex: 1;
+  gap: 7px;
 }
 
 .bolinha {
-    width: 46px;
-    height: 46px;
+  width: 29px;
+  height: 29px;
 
-    border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    background: #22c55e;
+  border-radius: 50%;
 
-    color: white;
+  background: #20c568;
 
-    display: flex;
+  color: #ffffff;
 
-    justify-content: center;
-
-    align-items: center;
-
-    font-weight: bold;
-
-    font-size: 18px;
-
-    transition: 0.25s;
+  box-shadow:
+    0 0 0 4px rgba(32, 197, 104, 0.08);
 }
 
-.bolinha:hover {
-    transform: scale(1.08);
+.bolinha svg {
+  width: 14px;
+  height: 14px;
 }
 
 .dia small {
-    color: #64748b;
+  font-size: 8px;
 
-    font-size: 13px;
+  color: #7e8ba6;
 }
 
-
-/* ======================================================
-   GRID ESTATÍSTICAS
-====================================================== */
+/* =========================================================
+   ESTATÍSTICAS
+   ========================================================= */
 
 .statsGrid {
-    display: grid;
+  display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-    gap: 18px;
+  gap: 12px;
 }
 
 .statCard {
-    background: #ffffff;
+  min-height: 100px;
 
-    border: 1px solid #dbe4ee;
+  box-sizing: border-box;
 
-    border-radius: 18px;
+  padding: 14px 15px;
 
-    padding: 22px;
+  display: flex;
+  flex-direction: column;
 
-    display: flex;
+  justify-content: center;
 
-    flex-direction: column;
+  background: #151c32;
 
-    gap: 10px;
+  border: 1px solid #293653;
+  border-radius: 11px;
 
-    transition: 0.25s;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .statCard:hover {
-    transform: translateY(-5px);
+  transform: translateY(-2px);
 
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border-color: #354568;
+
+  background: #182039;
+}
+
+.statIcon {
+  height: 21px;
+
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 5px;
+}
+
+.statIcon svg {
+  width: 19px;
+  height: 19px;
 }
 
 .statCard small {
-    color: #64748b;
+  font-size: 8px;
 
-    font-size: 14px;
+  color: #8996b1;
 }
 
 .statCard h3 {
-    font-size: 30px;
+  margin: 4px 0 3px;
 
-    color: #0f1c64;
+  font-size: 19px;
+  line-height: 1;
+
+  font-weight: 700;
+
+  color: #f5f7fb;
 }
 
-.statCard span {
-    color: #94a3b8;
+.statCard > span {
+  font-size: 7px;
 
-    font-size: 13px;
+  color: #74819c;
 }
 
-
-/* ======================================================
-   SIDE CARD
-====================================================== */
+/* =========================================================
+   CARDS LATERAIS
+   ========================================================= */
 
 .sideCard {
-    background: #ffffff;
+  width: 100%;
 
-    border: 1px solid #dbe4ee;
+  box-sizing: border-box;
 
-    border-radius: 20px;
+  padding: 17px 18px;
 
-    padding: 22px;
+  background: #151c32;
+
+  border: 1px solid #293653;
+  border-radius: 14px;
 }
 
+/* =========================================================
+   HEADER DOS CARDS LATERAIS
+   ========================================================= */
+
 .cardHeader {
-    display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    justify-content: space-between;
+  margin-bottom: 12px;
+}
 
-    align-items: center;
+.cardHeader > div {
+  display: flex;
+  align-items: center;
 
-    margin-bottom: 24px;
+  gap: 7px;
+}
+
+.cardHeader > div svg {
+  width: 17px;
+  height: 17px;
+
+  color: #0fa6b3;
 }
 
 .cardHeader h3 {
-    font-size: 20px;
+  margin: 0;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  color: #f4f7fc;
 }
 
 .cardHeader button {
-    border: none;
+  padding: 0;
 
-    background: none;
+  border: none;
+  background: transparent;
 
-    color: #0fa6b3;
+  color: #0fa6b3;
 
-    cursor: pointer;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 600;
 
-    font-weight: 600;
+  cursor: pointer;
+
+  transition: color 0.2s ease;
 }
 
+.cardHeader button:hover {
+  color: #37c3cc;
+}
 
-/* ======================================================
-   CONQUISTAS / AMIGOS
-====================================================== */
+/* =========================================================
+   ITENS - CONQUISTAS / AMIGOS
+   ========================================================= */
 
 .item {
-    display: flex;
+  min-height: 44px;
 
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    gap: 16px;
+  gap: 9px;
 
-    padding: 15px 0;
+  padding: 8px 0;
 
-    border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #27324c;
 }
 
 .item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-.item > div:not(.avatarMini) {
-    flex: 1;
+.item > div:not(.conquistaIcon):not(.avatarMini) {
+  min-width: 0;
 
-    display: flex;
+  flex: 1;
 
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    gap: 4px;
+  gap: 3px;
 }
 
 .item strong {
-    color: #0f1c64;
+  display: block;
+
+  overflow: hidden;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  color: #e7ecf7;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .item span {
-    color: #64748b;
+  font-size: 7px;
 
-    font-size: 14px;
+  color: #7e8ba6;
 }
 
 .item small {
-    color: #94a3b8;
+  flex-shrink: 0;
 
-    white-space: nowrap;
+  font-size: 7px;
+
+  color: #7c89a4;
 }
 
+/* =========================================================
+   ÍCONE DE CONQUISTA
+   ========================================================= */
 
-/* ======================================================
-   AVATAR AMIGOS
-====================================================== */
+.conquistaIcon {
+  width: 28px;
+  height: 28px;
+
+  min-width: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: rgba(97, 166, 250, 0.09);
+}
+
+.conquistaIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* =========================================================
+   AVATAR DOS AMIGOS
+   ========================================================= */
 
 .avatarMini {
-    width: 46px;
+  width: 31px;
+  height: 31px;
 
-    height: 46px;
+  min-width: 31px;
 
-    border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    background:
-        linear-gradient(
-            135deg,
-            #0fa6b3,
-            #4f7cff
-        );
+  border-radius: 50%;
 
-    color: white;
+  background: linear-gradient(
+    135deg,
+    #0fa6b3,
+    #4f7cff
+  );
 
-    display: flex;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   STATUS DOS AMIGOS
+   ========================================================= */
+
+.statusOnline {
+  color: #22c55e !important;
+
+  position: relative;
+
+  padding-left: 8px;
+}
+
+.statusOnline::before {
+  content: "";
+
+  position: absolute;
+
+  width: 5px;
+  height: 5px;
+
+  left: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border-radius: 50%;
+
+  background: #22c55e;
+}
+
+.statusOffline {
+  color: #68758f !important;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 28px;
+
+  transform: translateX(-50%);
+
+  z-index: 1000;
+
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 17px;
+
+  border-radius: 9px;
+
+  background: #17243a;
+
+  border: 1px solid #0fa6b3;
+
+  color: #eafcff;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.35);
+
+  animation:
+    toastEntrada 0.25s ease-out;
+}
+
+.toast svg {
+  color: #25c4ce;
+}
+
+@keyframes toastEntrada {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* =========================================================
+   MODAL - OVERLAY
+   ========================================================= */
+
+.modalOverlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(4, 8, 19, 0.76);
+
+  backdrop-filter: blur(5px);
+
+  animation: overlayEntrada 0.2s ease;
+}
+
+@keyframes overlayEntrada {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+
+  max-height: calc(100vh - 40px);
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  padding: 22px;
+
+  background: #171e35;
+
+  border: 1px solid #30405f;
+  border-radius: 14px;
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.5);
+
+  animation: modalEntrada 0.25s ease-out;
+}
+
+@keyframes modalEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   HEADER DO MODAL
+   ========================================================= */
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-bottom: 16px;
+
+  margin-bottom: 18px;
+
+  border-bottom: 1px solid #293653;
+}
+
+.modalHeader > div {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.modalHeader > div svg {
+  color: #0fa6b3;
+}
+
+.modalHeader h2 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  color: #f8fafc;
+}
+
+/* =========================================================
+   FECHAR MODAL
+   ========================================================= */
+
+.fecharModal {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #303d5b;
+  border-radius: 7px;
+
+  background: #202941;
+
+  color: #9ba8c1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.fecharModal:hover {
+  background: #2a344e;
+
+  border-color: #41516f;
+
+  color: #ffffff;
+}
+
+/* =========================================================
+   FORMULÁRIO
+   ========================================================= */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.formulario label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  color: #cbd4e5;
+}
+
+.formulario input,
+.formulario textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 10px 11px;
+
+  border: 1px solid #303d5b;
+  border-radius: 7px;
+
+  outline: none;
+
+  background: #10182d;
+
+  color: #f4f7fc;
+
+  font-family: inherit;
+  font-size: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.formulario input {
+  height: 38px;
+}
+
+.formulario textarea {
+  min-height: 80px;
+
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+.formulario input::placeholder,
+.formulario textarea::placeholder {
+  color: #64728e;
+}
+
+.formulario input:focus,
+.formulario textarea:focus {
+  border-color: #0fa6b3;
+
+  background: #121c32;
+
+  box-shadow:
+    0 0 0 3px rgba(15, 166, 179, 0.10);
+}
+
+.formulario small {
+  font-size: 8px;
+  font-weight: 400;
+
+  color: #68758f;
+}
+
+/* =========================================================
+   BOTÕES DO MODAL
+   ========================================================= */
+
+.modalBotoes {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 9px;
+
+  padding-top: 5px;
+}
+
+.cancelar,
+.salvar {
+  min-height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 0 14px;
+
+  border-radius: 7px;
+
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cancelar {
+  border: 1px solid #303d5b;
+
+  background: #202941;
+
+  color: #a8b4ca;
+}
+
+.cancelar:hover {
+  background: #29334c;
+
+  border-color: #3b4967;
+
+  color: #ffffff;
+}
+
+.salvar {
+  border: 1px solid #0fa6b3;
+
+  background: #0fa6b3;
+
+  color: #ffffff;
+}
+
+.salvar:hover {
+  background: #11b8c6;
+
+  border-color: #11b8c6;
+
+  transform: translateY(-1px);
+}
+
+.salvar svg,
+.cancelar svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #34415e;
+
+  border-radius: 999px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #455572;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 1250px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 330px;
+  }
+
+  .profileCard {
+    gap: 14px;
+  }
+
+  .profileButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .botaoPerfil {
+    min-width: 120px;
+  }
+
+  .generosConteudo {
+    gap: 15px;
+  }
+
+  .grafico {
+    width: 125px;
+    min-width: 125px;
+  }
+
+  .circle {
+    width: 105px;
+    height: 105px;
+  }
+
+  .circle::after {
+    width: 69px;
+    height: 69px;
+  }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .right {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+  }
+
+  .statsGrid {
+    grid-column: 1 / -1;
+  }
+
+  .sideCard {
+    min-width: 0;
+  }
+
+  .profileButtons {
+    flex-direction: row;
+  }
+}
+
+/* =========================================================
+   TABLET PEQUENO
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .container {
+    padding: 20px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .profileCard {
+    flex-wrap: wrap;
+
+    padding-bottom: 48px;
+  }
+
+  .profileInfo {
+    min-width: calc(100% - 90px);
+  }
+
+  .profileButtons {
+    width: 100%;
+
+    margin-top: 5px;
+
+    justify-content: flex-end;
+  }
+
+  .right {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .generosConteudo {
+    justify-content: center;
+  }
+
+  .dias {
+    gap: 5px;
+  }
+}
+
+/* =========================================================
+   CELULAR
+   ========================================================= */
+
+@media (max-width: 560px) {
+  .container {
+    padding: 16px 13px 30px;
+  }
+
+  .header {
+    margin-bottom: 18px;
+  }
+
+  .titulo h1 {
+    font-size: 21px;
+  }
+
+  .titulo svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .profileCard {
+    padding: 17px;
+
+    padding-bottom: 52px;
+
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 58px;
+    height: 58px;
+
+    min-width: 58px;
+  }
+
+  .avatar svg {
+    width: 35px;
+    height: 35px;
+  }
+
+  .profileInfo {
+    min-width: calc(100% - 70px);
+  }
+
+  .nomeLinha h2 {
+    font-size: 15px;
+  }
+
+  .profileButtons {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .botaoPerfil {
+    width: 100%;
+  }
+
+  .contadorSeguidores {
+    left: 17px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .generosConteudo {
+    flex-direction: column;
+
+    gap: 20px;
+  }
+
+  .grafico {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .generos {
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statCard {
+    min-height: 90px;
+  }
+
+  .statCard h3 {
+    font-size: 16px;
+  }
+
+  .dias {
+    grid-template-columns: repeat(4, 1fr);
+
+    row-gap: 15px;
+  }
+
+  .sequencia {
+    padding: 16px;
+  }
+
+  .modal {
+    padding: 18px;
+
+    max-height: calc(100vh - 30px);
+  }
+
+  .modalBotoes {
+    flex-direction: column-reverse;
+  }
+
+  .cancelar,
+  .salvar {
+    width: 100%;
+  }
+
+  .toast {
+    width: calc(100% - 30px);
 
     justify-content: center;
 
-    align-items: center;
-
-    font-weight: 700;
-
-    flex-shrink: 0;
+    text-align: center;
+  }
 }
 
-
-/* ======================================================
-   MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .container {
-    background: #0f1426;
-
-    color: #f1f5f9;
-}
-
-
-/* ======================================================
-   CARDS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .profileCard,
-:global([data-theme="escuro"]) .card,
-:global([data-theme="escuro"]) .sequencia,
-:global([data-theme="escuro"]) .statCard,
-:global([data-theme="escuro"]) .sideCard {
-    background: #171d33;
-
-    border-color: #2b3555;
-
-    color: #f1f5f9;
-}
-
-
-/* ======================================================
-   TEXTOS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .titulo h1,
-:global([data-theme="escuro"]) .nomeLinha h2,
-:global([data-theme="escuro"]) .card h3,
-:global([data-theme="escuro"]) .seqTitulo h2,
-:global([data-theme="escuro"]) .statCard h3,
-:global([data-theme="escuro"]) .cardHeader h3 {
-    color: #f1f5f9;
-}
-
-
-/* ======================================================
-   PERFIL - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .profileInfo > p:first-of-type {
-    color: #aab6d3;
-}
-
-:global([data-theme="escuro"]) .bio {
-    color: #cbd5e1;
-}
-
-:global([data-theme="escuro"]) .infoLinha span {
-    color: #aab6d3;
-}
-
-:global([data-theme="escuro"]) .avatar {
-    border-color: #2b3555;
-}
-
-
-/* ======================================================
-   XP - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .progress {
-    background: #29334f;
-}
-
-:global([data-theme="escuro"]) .progress + span {
-    color: #aab6d3;
-}
-
-
-/* ======================================================
-   TABS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .tabs {
-    border-color: #2b3555;
-}
-
-:global([data-theme="escuro"]) .tabs button {
-    color: #94a3b8;
-}
-
-:global([data-theme="escuro"]) .tabs button:hover {
-    color: #0fa6b3;
-}
-
-
-/* ======================================================
-   ATIVIDADE - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .activity {
-    border-color: #2b3555;
-}
-
-:global([data-theme="escuro"]) .activity strong {
-    color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .activity span {
-    color: #aab6d3;
-}
-
-:global([data-theme="escuro"]) .activity small {
-    color: #8491b0;
-}
-
-
-/* ======================================================
-   BOTÃO VER TUDO - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .verTudo {
-    background: #102b42;
-
-    color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .verTudo:hover {
-    background: #143b56;
-}
-
-
-/* ======================================================
-   GÊNEROS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .circle::after {
-    background: #171d33;
-}
-
-:global([data-theme="escuro"]) .generos li {
-    color: #aab6d3;
-}
-
-
-/* ======================================================
-   SEQUÊNCIA - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .seqTitulo h2 {
-    color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .seqTitulo span {
-    color: #fb923c;
-}
-
-:global([data-theme="escuro"]) .dia small {
-    color: #aab6d3;
-}
-
-
-/* ======================================================
-   ESTATÍSTICAS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .statCard small {
-    color: #aab6d3;
-}
-
-:global([data-theme="escuro"]) .statCard span {
-    color: #8491b0;
-}
-
-:global([data-theme="escuro"]) .statCard:hover {
-    background: #1c2440;
-
-    border-color: #3a476b;
-
-    box-shadow: none;
-}
-
-
-/* ======================================================
-   SIDE CARDS - MODO ESCURO
-====================================================== */
-
-:global([data-theme="escuro"]) .item {
-    border-color: #2b3555;
-}
-
-:global([data-theme="escuro"]) .item strong {
-    color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .item span {
-    color: #aab6d3;
-}
-
-:global([data-theme="escuro"]) .item small {
-    color: #8491b0;
-}
-
-
-/* ======================================================
-   RESPONSIVIDADE
-====================================================== */
-
-@media (max-width: 1300px) {
-
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .right {
-        order: -1;
-    }
-
-}
-
-
-@media (max-width: 950px) {
-
-    .profileCard {
-        flex-direction: column;
-
-        align-items: center;
-
-        text-align: center;
-    }
-
-    .profileInfo {
-        width: 100%;
-
-        align-items: center;
-    }
-
-    .nomeLinha {
-        justify-content: center;
-    }
-
-    .infoLinha {
-        justify-content: center;
-    }
-
-    .editar {
-        width: 100%;
-
-        justify-content: center;
-
-        margin-top: 25px;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-
-@media (max-width: 700px) {
-
-    .container {
-        padding: 20px;
-    }
-
-    .header {
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        gap: 15px;
-    }
-
-    .titulo h1 {
-        font-size: 2rem;
-    }
-
-    .statsGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .dias {
-        flex-wrap: wrap;
-
-        justify-content: center;
-    }
-
-    .dia {
-        min-width: 60px;
-    }
-
-    .tabs {
-        overflow-x: auto;
-
-        white-space: nowrap;
-
-        gap: 18px;
-
-        padding-bottom: 20px;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
-
-    .circle {
-        width: 150px;
-        height: 150px;
-    }
-
+/* =========================================================
+   ACESSIBILIDADE
+   ========================================================= */
+
+.botaoPerfil:focus-visible,
+.contadorSeguidores:focus-visible,
+.verTudo:focus-visible,
+.cardHeader button:focus-visible,
+.fecharModal:focus-visible,
+.cancelar:focus-visible,
+.salvar:focus-visible,
+.formulario input:focus-visible,
+.formulario textarea:focus-visible {
+  outline: 2px solid #0fa6b3;
+  outline-offset: 2px;
 }
