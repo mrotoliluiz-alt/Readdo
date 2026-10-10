@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
-import CardLivro from "../../componentes/cardLivro";
+import CardLivro from "../../componentes/CardLivro";
 
 import {
   Search,

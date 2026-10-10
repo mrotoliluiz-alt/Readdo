@@ -78,7 +78,7 @@ function Salvos() {
         <div className={styles.searchBar}>
           <Search className={styles.iconeBusca} size={20} />
 
-          <input
+          <input className={styles.inputPesquisa}
             type="text"
             placeholder="Buscar por título, autor ou gênero..."
             value={busca}

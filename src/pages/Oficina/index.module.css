@@ -1,12 +1,11 @@
 .container {
     display: flex;
     flex-direction: column;
-
     flex: 1;
     width: 100%;
     min-width: 0;
-    height: 100%;
-
+    min-height: 100%;
+    box-sizing: border-box;
     padding: 30px;
 
     background: #f8fafc;
@@ -15,1535 +14,957 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
         "Open Sans", "Helvetica Neue", sans-serif;
+
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
 /* ================= HEADER ================= */
 
-.header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:30px;
-
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 30px;
 }
 
-.headerInfo{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
+.headerInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
 }
 
-.title{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
+.title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.title h1{
-
-    font-size:3.2rem;
-
-    color:#0F1C64;
-
+.title > svg {
+    flex-shrink: 0;
+    color: #0FA6B3;
+    filter: drop-shadow(0 2px 5px rgba(15, 166, 179, 0.15));
 }
 
-.headerInfo p{
-
-    color:#64748b;
-
-    font-size:1.5rem;
-
+.title h1 {
+    margin: 0;
+    color: #0F1C64;
+    font-size: 3.2rem;
+    font-weight: 750;
+    letter-spacing: -1px;
 }
 
-/* ================= BOTÕES ================= */
-
-.headerButtons{
-
-    display:flex;
-
-    gap:16px;
-
+.headerInfo p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1.5rem;
+    line-height: 1.5;
 }
 
-.importar{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:12px 22px;
-
-    background:white;
-
-    border:1px solid #dbe4ee;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-    color:#0F1C64;
-
+.headerButtons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.importar:hover{
+/* ================= BOTÕES DO HEADER ================= */
 
-    background:#f5fdff;
+.importar,
+.novaObra {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
 
+    min-height: 44px;
+    padding: 11px 20px;
+    box-sizing: border-box;
+
+    border-radius: 13px;
+    cursor: pointer;
+
+    font: inherit;
+    font-size: 1.3rem;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
-.novaObra{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:12px 24px;
-
-    border:none;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-    color:white;
-
-    font-weight:600;
-
-    background:linear-gradient(90deg,#7c3aed,#ec4899);
-
-    transition:.25s;
-
+.importar {
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    color: #0F1C64;
+    box-shadow: 0 2px 5px rgba(15, 28, 100, 0.03);
 }
 
-.novaObra:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:0 8px 18px rgba(124,58,237,.25);
-
+.importar svg {
+    color: #0FA6B3;
 }
 
-/* ================= ÁREA ================= */
+.importar:hover {
+    background: #f5fdff;
+    border-color: #b8eef4;
+    box-shadow: 0 5px 13px rgba(15, 166, 179, 0.09);
+    transform: translateY(-1px);
+}
 
-.workspace{
+.novaObra {
+    border: 1px solid transparent;
+    color: #ffffff;
+    background: linear-gradient(100deg, #7c3aed, #ec4899);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.13);
+}
 
-    display:flex;
+.novaObra:hover {
+    box-shadow: 0 7px 17px rgba(124, 58, 237, 0.22);
+    transform: translateY(-2px);
+}
 
-    gap:24px;
+.importar:active,
+.novaObra:active {
+    transform: scale(0.98);
+}
 
-    height:calc(100vh - 220px);
+.importar:focus-visible,
+.novaObra:focus-visible,
+.obrasHeader button:focus-visible,
+.obraCard button:focus-visible,
+.verTodas:focus-visible,
+.toolbar button:focus-visible,
+.dropdownBotao:focus-visible,
+.dropdownMenu button:focus-visible,
+.novoCapitulo:focus-visible,
+.capituloBotao:focus-visible,
+.editarInfo:focus-visible,
+.botaoImagem:focus-visible,
+.cancelar:focus-visible,
+.confirmar:focus-visible,
+.fecharModal:focus-visible {
+    outline: 2px solid #0FA6B3;
+    outline-offset: 3px;
+}
 
+/* ================= ÁREA PRINCIPAL ================= */
+
+.workspace {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    min-width: 0;
+    height: calc(100vh - 220px);
+    min-height: 480px;
 }
 
 /* ================= SIDEBAR ================= */
 
-.sidebar{
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 320px;
+    width: 320px;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 18px;
 
-    width:320px;
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    border-radius: 20px;
 
-    background:white;
+    box-shadow: 0 5px 18px rgba(15, 28, 100, 0.045);
 
-    border:1px solid #dbe4ee;
-
-    border-radius:20px;
-
-    padding:18px;
-
-    display:flex;
-
-    flex-direction:column;
-
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
-/* ================= BUSCA ================= */
+/* ================= BARRA DE BUSCA ================= */
 
-.searchBar{
+.searchBar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    display:flex;
+    padding: 12px 15px;
+    min-height: 48px;
+    box-sizing: border-box;
 
-    justify-content:space-between;
+    background: #f8fafc;
+    border: 1px solid #dbe4ee;
+    border-radius: 13px;
 
-    align-items:center;
-
-    background:#f8fafc;
-
-    border:1px solid #dbe4ee;
-
-    border-radius:14px;
-
-    padding:12px 16px;
-
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
-.searchBar input{
-
-    border:none;
-
-    background:none;
-
-    outline:none;
-
-    flex:1;
-
+.searchBar:focus-within {
+    background: #ffffff;
+    border-color: #0FA6B3;
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.11);
 }
 
-.searchBar svg{
+.searchBar input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
 
-    color:#64748b;
+    border: none;
+    outline: none;
+    background: transparent;
 
+    color: #0F1C64;
+    font: inherit;
+    font-size: 1.3rem;
 }
 
-/* ================= HEADER SIDEBAR ================= */
-
-.obrasHeader{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin:24px 0 16px;
-
+.searchBar input::placeholder {
+    color: #94a3b8;
 }
 
-.obrasHeader span{
-
-    font-size:1.3rem;
-
-    color:#64748b;
-
-    font-weight:600;
-
+.searchBar > svg {
+    flex-shrink: 0;
+    color: #64748b;
+    transition: color 0.2s ease;
 }
 
-.obrasHeader button{
-
-    border:none;
-
-    background:none;
-
-    cursor:pointer;
-
+.searchBar:focus-within > svg {
+    color: #0FA6B3;
 }
 
-/* ================= LISTA ================= */
+/* ================= CABEÇALHO DAS OBRAS ================= */
 
-.listaObras{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:12px;
-
-    overflow-y:auto;
-
+.obrasHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 22px 0 14px;
 }
 
-/* ================= CARD ================= */
-
-.obraCard{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    padding:16px;
-
-    border-radius:16px;
-
-    cursor:pointer;
-
-    transition:.25s;
-
+.obrasHeader span {
+    color: #64748b;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.7px;
 }
 
-.obraCard:hover{
+/* Botão de adicionar obra */
+.obrasHeader button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 
-    background:#f5fdff;
+    width: 40px;
+    height: 40px;
+    padding: 0;
 
+    color: #0FA6B3;
+    background: #f5fdff;
+    border: 1px solid #b8eef4;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 5px rgba(15, 28, 100, 0.04);
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
-.obraCard h3{
-
-    font-size:1.7rem;
-
-    color:#0F1C64;
-
-    margin-bottom:5px;
-
+.obrasHeader button svg {
+    width: 19px;
+    height: 19px;
+    stroke-width: 2;
 }
 
-.obraCard span{
-
-    color:#0FA6B3;
-
-    font-size:1.3rem;
-
+.obrasHeader button:hover {
+    color: #ffffff;
+    background: #0FA6B3;
+    border-color: #0FA6B3;
+    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
+    transform: translateY(-1px);
 }
 
-.obraCard p{
-
-    margin-top:6px;
-
-    color:#64748b;
-
-    font-size:1.2rem;
-
+.obrasHeader button:active {
+    transform: scale(0.96);
 }
 
-.obraCard button{
-
-    background:none;
-
-    border:none;
-
-    cursor:pointer;
-
-    color:#64748b;
-
+.obrasHeader button:focus-visible {
+    outline: 2px solid #0FA6B3;
+    outline-offset: 3px;
 }
 
-.obraAtiva{
 
-    background:#dff5ff;
 
-    border:1px solid #8fdcf2;
+/* ================= LISTA DE OBRAS ================= */
 
+.listaObras {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 2px 3px 8px 0;
+}
+
+/* ================= CARD DA OBRA ================= */
+
+.obraCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 14px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+
+    background: #f8fafc;
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.obraCard:hover {
+    background: #f5fdff;
+    border-color: #b8eef4;
+    box-shadow: 0 5px 14px rgba(15, 28, 100, 0.055);
+    transform: translateY(-1px);
+}
+
+.obraCard h3 {
+    margin: 0 0 5px;
+    color: #0F1C64;
+    font-size: 1.45rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.obraCard span {
+    color: #0FA6B3;
+    font-size: 1.2rem;
+}
+
+.obraCard p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 1.15rem;
+    line-height: 1.5;
+}
+
+.obraCard button {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    color: #94a3b8;
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.obraCard button:hover {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #e11d48;
+}
+
+.obraAtiva {
+    background: #e8fafd;
+    border: 1px solid #0FA6B3;
+    box-shadow: 0 3px 10px rgba(15, 166, 179, 0.09);
+}
+
+.obraAtiva:hover {
+    background: #e8fafd;
+    border-color: #0FA6B3;
+}
+
+.obraAtiva h3 {
+    color: #0F1C64;
+}
+
+.obraAtiva span {
+    color: #0b8d99;
+}
+
+.obraAtiva p {
+    color: #52657e;
 }
 
 /* ================= VER TODAS ================= */
 
-.verTodas{
+.verTodas {
+    display: flex;
+    align-items: center;
+    gap: 9px;
 
-    margin-top:auto;
+    margin-top: auto;
+    padding: 16px 8px 3px;
 
-    display:flex;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
 
-    align-items:center;
+    color: #64748b;
+    font: inherit;
+    font-size: 1.3rem;
 
-    gap:10px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
 
-    border:none;
-
-    background:none;
-
-    cursor:pointer;
-
-    color:#64748b;
-
-    padding-top:20px;
-
+.verTodas:hover {
+    background: #f5fdff;
+    color: #0FA6B3;
 }
 
 /* ================= EDITOR ================= */
 
-.editor{
+.editor {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 
-    flex:1;
+    min-width: 0;
+    min-height: 0;
 
-    display:flex;
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    border-radius: 20px;
+    overflow: hidden;
 
-    flex-direction:column;
+    box-shadow: 0 5px 20px rgba(15, 28, 100, 0.045);
 
-    background:white;
-
-    border-radius:20px;
-
-    border:1px solid #dbe4ee;
-
-    overflow:hidden;
-
+    transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-/* ================= HEADER EDITOR ================= */
+/* ================= CABEÇALHO DO EDITOR ================= */
 
-.editorHeader{
+.editorHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
 
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:24px;
-
-    border-bottom:1px solid #dbe4ee;
-
+    padding: 24px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.editorHeader h2{
-
-    font-size:2.6rem;
-
-    color:#0F1C64;
-
+.editorHeader h2 {
+    margin: 0;
+    color: #0F1C64;
+    font-size: 2.5rem;
+    font-weight: 750;
+    overflow-wrap: anywhere;
 }
 
-.salvamento{
+.salvamento {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
 
-    display:flex;
+    margin-top: 8px;
 
-    align-items:center;
-
-    gap:8px;
-
-    margin-top:8px;
-
-    color:#64748b;
-
-    font-size:1.3rem;
-
+    color: #64748b;
+    font-size: 1.2rem;
 }
 
-.palavras{
-
-    color:#64748b;
-
-    font-size:1.4rem;
-
+.palavras {
+    flex-shrink: 0;
+    color: #64748b;
+    font-size: 1.3rem;
 }
 
-/* ================= TOOLBAR ================= */
+/* ================= CAPAS E INFORMAÇÕES DA OBRA ================= */
 
-.toolbar{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:12px 20px;
-
-    border-bottom:1px solid #dbe4ee;
-
+.infoObra {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    min-width: 0;
 }
 
-.toolbar button{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    border:none;
-
-    background:#0e1316;
-
-    cursor:pointer;
-
-    padding:8px 10px;
-
-    border-radius:8px;
-
-    transition:.2s;
-
-}
-
-.toolbar button:hover{
-    color: #0d8e9a;
-
-}
-
-/* ================= EDITOR TEXTO ================= */
-
-.textEditor{
-
-    flex:1;
-
-
-    overflow-y:auto;
-
-    padding:40px;
-
-    outline:none;
-
-    font-size:2rem;
-
-    line-height:1.9;
-
-}
-
-.textEditor h1{
-
-    margin-bottom:35px;
-
-    color:#0F1C64;
-
-    font-size:4rem;
-
-}
-
-.textEditor p{
-
-    margin-bottom:28px;
-
-    color:#334155;
-
-}
-
-/* ================= SCROLL ================= */
-
-.textEditor::-webkit-scrollbar,
-.listaObras::-webkit-scrollbar{
-
-    width:8px;
-
-}
-
-.textEditor::-webkit-scrollbar-thumb,
-.listaObras::-webkit-scrollbar-thumb{
-
-    background:#cbd5e1;
-
-    border-radius:20px;
-
-}
-
-/* =========================================================
-   TEMA ESCURO — OFICINA AUTORAL
-   ========================================================= */
-
-:global([data-theme="escuro"]) .container {
-  background: #0f1425;
-  color: #f1f5f9;
-}
-
-/* ---------- HEADER ---------- */
-
-:global([data-theme="escuro"]) .header {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .title h1{
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .title svg {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .headerInfo p {
-  color: #a8b1cc;
-}
-
-/* ---------- BOTÃO IMPORTAR ---------- */
-
-:global([data-theme="escuro"]) .importar {
-  background: #161c33;
-  border-color: #2a3153;
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .importar:hover {
-  background: #1c2340;
-  border-color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .importar svg {
-  color: #0fa6b3;
-}
-/* ---------- ÁREA PRINCIPAL ---------- */
-
-:global([data-theme="escuro"]) .workspace {
-  background: #161c33;
-  border-color: #2a3153;
-}
-
-/* ---------- SIDEBAR ---------- */
-
-:global([data-theme="escuro"]) .sidebar {
-  background: #12182b;
-  border-color: #2a3153;
-}
-
-/* ---------- BUSCA ---------- */
-
-:global([data-theme="escuro"]) .searchBar {
-  background: #1c2340;
-  border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .searchBar input {
-  background: transparent;
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .searchBar input::placeholder {
-  color: #7d86a8;
-}
-
-:global([data-theme="escuro"]) .searchBar svg {
-  color: #7d86a8;
-}
-
-/* ---------- CABEÇALHO DAS OBRAS ---------- */
-
-:global([data-theme="escuro"]) .obrasHeader {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .obrasHeader button {
-  background: #1c2340;
-  color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .obrasHeader button:hover {
-  background: #243052;
-}
-
-/* ---------- CARDS DAS OBRAS ---------- */
-
-:global([data-theme="escuro"]) .obraCard {
-  background: #161c33;
-  border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .obraCard:hover {
-  background: #1c2340;
-  border-color: #384263;
-}
-
-:global([data-theme="escuro"]) .obraCard h3 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .obraCard span {
-  color: #7d86a8;
-}
-
-:global([data-theme="escuro"]) .obraCard p {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .obraCard button {
-  color: #7d86a8;
-}
-
-:global([data-theme="escuro"]) .obraCard button:hover {
-  color: #f1f5f9;
-}
-
-/* OBRA SELECIONADA */
-
-:global([data-theme="escuro"]) .obraAtiva {
-  background: #12343d;
-  border-color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .obraAtiva h3 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .obraAtiva span {
-  color: #6fd5dd;
-}
-
-:global([data-theme="escuro"]) .obraAtiva p {
-  color: #a8b1cc;
-}
-
-/* ---------- VER TODAS ---------- */
-
-:global([data-theme="escuro"]) .verTodas {
-  color: #0fa6b3;
-}
-
-:global([data-theme="escuro"]) .verTodas:hover {
-  background: #1c2340;
-}
-
-/* ---------- EDITOR ---------- */
-
-:global([data-theme="escuro"]) .editor {
-  background: #161c33;
-  color: #f1f5f9;
-}
-
-/* ---------- CABEÇALHO DO EDITOR ---------- */
-
-:global([data-theme="escuro"]) .editorHeader {
-  border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .editorHeader h2 {
-  color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .salvamento {
-  color: #7d86a8;
-}
-
-:global([data-theme="escuro"]) .palavras {
-  color: #7d86a8;
-}
-
-/* ---------- BARRA DE FERRAMENTAS ---------- */
-
-:global([data-theme="escuro"]) .toolbar {
-  background: #12182b;
-  border-color: #2a3153;
-}
-
-:global([data-theme="escuro"]) .toolbar button {
-  color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .toolbar button:hover {
-  background: #1c2340;
-  color: #f1f5f9;
-}
-
-/* ---------- EDITOR DE TEXTO ---------- */
-
-:global([data-theme="escuro"]) .textEditor {
-  background: #161c33;
-  color: #e2e8f0;
-}
-
-:global([data-theme="escuro"]) .textEditor h1 {
-  color: #f8fafc;
-}
-
-:global([data-theme="escuro"]) .textEditor p {
-  color: #cbd5e1;
-}
-
-:global([data-theme="escuro"]) .textEditor:focus {
-  outline: none;
-}
-
-/* ---------- SCROLLBAR ---------- */
-
-:global([data-theme="escuro"]) .sidebar::-webkit-scrollbar,
-:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar {
-  width: 8px;
-}
-
-:global([data-theme="escuro"]) .sidebar::-webkit-scrollbar-track,
-:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-track {
-  background: #12182b;
-}
-
-:global([data-theme="escuro"]) .sidebar::-webkit-scrollbar-thumb,
-:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-thumb {
-  background: #2a3153;
-  border-radius: 10px;
-}
-
-:global([data-theme="escuro"]) .sidebar::-webkit-scrollbar-thumb:hover,
-:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-thumb:hover {
-  background: #3b4668;
-}
-
-/* =========================================================
-   OFICINA AUTORAL — FUNCIONALIDADES
-   ========================================================= */
-
-/* ---------- BOTÃO NOVA OBRA ---------- */
-
-.novaObra {
+.capaObra {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    flex-shrink: 0;
 
-    padding: 12px 22px;
+    width: 90px;
+    height: 110px;
+    overflow: hidden;
 
-    border: none;
-    border-radius: 14px;
+    background: #f5fdff;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
 
     cursor: pointer;
 
-    color: white;
-    font-weight: 600;
-
-    background: linear-gradient(
-        90deg,
-        #7c3aed,
-        #ec4899
-    );
-
-    transition: .25s;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
-.novaObra:hover {
+.capaObra:hover {
+    border-color: #0FA6B3;
+    box-shadow: 0 5px 15px rgba(15, 166, 179, 0.15);
     transform: translateY(-2px);
-    box-shadow:
-        0 8px 18px rgba(124, 58, 237, .25);
 }
 
-/* Capitulos */
+.capaObra img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.semImagem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+
+    color: #64748b;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.semImagem svg {
+    color: #0FA6B3;
+}
+
+.botaoImagem {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 26px;
+    height: 26px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #0FA6B3;
+    color: #ffffff;
+
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.botaoImagem:hover {
+    background: #0d8e9a;
+    transform: scale(1.06);
+}
+
+.dadosObra {
+    min-width: 0;
+    flex: 1;
+}
+
+.tituloLinha {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tituloLinha h2 {
+    margin: 0;
+    color: #0F1C64;
+}
+
+.descricaoObra {
+    max-width: 600px;
+    margin: 5px 0 7px;
+
+    color: #64748b;
+    font-size: 1.3rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editarInfo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #dbe4ee;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #52657e;
+
+    font: inherit;
+    font-size: 1.2rem;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.editarInfo:hover {
+    background: #f5fdff;
+    color: #0FA6B3;
+    border-color: #0FA6B3;
+    box-shadow: 0 3px 8px rgba(15, 166, 179, 0.08);
+}
+
+/* ================= CAPÍTULOS ================= */
 
 .capitulosContainer {
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px 18px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px 18px;
+    box-sizing: border-box;
 
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-
-  box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
 }
 
 .capitulosHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 
-  height: 26px;
-  margin-bottom: 5px;
+    min-height: 30px;
+    margin-bottom: 6px;
 }
 
 .capitulosHeader > div {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .capitulosHeader span {
-  font-size: 11px;
-  font-weight: 700;
-  color: #64748b;
-  letter-spacing: 0.4px;
+    color: #64748b;
+    font-size: 1.1rem;
+    font-weight: 750;
+    letter-spacing: 0.5px;
 }
 
 .capitulosHeader small {
-  font-size: 11px;
-  color: #94a3b8;
+    color: #94a3b8;
+    font-size: 1.1rem;
 }
 
-
-/* Botão Novo capítulo */
+/* Botão Novo Capítulo */
 
 .novoCapitulo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 
-  height: 34px;
-  padding: 0 12px;
+    min-height: 35px;
+    padding: 0 13px;
 
-  border: 1px solid #b8eef4;
-  border-radius: 8px;
+    border: 1px solid #0FA6B3;
+    border-radius: 9px;
 
-  background: #f5fdff;
-  color: #0fa6b3;
+    background: #ffffff;
+    color: #0FA6B3;
 
-  font-size: 12px;
-  font-weight: 600;
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 650;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  transition: 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
 .novoCapitulo:hover {
-  background: #e8fafd;
-  border-color: #0fa6b3;
+    background: #0FA6B3;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.15);
+    transform: translateY(-1px);
 }
-
 
 /* Lista dos capítulos */
 
 .listaCapitulos {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-  width: 100%;
+    width: 100%;
+    padding: 1px 1px 4px;
 
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
-
-/* Barra de rolagem */
-
 .listaCapitulos::-webkit-scrollbar {
-  height: 3px;
+    height: 5px;
 }
 
 .listaCapitulos::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .listaCapitulos::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+    background: #cbd5e1;
+    border-radius: 10px;
 }
 
+.listaCapitulos::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
 
 /* Botão do capítulo */
 
 .capituloBotao {
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
 
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    height: 38px;
+    min-width: 145px;
+    max-width: 210px;
+    padding: 0 10px;
 
-  height: 38px;
-  min-width: 145px;
-  max-width: 210px;
+    border: 1px solid #dbe4ee;
+    border-radius: 9px;
 
-  padding: 0 10px;
+    background: #ffffff;
+    color: #475569;
 
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
 
-  background: #ffffff;
-  color: #475569;
-
-  cursor: pointer;
-
-  text-align: left;
-
-  transition: 0.2s ease;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .capituloBotao:hover {
-  background: #f8fafc;
-  border-color: #b8eef4;
+    background: #f5fdff;
+    border-color: #b8eef4;
+    color: #0F1C64;
 }
-
 
 /* Capítulo selecionado */
 
-.capituloAtivo {
-  background: #f5fdff;
-  border-color: #0fa6b3;
-
-  color: #0f1c64;
-
-  box-shadow: 0 1px 4px rgba(15, 166, 179, 0.12);
-}
-
+.capituloAtivo,
 .capituloAtivo:hover {
-  background: #f5fdff;
-  border-color: #0fa6b3;
+    background: #e8fafd;
+    border-color: #0FA6B3;
+    color: #0F1C64;
+    box-shadow: 0 2px 7px rgba(15, 166, 179, 0.10);
 }
 
-
-/* Número */
+/* Número do capítulo */
 
 .numeroCapitulo {
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 26px;
+    height: 26px;
 
-  width: 26px;
-  height: 26px;
+    border-radius: 7px;
+    background: #f1f5f9;
+    color: #64748b;
 
-  border-radius: 7px;
-
-  background: #f1f5f9;
-  color: #64748b;
-
-  font-size: 11px;
-  font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 750;
 }
 
 .capituloAtivo .numeroCapitulo {
-  background: #0fa6b3;
-  color: #ffffff;
+    background: #0FA6B3;
+    color: #ffffff;
 }
-
 
 /* Nome do capítulo */
 
 .nomeCapitulo {
-  min-width: 0;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
-  overflow: hidden;
-
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  font-size: 12px;
-  font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 650;
 }
 
+/* ================= BARRA DE FERRAMENTAS ================= */
 
-
-/* ---------- EDITOR VAZIO ---------- */
-
-.editorVazio {
-    flex: 1;
-
+.toolbar {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
 
+    padding: 12px 18px;
+    border-bottom: 1px solid #e2e8f0;
+
+    background: #ffffff;
+}
+
+.toolbar button {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 7px;
 
-    gap: 12px;
+    min-width: 38px;
+    min-height: 36px;
+    padding: 0 10px;
 
-    color: #64748b;
-}
+    border: 1px solid #dbe4ee;
+    border-radius: 9px;
 
-.editorVazio svg {
-    color: #0fa6b3;
-}
-
-.editorVazio h2 {
-    margin: 0;
-
-    color: #0f1c64;
-
-    font-size: 2rem;
-}
-
-.editorVazio p {
-    margin: 0 0 10px;
-
-    color: #64748b;
-}
-
-
-
-/* ---------- EDITOR EDITÁVEL ---------- */
-
-.textEditor {
-    cursor: text;
-
-    min-height: 300px;
-
-    white-space: pre-wrap;
-}
-
-.textEditor:focus {
-    outline: none;
-}
-
-.textEditor h1 {
-    margin-top: 0;
-    margin-bottom: 30px;
-
-    color: #0F1C64;
-
-    font-size: 4rem;
-}
-
-.textEditor h2 {
-    margin-top: 25px;
-    margin-bottom: 20px;
-
-    color: #0F1C64;
-
-    font-size: 3rem;
-}
-
-.textEditor h3 {
-    margin-top: 20px;
-    margin-bottom: 15px;
-
-    color: #0F1C64;
-
-    font-size: 2.3rem;
-}
-
-.textEditor p {
-    margin-bottom: 28px;
-
+    background: #ffffff;
     color: #334155;
-}
-
-/* ---------- MENSAGEM SEM OBRAS ---------- */
-
-.semObras {
-    padding: 20px;
-
-    text-align: center;
-
-    color: #64748b;
-}
-
-/* ---------- MODAL ---------- */
-
-.modalOverlay {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 9999;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(15, 28, 100, .45);
-
-    backdrop-filter: blur(5px);
-}
-
-.modal {
-    width: 100%;
-    max-width: 520px;
-
-    background: white;
-
-    border: 1px solid #dbe4ee;
-
-    border-radius: 20px;
-
-    padding: 26px;
-
-    box-shadow:
-        0 25px 70px rgba(15, 28, 100, .2);
-
-    animation: abrirModal .2s ease;
-}
-
-@keyframes abrirModal {
-
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-}
-
-/* ---------- CABEÇALHO MODAL ---------- */
-
-.modalHeader {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: flex-start;
-
-    margin-bottom: 25px;
-}
-
-.modalHeader h2 {
-    margin: 0 0 6px;
-
-    color: #0f1c64;
-
-    font-size: 1.8rem;
-}
-
-.modalHeader p {
-    margin: 0;
-
-    color: #64748b;
-}
-
-.fecharModal {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 36px;
-    height: 36px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: transparent;
-
-    color: #64748b;
 
     cursor: pointer;
 
-    transition: .2s;
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
 }
 
-.fecharModal:hover {
-    background: #f1f5f9;
-
-    color: #0f1c64;
+.toolbar button:hover {
+    background: #f5fdff;
+    color: #0FA6B3;
+    border-color: #b8eef4;
+    box-shadow: 0 3px 8px rgba(15, 166, 179, 0.08);
 }
 
-/* ---------- FORMULÁRIO ---------- */
-
-
-
-.modalForm {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 20px;
+.toolbar button:active {
+    transform: scale(0.96);
 }
 
-.modalForm label {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    color: #0f1c64;
-
-    font-weight: 600;
-}
-
-.modalForm input {
-    width: 100%;
-
-    box-sizing: border-box;
-
-    padding: 13px 14px;
-
-    border: 1px solid #dbe4ee;
-
-    border-radius: 12px;
-
-    background: #f8fafc;
-
-    color: #0f1c64;
-
-    font-size: 1rem;
-
-    outline: none;
-
-    transition: .2s;
-}
-
-.modalForm input:focus {
-    border-color: #0fa6b3;
-
-    background: white;
-
-    box-shadow:
-        0 0 0 3px rgba(15, 166, 179, .1);
-}
-
-/* ---------- BOTÕES DO MODAL ---------- */
-
-.modalButtons {
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 12px;
-
-    margin-top: 28px;
-}
-
-.cancelar,
-.confirmar {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    padding: 11px 18px;
-
-    border-radius: 11px;
-
-    cursor: pointer;
-
-    font-weight: 600;
-
-    transition: .2s;
-}
-
-.cancelar {
-    border: 1px solid #dbe4ee;
-
-    background: white;
-
-    color: #64748b;
-}
-
-.cancelar:hover {
-    background: #f8fafc;
-
-    color: #0f1c64;
-}
-
-.confirmar {
-    border: none;
-
-    background: #0fa6b3;
-
-    color: white;
-}
-
-.confirmar:hover {
-    background: #0d8e9a;
-
-    transform: translateY(-1px);
-}
-
-.infoObra {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  min-width: 0;
-}
-
-.capaObra {
-  width: 90px;
-  height: 110px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #334155;
-  background: #1e293b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: 0.2s ease;
-  position: relative;
-}
-
-.capaObra:hover {
-  border-color: #0fa6b3;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 18px rgba(15, 166, 179, 0.2);
-}
-
-.capaObra img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.semImagem {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  color: #94a3b8;
-  font-size: 11px;
-  text-align: center;
-  padding: 8px;
-}
-
-.semImagem svg {
-  color: #0fa6b3;
-}
-
-.botaoImagem {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-
-  width: 25px;
-  height: 25px;
-
-  border: none;
-  border-radius: 6px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #0fa6b3;
-  color: white;
-
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.botaoImagem:hover {
-  transform: scale(1.08);
-}
-
-.dadosObra {
-  min-width: 0;
-}
-
-.tituloLinha {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.tituloLinha h2 {
-  margin: 0;
-}
-
-.descricaoObra {
-  margin: 5px 0 7px;
-  color: #91a0c5;
-  font-size: 13px;
-  max-width: 600px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.editarInfo {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 6px 10px;
-
-  border: 1px solid #34416a;
-  border-radius: 7px;
-
-  background: transparent;
-  color: #8ba4d7;
-
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.editarInfo:hover {
-  color: #0fa6b3;
-  border-color: #0fa6b3;
-}
-
-.obraConteudo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.miniCapa {
-  width: 42px;
-  height: 54px;
-
-  flex-shrink: 0;
-
-  border-radius: 7px;
-
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #202a4b;
-  color: #6e83b5;
-}
-
-.miniCapa img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.obraTextos {
-  min-width: 0;
-  flex: 1;
-}
-
-.obraTextos h3 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* =========================================================
-   MENUS DA BARRA DE FERRAMENTAS
-   ========================================================= */
+/* ================= MENUS DA BARRA DE FERRAMENTAS ================= */
 
 .dropdown {
     position: relative;
+    flex-shrink: 0;
 }
-
-/* BOTÃO */
 
 .dropdownBotao {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 8px;
 
-    min-width: 100px;
+    min-width: 105px;
+    min-height: 36px;
+    padding: 7px 11px;
 
-    border: none;
+    border: 1px solid #dbe4ee;
+    border-radius: 9px;
 
-    background: #0fa6b3;
-
-    color: white;
+    background: #ffffff;
+    color: #334155;
 
     cursor: pointer;
+    font: inherit;
+    font-size: 1.2rem;
 
-    padding: 8px 12px;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-
-    transition: .2s;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .dropdownBotao:hover {
-    background: #0d8e9a;
+    background: #f5fdff;
+    border-color: #0FA6B3;
+    color: #0F1C64;
 }
-
-/* MENU */
 
 .dropdownMenu {
     position: absolute;
-
-    top: calc(100% + 6px);
+    top: calc(100% + 7px);
     left: 0;
-
     z-index: 1000;
 
     min-width: 180px;
-
+    max-height: 280px;
+    overflow-y: auto;
     padding: 6px;
 
-    background: white;
-
+    background: #ffffff;
     border: 1px solid #dbe4ee;
+    border-radius: 12px;
 
-    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(15, 28, 100, 0.13);
 
-    box-shadow:
-        0 10px 30px rgba(15, 28, 100, .15);
-
-    animation: abrirDropdown .15s ease;
+    animation: abrirDropdown 0.15s ease;
 }
 
 @keyframes abrirDropdown {
-
     from {
         opacity: 0;
         transform: translateY(-4px);
@@ -1553,42 +974,34 @@
         opacity: 1;
         transform: translateY(0);
     }
-
 }
-
-/* OPÇÕES */
 
 .dropdownMenu button {
     display: flex;
-
     align-items: center;
+    gap: 9px;
 
     width: 100%;
-
-    border: none;
-
-    background: transparent;
-
-    color: #0f1c64;
-
-    cursor: pointer;
-
     padding: 9px 10px;
 
-    border-radius: 7px;
+    border: none;
+    border-radius: 8px;
 
+    background: transparent;
+    color: #0F1C64;
+
+    cursor: pointer;
     text-align: left;
+    font: inherit;
+    font-size: 1.25rem;
 
-    transition: .15s;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .dropdownMenu button:hover {
-    background: #f0fbfd;
-
-    color: #0fa6b3;
+    background: #f5fdff;
+    color: #0FA6B3;
 }
-
-/* PRÉVIA DOS TÍTULOS */
 
 .previewH1 {
     font-size: 20px;
@@ -1605,58 +1018,648 @@
     font-weight: 700;
 }
 
-:global([data-theme="escuro"]) .dropdownMenu {
-    background: #161c33;
+/* ================= EDITOR DE TEXTO ================= */
 
-    border-color: #2a3153;
+.textEditor {
+    flex: 1;
+    min-height: 300px;
+    overflow-y: auto;
 
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, .35);
+    padding: 40px;
+    box-sizing: border-box;
+
+    outline: none;
+    background: #ffffff;
+    color: #334155;
+
+    font-size: 1.8rem;
+    line-height: 1.9;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    cursor: text;
 }
 
-:global([data-theme="escuro"]) .dropdownMenu button {
+.textEditor:focus {
+    outline: none;
+}
+
+.textEditor h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #0F1C64;
+    font-size: 4rem;
+    line-height: 1.25;
+}
+
+.textEditor h2 {
+    margin-top: 25px;
+    margin-bottom: 20px;
+    color: #0F1C64;
+    font-size: 3rem;
+    line-height: 1.3;
+}
+
+.textEditor h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #0F1C64;
+    font-size: 2.3rem;
+    line-height: 1.35;
+}
+
+.textEditor p {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: #334155;
+}
+
+/* ================= EDITOR VAZIO ================= */
+
+.editorVazio {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 30px;
+    box-sizing: border-box;
+
+    background: #ffffff;
+    color: #64748b;
+    text-align: center;
+}
+
+.editorVazio svg {
+    color: #0FA6B3;
+}
+
+.editorVazio h2 {
+    margin: 0;
+    color: #0F1C64;
+    font-size: 2rem;
+}
+
+.editorVazio p {
+    margin: 0 0 10px;
+    color: #64748b;
+}
+
+.semObras {
+    padding: 20px;
+    color: #64748b;
+    text-align: center;
+}
+
+/* ================= MINIATURAS DAS OBRAS ================= */
+
+.obraConteudo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.miniCapa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 42px;
+    height: 54px;
+    overflow: hidden;
+
+    border: 1px solid #dbe4ee;
+    border-radius: 7px;
+
+    background: #f5fdff;
+    color: #0FA6B3;
+}
+
+.miniCapa img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.obraTextos {
+    flex: 1;
+    min-width: 0;
+}
+
+.obraTextos h3 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ================= MENSAGENS E MODAIS ================= */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: rgba(15, 28, 100, 0.40);
+    backdrop-filter: blur(5px);
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 26px;
+
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    border-radius: 20px;
+
+    box-shadow: 0 25px 70px rgba(15, 28, 100, 0.20);
+
+    animation: abrirModal 0.2s ease;
+}
+
+@keyframes abrirModal {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.modalHeader h2 {
+    margin: 0 0 6px;
+    color: #0F1C64;
+    font-size: 1.8rem;
+}
+
+.modalHeader p {
+    margin: 0;
+    color: #64748b;
+}
+
+.fecharModal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: transparent;
+    color: #64748b;
+
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.fecharModal:hover {
+    background: #f1f5f9;
+    color: #0F1C64;
+}
+
+/* ================= FORMULÁRIO DO MODAL ================= */
+
+.modalForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modalForm label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    color: #0F1C64;
+    font-weight: 600;
+}
+
+.modalForm input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
+
+    background: #f8fafc;
+    color: #0F1C64;
+
+    font: inherit;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.modalForm input::placeholder {
+    color: #94a3b8;
+}
+
+.modalForm input:focus {
+    background: #ffffff;
+    border-color: #0FA6B3;
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.11);
+}
+
+/* ================= BOTÕES DO MODAL ================= */
+
+.modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-top: 28px;
+}
+
+.cancelar,
+.confirmar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 11px 18px;
+
+    border-radius: 11px;
+    cursor: pointer;
+
+    font: inherit;
+    font-weight: 650;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cancelar {
+    border: 1px solid #dbe4ee;
+    background: #ffffff;
+    color: #64748b;
+}
+
+.cancelar:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0F1C64;
+}
+
+.confirmar {
+    border: 1px solid #0FA6B3;
+    background: #0FA6B3;
+    color: #ffffff;
+}
+
+.confirmar:hover {
+    background: #0d8e9a;
+    border-color: #0d8e9a;
+    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
+    transform: translateY(-1px);
+}
+
+/* ================= SCROLLBARS — MODO CLARO ================= */
+
+.textEditor::-webkit-scrollbar,
+.listaObras::-webkit-scrollbar,
+.dropdownMenu::-webkit-scrollbar,
+.modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.textEditor::-webkit-scrollbar-track,
+.listaObras::-webkit-scrollbar-track,
+.dropdownMenu::-webkit-scrollbar-track,
+.modal::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+.textEditor::-webkit-scrollbar-thumb,
+.listaObras::-webkit-scrollbar-thumb,
+.dropdownMenu::-webkit-scrollbar-thumb,
+.modal::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 20px;
+}
+
+.textEditor::-webkit-scrollbar-thumb:hover,
+.listaObras::-webkit-scrollbar-thumb:hover,
+.dropdownMenu::-webkit-scrollbar-thumb:hover,
+.modal::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* =========================================================
+   TEMA ESCURO — OFICINA AUTORAL
+   Aplicado somente quando data-theme="escuro"
+   ========================================================= */
+
+:global([data-theme="escuro"]) .container {
+    background: #0f1425;
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .dropdownMenu button:hover {
-    background: #1c2340;
-
-    color: #0fa6b3;
+:global([data-theme="escuro"]) .title h1,
+:global([data-theme="escuro"]) .editorHeader h2,
+:global([data-theme="escuro"]) .tituloLinha h2 {
+    color: #f1f5f9;
 }
 
-/* Funcionais escuro */
-
-:global([data-theme="escuro"]) .editorVazio {
-    background: #161c33;
-
+:global([data-theme="escuro"]) .title > svg {
     color: #a8b1cc;
 }
 
-/*Capitulos*/
+:global([data-theme="escuro"]) .headerInfo p {
+    color: #a8b1cc;
+}
+
+/* Botões do cabeçalho */
+
+:global([data-theme="escuro"]) .importar {
+    background: #161c33;
+    border-color: #2a3153;
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .importar:hover {
+    background: #1c2340;
+    border-color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .importar svg {
+    color: #0FA6B3;
+}
+
+/* Sidebar e editor */
+
+:global([data-theme="escuro"]) .sidebar,
+:global([data-theme="escuro"]) .editor {
+    background: #161c33;
+    border-color: #2a3153;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+/* Busca */
+
+:global([data-theme="escuro"]) .searchBar {
+    background: #1c2340;
+    border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .searchBar:focus-within {
+    background: #1c2340;
+    border-color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .searchBar input {
+    background: transparent;
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .searchBar input::placeholder,
+:global([data-theme="escuro"]) .searchBar > svg {
+    color: #7d86a8;
+}
+
+/* Cabeçalho da lista */
+
+:global([data-theme="escuro"]) .obrasHeader span {
+    color: #a8b1cc;
+}
+
+/* Botão no tema escuro */
+:global([data-theme="escuro"]) .obrasHeader button {
+    color: #0FA6B3;
+    background: #1c2340;
+    border-color: #34416a;
+    box-shadow: none;
+}
+
+:global([data-theme="escuro"]) .obrasHeader button:hover {
+    color: #ffffff;
+    background: #0FA6B3;
+    border-color: #0FA6B3;
+    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
+}
+
+/* Cards das obras */
+
+:global([data-theme="escuro"]) .obraCard {
+    background: #12182b;
+    border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .obraCard:hover {
+    background: #1c2340;
+    border-color: #384263;
+}
+
+:global([data-theme="escuro"]) .obraCard h3 {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .obraCard span {
+    color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .obraCard p {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .obraCard button {
+    color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .obraCard button:hover {
+    background: #392337;
+    border-color: #633247;
+    color: #fb7185;
+}
+
+:global([data-theme="escuro"]) .obraAtiva,
+:global([data-theme="escuro"]) .obraAtiva:hover {
+    background: #12343d;
+    border-color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .obraAtiva h3 {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .obraAtiva span {
+    color: #6fd5dd;
+}
+
+:global([data-theme="escuro"]) .obraAtiva p {
+    color: #a8b1cc;
+}
+
+/* Ver todas */
+
+:global([data-theme="escuro"]) .verTodas {
+    color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .verTodas:hover {
+    background: #1c2340;
+}
+
+/* Cabeçalho do editor */
+
+:global([data-theme="escuro"]) .editorHeader,
+:global([data-theme="escuro"]) .toolbar {
+    border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .salvamento,
+:global([data-theme="escuro"]) .palavras {
+    color: #a8b1cc;
+}
+
+/* Capítulos */
 
 :global([data-theme="escuro"]) .capitulosContainer {
     background: #161c33;
+    border-color: #2a3153;
 }
 
-:global([data-theme="escuro"]) .capituloBotao {
-    background: #161c33;
-    color: #f1f5f9;
+:global([data-theme="escuro"]) .capitulosHeader span {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .capitulosHeader small {
+    color: #7d86a8;
 }
 
 :global([data-theme="escuro"]) .novoCapitulo {
     background: #161c33;
+    border-color: #0FA6B3;
+    color: #0FA6B3;
 }
-/*---*/
-:global([data-theme="escuro"]) .editorVazio h2 {
+
+:global([data-theme="escuro"]) .novoCapitulo:hover {
+    background: #0FA6B3;
+    color: #ffffff;
+}
+
+:global([data-theme="escuro"]) .capituloBotao {
+    background: #161c33;
+    border-color: #2a3153;
+    color: #cbd5e1;
+}
+
+:global([data-theme="escuro"]) .capituloBotao:hover {
+    background: #1c2340;
+    border-color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .capituloAtivo,
+:global([data-theme="escuro"]) .capituloAtivo:hover {
+    background: #12343d;
+    border-color: #0FA6B3;
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .editorVazio p {
+:global([data-theme="escuro"]) .numeroCapitulo {
+    background: #202a4b;
     color: #a8b1cc;
 }
 
-:global([data-theme="escuro"]) .semObras {
-    color: #7d86a8;
+:global([data-theme="escuro"]) .capituloAtivo .numeroCapitulo {
+    background: #0FA6B3;
+    color: #ffffff;
+}
+
+/* Toolbar */
+
+:global([data-theme="escuro"]) .toolbar {
+    background: #12182b;
+}
+
+:global([data-theme="escuro"]) .toolbar button,
+:global([data-theme="escuro"]) .dropdownBotao {
+    background: #1c2340;
+    border-color: #2a3153;
+    color: #c1cbe0;
+}
+
+:global([data-theme="escuro"]) .toolbar button:hover,
+:global([data-theme="escuro"]) .dropdownBotao:hover {
+    background: #263650;
+    border-color: #0FA6B3;
+    color: #f1f5f9;
+}
+
+/* Informações da obra */
+
+:global([data-theme="escuro"]) .capaObra,
+:global([data-theme="escuro"]) .miniCapa {
+    background: #202a4b;
+    border-color: #2a3153;
+    color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .semImagem {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .descricaoObra {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editarInfo {
+    background: #161c33;
+    border-color: #34416a;
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editarInfo:hover {
+    background: #1c2340;
+    border-color: #0FA6B3;
+    color: #0FA6B3;
+}
+
+/* Texto editável */
+
+:global([data-theme="escuro"]) .textEditor {
+    background: #161c33;
+    color: #e2e8f0;
 }
 
 :global([data-theme="escuro"]) .textEditor h1,
@@ -1669,24 +1672,54 @@
     color: #cbd5e1;
 }
 
+/* Editor vazio */
 
+:global([data-theme="escuro"]) .editorVazio {
+    background: #161c33;
+    color: #a8b1cc;
+}
 
-/* ---------- MODAL ESCURO ---------- */
+:global([data-theme="escuro"]) .editorVazio h2 {
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .editorVazio p,
+:global([data-theme="escuro"]) .semObras {
+    color: #a8b1cc;
+}
+
+/* Dropdown */
+
+:global([data-theme="escuro"]) .dropdownMenu {
+    background: #161c33;
+    border-color: #2a3153;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme="escuro"]) .dropdownMenu button {
+    background: transparent;
+    color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .dropdownMenu button:hover {
+    background: #1c2340;
+    color: #0FA6B3;
+}
+
+/* Modal */
 
 :global([data-theme="escuro"]) .modalOverlay {
-    background: rgba(4, 8, 20, .7);
+    background: rgba(4, 8, 20, 0.72);
 }
 
 :global([data-theme="escuro"]) .modal {
     background: #161c33;
-
     border-color: #2a3153;
-
-    box-shadow:
-        0 25px 70px rgba(0, 0, 0, .45);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
 }
 
-:global([data-theme="escuro"]) .modalHeader h2 {
+:global([data-theme="escuro"]) .modalHeader h2,
+:global([data-theme="escuro"]) .modalForm label {
     color: #f1f5f9;
 }
 
@@ -1695,24 +1728,17 @@
 }
 
 :global([data-theme="escuro"]) .fecharModal {
-    color: #7d86a8;
+    color: #a8b1cc;
 }
 
 :global([data-theme="escuro"]) .fecharModal:hover {
     background: #1c2340;
-
-    color: #f1f5f9;
-}
-
-:global([data-theme="escuro"]) .modalForm label {
     color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .modalForm input {
     background: #1c2340;
-
     border-color: #2a3153;
-
     color: #f1f5f9;
 }
 
@@ -1722,56 +1748,180 @@
 
 :global([data-theme="escuro"]) .modalForm input:focus {
     background: #1c2340;
-
-    border-color: #0fa6b3;
+    border-color: #0FA6B3;
 }
 
 :global([data-theme="escuro"]) .cancelar {
     background: #161c33;
-
     border-color: #2a3153;
-
     color: #a8b1cc;
 }
 
 :global([data-theme="escuro"]) .cancelar:hover {
     background: #1c2340;
-
     color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .confirmar {
-    background: #0fa6b3;
-
-    color: white;
+    background: #0FA6B3;
+    border-color: #0FA6B3;
+    color: #ffffff;
 }
 
 :global([data-theme="escuro"]) .confirmar:hover {
     background: #0d8e9a;
+    border-color: #0d8e9a;
 }
 
-/* ---------- NOVA OBRA NO TEMA ESCURO ---------- */
+/* Scrollbars no tema escuro */
 
-:global([data-theme="escuro"]) .novaObra {
-    color: white;
+:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-track,
+:global([data-theme="escuro"]) .listaObras::-webkit-scrollbar-track,
+:global([data-theme="escuro"]) .dropdownMenu::-webkit-scrollbar-track,
+:global([data-theme="escuro"]) .modal::-webkit-scrollbar-track {
+    background: #12182b;
 }
 
-/* ================= RESPONSIVO ================= */
+:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-thumb,
+:global([data-theme="escuro"]) .listaObras::-webkit-scrollbar-thumb,
+:global([data-theme="escuro"]) .dropdownMenu::-webkit-scrollbar-thumb,
+:global([data-theme="escuro"]) .modal::-webkit-scrollbar-thumb {
+    background: #2a3153;
+}
 
-@media(max-width:1100px){
+:global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-thumb:hover,
+:global([data-theme="escuro"]) .listaObras::-webkit-scrollbar-thumb:hover,
+:global([data-theme="escuro"]) .dropdownMenu::-webkit-scrollbar-thumb:hover,
+:global([data-theme="escuro"]) .modal::-webkit-scrollbar-thumb:hover {
+    background: #3b4668;
+}
 
-    .workspace{
+/* ================= RESPONSIVIDADE ================= */
 
-        flex-direction:column;
-
-        height:auto;
-
+@media (max-width: 1100px) {
+    .container {
+        padding: 24px;
     }
 
-    .sidebar{
-
-        width:100%;
-
+    .workspace {
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
     }
 
+    .sidebar {
+        flex: none;
+        width: 100%;
+        min-height: 260px;
+        max-height: 400px;
+    }
+
+    .editor {
+        min-height: 520px;
+    }
+
+    .listaObras {
+        flex: 1;
+    }
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 16px;
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .title h1 {
+        font-size: 2.5rem;
+    }
+
+    .headerInfo p {
+        font-size: 1.3rem;
+    }
+
+    .headerButtons {
+        width: 100%;
+    }
+
+    .importar,
+    .novaObra {
+        flex: 1;
+        padding: 10px 12px;
+    }
+
+    .editorHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 18px;
+    }
+
+    .editorHeader h2 {
+        font-size: 2rem;
+    }
+
+    .textEditor {
+        padding: 22px;
+        font-size: 1.6rem;
+    }
+
+    .textEditor h1 {
+        font-size: 3rem;
+    }
+
+    .textEditor h2 {
+        font-size: 2.5rem;
+    }
+
+    .textEditor h3 {
+        font-size: 2rem;
+    }
+
+    .toolbar {
+        padding: 10px;
+        gap: 6px;
+    }
+
+    .toolbar button {
+        min-width: 34px;
+        min-height: 34px;
+        padding: 0 8px;
+    }
+
+    .capitulosContainer {
+        padding: 10px;
+    }
+
+    .capitulosHeader {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        height: auto;
+    }
+
+    .modal {
+        padding: 20px;
+    }
+
+    .modalButtons {
+        flex-direction: column-reverse;
+    }
+
+    .cancelar,
+    .confirmar {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .container *,
+    .container *::before,
+    .container *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
