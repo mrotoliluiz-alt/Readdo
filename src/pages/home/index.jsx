@@ -18,11 +18,11 @@ const CACHE_KEY = "readduo_home_google_books_v2";
 const CACHE_TIME = 30 * 60 * 1000;
 const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
-const [obrasA, setObrasA]=useState([]);
+/*const [obrasA, setObrasA]=useState([]);
 const [loading,setLoading]=useState(true);
 const [erro, setErro]=useState (null);
 
-// função para buscar os dados
+// função para buscar os dados da nossa api
 const fetchDados = async () => {
   try {
     setLoading(true);
@@ -38,8 +38,20 @@ const fetchDados = async () => {
   }
 };
 
-useEffect (() => {}, [])
+useEffect (() => {
+  fetchDados();
+}, []);
 
+if (loading && obrasA.length === 0) return <p> carregando dados </p>;
+if (erro) return <p style={{color: 'red'}}>{erro}</p>;
+
+{loading ? <p>Carregando...</p> : (
+  {obrasA.map((obras) => (
+
+  ))}
+)}*/
+
+//função para api do google
 function Home() {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
