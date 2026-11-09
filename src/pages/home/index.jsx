@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
 import CardLivro from "../../componentes/CardLivro";
+import api from "../../services/api"
 
 import {
   Flame,
@@ -18,7 +19,9 @@ const CACHE_KEY = "readduo_home_google_books_v2";
 const CACHE_TIME = 30 * 60 * 1000;
 const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
-/*const [obrasA, setObrasA]=useState([]);
+function Home(){
+
+const [obras, setObras]=useState([]);
 const [loading,setLoading]=useState(true);
 const [erro, setErro]=useState (null);
 
@@ -28,7 +31,7 @@ const fetchDados = async () => {
     setLoading(true);
     // o await pausa até chegar a resposta
     const response = await api.get(`/obras`);
-    setIngredientes(response.data.dados);
+    setObras(response.data.dados);
   } catch (err) {
     //o axios coloca o erro detalhado com o err.response
     setErro("Não foi possivel carregar os dados.");
@@ -42,17 +45,30 @@ useEffect (() => {
   fetchDados();
 }, []);
 
-if (loading && obrasA.length === 0) return <p> carregando dados </p>;
+if (loading && obras.length === 0) return <p> carregando dados </p>;
 if (erro) return <p style={{color: 'red'}}>{erro}</p>;
 
 {loading ? <p>Carregando...</p> : (
-  {obrasA.map((obras) => (
-
+  <tbody>
+  {obras.map((obra) => (
+    <tr key={obra.id}>
+      <td>
+        <CardLivro
+        id={obra.id}
+        titulo={obra.titulo || 'Titulo não encontrado.'}
+        autor={obra.autor}
+        tipo={obra.genero}
+        imagem={obra.imagem}></CardLivro>
+      </td>
+    </tr>
   ))}
-)}*/
+  </tbody>
+)}
+}
+
 
 //função para api do google
-function Home() {
+/*function Home() {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
   const carregandoInicial = useRef(false);
@@ -405,6 +421,6 @@ function Home() {
       )}
     </div>
   );
-}
+}*/
 
 export default Home;
