@@ -19,52 +19,200 @@ const CACHE_KEY = "readduo_home_google_books_v2";
 const CACHE_TIME = 30 * 60 * 1000;
 const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
-function Home(){
+import styles from "./index.module.css";
+import { useEffect, useRef, useState } from "react";
+import CardLivro from "../../componentes/CardLivro";
+import api from "../../services/api";
 
-const [obras, setObras]=useState([]);
-const [loading,setLoading]=useState(true);
-const [erro, setErro]=useState (null);
+import {
+  Flame,
+  Star,
+  House,
+  PenTool,
+  BookOpen,
+  Road,
+  ChevronLeft,
+  ChevronRight,
+  HatGlasses,
+} from "lucide-react";
 
-// função para buscar os dados da nossa api
-const fetchDados = async () => {
-  try {
-    setLoading(true);
-    // o await pausa até chegar a resposta
-    const response = await api.get(`/obras`);
-    setObras(response.data.dados);
-  } catch (err) {
-    //o axios coloca o erro detalhado com o err.response
-    setErro("Não foi possivel carregar os dados.");
-  } finally {
-    //executa em qualquer tipo de resposta 
-    setLoading(false);
-  }
-};
+function Home() {
+  const scrollRef1 = useRef(null);
+  const scrollRef2 = useRef(null);
 
-useEffect (() => {
-  fetchDados();
-}, []);
+  const [obras, setObras] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
-if (loading && obras.length === 0) return <p> carregando dados </p>;
-if (erro) return <p style={{color: 'red'}}>{erro}</p>;
+  // Busca as obras cadastradas no banco de dados
+  const carregarObras = async () => {
+    try {
+      setCarregando(true);
+      setErro("");
 
-{loading ? <p>Carregando...</p> : (
-  <tbody>
-  {obras.map((obra) => (
-    <tr key={obra.id}>
-      <td>
-        <CardLivro
-        id={obra.id}
-        titulo={obra.titulo || 'Titulo não encontrado.'}
-        autor={obra.autor}
-        tipo={obra.genero}
-        imagem={obra.imagem}></CardLivro>
-      </td>
-    </tr>
-  ))}
-  </tbody>
-)}
+      const response = await api.get("/obras");
+
+      setObras(response.data.dados || []);
+
+    } catch (error) {
+      console.error("Erro ao carregar obras:", error);
+      setErro("Não foi possível carregar as obras.");
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarObras();
+  }, []);
+
+  // Rolagem dos carrosséis
+  const rolar = (referencia, direcao) => {
+    referencia.current?.scrollBy({
+      left: direcao * 400,
+      behavior: "smooth",
+    });
+  };
+
+  // Renderiza cada obra recebida da API
+  const renderizarLivro = (obra) => (
+    <CardLivro
+      key={obra.Ob_ID}
+      id={obra.Ob_ID}
+      titulo={obra.Ob_titulo || "Título desconhecido"}
+      autor={obra.Autor || "Autor desconhecido"}
+      tipo={obra.Ob_genero || "Livro"}
+      imagem={obra.Ob_imagem || undefined}
+    />
+  );
+
+  // Monta cada seção de livros
+  const renderizarSecao = (titulo, Icone, referencia, id, livros) => (
+    <>
+      <h2 className={styles.tituloLeitCard}>
+        <Icone />
+        {titulo}
+      </h2>
+
+      <div className={styles.areaLivros}>
+        <button
+          type="button"
+          className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
+          onClick={() => rolar(referencia, -1)}
+          aria-label={`Ver livros anteriores de ${titulo}`}
+          disabled={carregando || livros.length === 0}
+        >
+          <ChevronLeft size={26} />
+        </button>
+
+        <div
+          className={styles.leitCard}
+          ref={referencia}
+          id={id}
+        >
+          {carregando ? (
+            <p>Carregando livros...</p>
+          ) : livros.length > 0 ? (
+            livros.map(renderizarLivro)
+          ) : (
+            <p>Nenhuma obra encontrada nesta seção.</p>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className={`${styles.botaoScroll} ${styles.direitaScroll}`}
+          onClick={() => rolar(referencia, 1)}
+          aria-label={`Ver próximos livros de ${titulo}`}
+          disabled={carregando || livros.length === 0}
+        >
+          <ChevronRight size={26} />
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className={styles.Conteiner}>
+      <div className={styles.header}>
+        <House />
+        <h1>Início</h1>
+      </div>
+
+      <section className={styles.welcome}>
+        <div>
+          <h2>Olá, nome do usuário</h2>
+
+          <p>
+            Continue sua jornada literária. Você está indo muito bem!!
+          </p>
+        </div>
+
+        <div className={styles.stats}>
+          <div className={styles.statCard}>
+            <BookOpen color="#61a6fa" />
+            <h3>3</h3>
+            <span>Lidos</span>
+          </div>
+
+          <div className={styles.statCard}>
+            <PenTool color="#4ade80" />
+            <h3>4.2K</h3>
+            <span>Palavras</span>
+          </div>
+
+          <div className={styles.statCard}>
+            <Flame color="#fb923c" />
+            <h3>8 dias</h3>
+            <span>Sequência</span>
+          </div>
+
+          <div className={styles.statCard}>
+            <Star color="#ffdb0c" />
+            <h3>+850</h3>
+            <span>XP</span>
+          </div>
+        </div>
+      </section>
+
+      {erro && (
+        <div role="alert" className={styles.erroLivros}>
+          <p>{erro}</p>
+
+          <button
+            type="button"
+            onClick={carregarObras}
+            disabled={carregando}
+          >
+            {carregando ? "Carregando..." : "Tentar novamente"}
+          </button>
+        </div>
+      )}
+
+      {renderizarSecao(
+        "Explore novos Caminhos",
+        Road,
+        scrollRef1,
+        "livros-explore",
+        obras
+      )}
+
+      {renderizarSecao(
+        "Mistérios",
+        HatGlasses,
+        scrollRef2,
+        "livros-misterios",
+        obras
+      )}
+    </div>
+  );
 }
+
+export default Home;
+
+
+    
+      
 
 
 //função para api do google
@@ -423,4 +571,3 @@ if (erro) return <p style={{color: 'red'}}>{erro}</p>;
   );
 }*/
 
-export default Home;
