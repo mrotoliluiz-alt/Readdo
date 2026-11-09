@@ -18,6 +18,28 @@ const CACHE_KEY = "readduo_home_google_books_v2";
 const CACHE_TIME = 30 * 60 * 1000;
 const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
+const [obrasA, setObrasA]=useState([]);
+const [loading,setLoading]=useState(true);
+const [erro, setErro]=useState (null);
+
+// função para buscar os dados
+const fetchDados = async () => {
+  try {
+    setLoading(true);
+    // o await pausa até chegar a resposta
+    const response = await api.get(`/obras`);
+    setIngredientes(response.data.dados);
+  } catch (err) {
+    //o axios coloca o erro detalhado com o err.response
+    setErro("Não foi possivel carregar os dados.");
+  } finally {
+    //executa em qualquer tipo de resposta 
+    setLoading(false);
+  }
+};
+
+useEffect (() => {}, [])
+
 function Home() {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
