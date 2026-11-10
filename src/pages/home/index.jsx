@@ -321,14 +321,9 @@ function Home() {
     </>
   );
 
-  // Exibe o carregamento inicial da API do Readduo.
-  if (loading && obras.length === 0 && nome.length === 0) {
-    return <p>Carregando os dados...</p>;
-  }
-
-  if (erro) {
-    return <p style={{ color: "red" }}>{erro}</p>;
-  }
+  //estatus do loading 
+  if (loading && obras.length === 0 && nome.length === 0) return <p>Carregando os dados...</p>;
+  if (erro) return <p style={{ color: "red" }}>{erro}</p>;
 
   return (
     <div className={styles.Conteiner}>
@@ -348,7 +343,7 @@ function Home() {
 
           <h2>
             Olá, <span className={styles.distaque}>
-              {nome[0]?.US_nome || "leitor"}!
+              {nome.US_nome}!
             </span>
           </h2>
 

@@ -5,6 +5,7 @@ import CardLivro from "../../componentes/CardLivro";
 import TopBar from "../../componentes/Topbar";
 import Mascotão from "../../assets/Mascotão.png";
 import { useRef } from "react";
+import api from "../../services/api";
 
 import {
     Flame,
@@ -34,7 +35,30 @@ function Landing() {
         });
     };
 
-    const [obra, setObra] = useState([]);//fazer a função na sala, para ver o resultado
+    const [obras, setObras] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [erro, setErro] = useState("");
+
+     const fetchDados = async () => {
+        try {
+        setLoading(true);
+
+        const response = await api.get("/obras");
+        setObras(response.data.dados);
+        } catch (err) {
+        console.error("Erro na requisição:", err.message);
+        setErro("Não foi possível carregar os dados.");
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDados();
+    }, []);
+ 
+  if (loading && obras.length === 0) return <p>Carregando os dados...</p>;
+  if (erro) return <p style={{ color: "red" }}>{erro}</p>;
 
     return (
         
@@ -150,65 +174,24 @@ function Landing() {
         <ChevronLeft size={32} strokeWidth={2.5} />
     </button>
 
-    <div
-        className={styles.leitCard}
-    >
-        <CardLivro
-            titulo="Deserto"
-            autor="Amigo loko"
-            tipo="Livro"
+     {loading ? (
+          <p>Carregando...</p>
+        ) : (
+          <div className={styles.leitCard}>
+            {obras.map((obra) => (
+              <CardLivro
+                key={obra.Ob_ID}
+                id={obra.Ob_ID}
+                titulo={obra.Ob_titulo}
+                autor={obra.Autor}
+                tipo={obra.Genero}
+                imagem={obra.Imagem}
 
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-        <CardLivro
-            titulo="Cuna"
-            autor="Herbert Frank"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-        <CardLivro
-            titulo="Harry Poter"
-            autor="Minha varinha magica"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-        <CardLivro
-            titulo="Duna"
-            autor="Frank Herbert"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-        <CardLivro
-            titulo="O Peso das Palavras Cura a Alma"
-            autor="Sthefany Oliveira"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-    <CardLivro
-            titulo="O Peso das Palavras Cura a Alma"
-            autor="Sthefany Oliveira"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-
-        <CardLivro
-            titulo="O Peso das Palavras Cura a Alma"
-            autor="Sthefany Oliveira"
-            tipo="Livro"
-
-            onClick = {() => navigate('/Cadastro')}
-        />
-    </div>
+                onClick={() => navigate('/Cadastro')}
+              />
+            ))}
+          </div>
+        )}
 
     <button
         className={`${styles.botaoScroll} ${styles.direitaScroll}`}
