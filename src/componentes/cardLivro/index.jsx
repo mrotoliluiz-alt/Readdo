@@ -11,23 +11,31 @@ function CardLivro({
   id,
   link,
   favorito = false,
+  onClick
 }) {
   const navigate = useNavigate();
 
   const abrirLivro = () => {
-  if (link) {
-    window.open(link, "_blank", "noopener,noreferrer");
-    return;
-  }
+    if (onClick) {
+        onClick();
+        return;
+    }
 
-  if (id) {
-    navigate(`/livro/${id}`);
-  }
+    if (link) {
+        window.open(link, "_blank", "noopener,noreferrer");
+        return;
+    }
+
+    if (id) {
+        navigate(`/livro/${id}`);
+    }
 };
+
+  
 
   return (
     <div className={styles.card}
-    onClick={() => navigate(`/livro/${id}`)}>
+    onClick={abrirLivro}>
       <div className={styles.imagemContainer}>
         {imagem ? (
           <img

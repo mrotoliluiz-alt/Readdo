@@ -1,6 +1,7 @@
 import styles from './index.module.css';
+import {useEffect, useState  } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CardLivro from "../../componentes/cardLivro";
+import CardLivro from "../../componentes/CardLivro";
 import TopBar from "../../componentes/Topbar";
 import Mascotão from "../../assets/Mascotão.png";
 import { useRef } from "react";
@@ -32,6 +33,8 @@ function Landing() {
             behavior: "smooth",
         });
     };
+
+    const [obra, setObra] = useState([]);//fazer a função na sala, para ver o resultado
 
     return (
         
@@ -149,48 +152,61 @@ function Landing() {
 
     <div
         className={styles.leitCard}
-        ref={livrosRef}
     >
         <CardLivro
             titulo="Deserto"
             autor="Amigo loko"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
         <CardLivro
             titulo="Cuna"
             autor="Herbert Frank"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
         <CardLivro
             titulo="Harry Poter"
             autor="Minha varinha magica"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
         <CardLivro
             titulo="Duna"
             autor="Frank Herbert"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
         <CardLivro
             titulo="O Peso das Palavras Cura a Alma"
             autor="Sthefany Oliveira"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
     <CardLivro
             titulo="O Peso das Palavras Cura a Alma"
             autor="Sthefany Oliveira"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
 
         <CardLivro
             titulo="O Peso das Palavras Cura a Alma"
             autor="Sthefany Oliveira"
             tipo="Livro"
+
+            onClick = {() => navigate('/Cadastro')}
         />
     </div>
 

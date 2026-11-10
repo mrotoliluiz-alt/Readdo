@@ -1,14 +1,11 @@
+
 import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
 import CardLivro from "../../componentes/CardLivro";
-import api from "../../services/api"
+import api from "../../services/api";
 
 import {
-  Flame,
-  Star,
   House,
-  PenTool,
-  BookOpen,
   Road,
   ChevronLeft,
   ChevronRight,
@@ -24,11 +21,17 @@ function Home() {
   const scrollRef2 = useRef(null);
 
   const [obras, setObras] = useState([]);
-   const [nome, setNome] = useState([]);
+  const [nome, setNome] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
- 
+  // Google Books
+  const carregandoInicial = useRef(false);
+
+  const [livrosExplore, setLivrosExplore] = useState([]);
+  const [livrosMisterio, setLivrosMisterio] = useState([]);
+  const [loadingGoogle, setLoadingGoogle] = useState(true);
+  const [erroGoogle, setErroGoogle] = useState("");
 
   // Busca as obras cadastradas no banco de dados
   const fetchDados = async () => {
@@ -40,113 +43,18 @@ function Home() {
 
       const responseNome = await api.get("/usuarios");
       setNome(responseNome.data.dados);
+
     } catch (err) {
-      //o axios coloca o erro detalhado com a fução err
       console.error("Erro na requisição:", err.message);
       setErro("Não foi possível carregar os dados.");
+
     } finally {
-      //é executado idependente da resposta 
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchDados();
-  }, []);
-
-  if (loading && obras.length === 0 && nome.length === 0) return <p>Carregando os dados {/*futuramente colocar animação de loading*/}</p>;
-  if (erro) return <p style={{color: 'red'}}>{erro}</p>;
-  
-  
-  
-  return (
-    <div className={styles.Conteiner}>
-
-    <div className={styles.header}>
-      <House />
-      <h1>Início</h1>
-    </div>
-
-   <section className={styles.welcome}>
-
-   
-         
-        <div key= {usuario.id} className={styles.welcomeInfo}>
-
-        <span className={styles.welcomeLabel}>
-            SEJA BEM-VINDO AO READDUO
-        </span>
-
-        <h2>
-            Olá, <span className={styles.distaque}>
-                {nome.US_nome}!
-            </span>
-        </h2>
-
-        <p>
-            Que tal continuar sua jornada literária hoje?
-            Cada página lida é uma nova conquista!
-        </p>
-
-        </div>
-        
-    
-
-    <div className={styles.stats}>
-
-        <div className={styles.statCard}>
-            <h3>3</h3>
-            <span>Livros lidos</span>
-        </div>
-
-        <div className={styles.statCard}>
-            <h3>4.2K</h3>
-            <span>Palavras lidas</span>
-        </div>
-
-    </div>
-
-</section>
-
-    <section>
-      <h2>Descubra algo novo</h2>
-
-      {obras.map((obra) =>(
-        <CardLivro
-        key={obra.id}
-        id={obra.id}
-        titulo={obra.titulo}
-        autor={obra.autor}
-        tipo={obra.genero}
-        imagem = {obra.imagem}
-        />
-      ))}
-    </section>
-    </div>
-  )
-  
-}
-
-export default Home;
-
-
-    
-      
-
-
-//função para api do google
-/*function Home() {
-  const scrollRef1 = useRef(null);
-  const scrollRef2 = useRef(null);
-  const carregandoInicial = useRef(false);
-
-  const [livrosExplore, setLivrosExplore] = useState([]);
-  const [livrosMisterio, setLivrosMisterio] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState("");
-
   // Busca livros na Google Books API.
-  const buscarNaGoogleBooks = async (termo, tentativa = 0) => {
+  const GoogleBooks = async (termo, tentativa = 0) => {
     const MAX_TENTATIVAS = 3;
 
     const parametros = new URLSearchParams({
@@ -160,37 +68,31 @@ export default Home;
       parametros.set("key", API_KEY);
     }
 
-    const url =
-      `https://www.googleapis.com/books/v1/volumes?${parametros.toString()}`;
+    const url = `https://www.googleapis.com/books/v1/volumes?${parametros.toString()}`;
 
     try {
       const resposta = await fetch(url);
 
       if (resposta.status === 429) {
         if (tentativa >= MAX_TENTATIVAS) {
-          throw new Error(
-            "Limite de requisições da Google Books atingido."
-          );
+          throw new Error("Limite de requisições da Google Books atingido.");
         }
 
         const espera = 2000 * 2 ** tentativa;
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, espera)
-        );
+        await new Promise((resolve) => setTimeout(resolve, espera));
 
-        return buscarNaGoogleBooks(termo, tentativa + 1);
+        return GoogleBooks(termo, tentativa + 1);
       }
 
       if (!resposta.ok) {
-        throw new Error(
-          `Erro na Google Books: ${resposta.status}`
-        );
+        throw new Error(`Erro na Google Books: ${resposta.status}`);
       }
 
       const dados = await resposta.json();
 
       return Array.isArray(dados.items) ? dados.items : [];
+
     } catch (erro) {
       console.error(`Erro na busca "${termo}":`, erro);
       throw erro;
@@ -217,7 +119,7 @@ export default Home;
   // Tenta termos alternativos quando uma busca não encontra livros.
   const buscarComAlternativa = async (termos) => {
     for (const termo of termos) {
-      const resultados = await buscarNaGoogleBooks(termo);
+      const resultados = await GoogleBooks(termo);
 
       if (resultados.length > 0) {
         return resultados;
@@ -232,8 +134,8 @@ export default Home;
     if (carregandoInicial.current) return;
 
     carregandoInicial.current = true;
-    setCarregando(true);
-    setErro("");
+    setLoadingGoogle(true);
+    setErroGoogle("");
 
     try {
       // Reaproveita resultados recentes.
@@ -253,6 +155,7 @@ export default Home;
             setLivrosMisterio(cacheData.misterios);
             return;
           }
+
         } catch {
           sessionStorage.removeItem(CACHE_KEY);
         }
@@ -288,7 +191,7 @@ export default Home;
       setLivrosExplore(explorar);
       setLivrosMisterio(misterios);
 
-      // Salva o cache mesmo que apenas uma seção tenha resultados.
+      // Salva os resultados no cache.
       sessionStorage.setItem(
         CACHE_KEY,
         JSON.stringify({
@@ -299,36 +202,38 @@ export default Home;
       );
 
       if (falhaExplore && falhaMisterios) {
-        throw new Error(
-          "Não foi possível consultar a Google Books API."
-        );
+        throw new Error("Não foi possível consultar a Google Books API.");
       }
 
       if (falhaExplore || falhaMisterios) {
-        setErro(
+        setErroGoogle(
           "Alguns livros não puderam ser carregados. Você pode tentar novamente."
         );
+
       } else if (!explorar.length && !misterios.length) {
-        setErro(
-          "A busca não encontrou livros. Tente novamente."
-        );
+        setErroGoogle("A busca não encontrou livros. Tente novamente.");
       }
+
     } catch (erro) {
       console.error("Erro ao carregar os livros:", erro);
 
-      setErro(
+      setErroGoogle(
         "Não foi possível carregar os livros. Verifique sua conexão e tente novamente."
       );
+
     } finally {
-      setCarregando(false);
+      setLoadingGoogle(false);
       carregandoInicial.current = false;
     }
   };
 
+  // Executa as buscas quando a página é aberta.
   useEffect(() => {
+    fetchDados();
     carregarLivros();
   }, []);
 
+  // Controla a rolagem horizontal dos livros.
   const rolar = (referencia, direcao) => {
     referencia.current?.scrollBy({
       left: direcao * 400,
@@ -336,6 +241,7 @@ export default Home;
     });
   };
 
+  // Transforma os dados da Google Books em CardLivro.
   const renderizarLivro = (livro) => {
     const info = livro.volumeInfo || {};
 
@@ -347,7 +253,7 @@ export default Home;
 
     return (
       <CardLivro
-        key={livro.id}
+        key={`google-${livro.id}`}
         id={livro.id}
         titulo={info.title || "Título desconhecido"}
         autor={info.authors?.join(", ") || "Autor desconhecido"}
@@ -363,6 +269,7 @@ export default Home;
     );
   };
 
+  // Organiza as seções de livros da Google Books.
   const renderizarSecao = (
     titulo,
     Icone,
@@ -382,7 +289,7 @@ export default Home;
           className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
           onClick={() => rolar(referencia, -1)}
           aria-label={`Ver livros anteriores de ${titulo}`}
-          disabled={carregando || livros.length === 0}
+          disabled={loadingGoogle || livros.length === 0}
         >
           <ChevronLeft size={26} />
         </button>
@@ -392,7 +299,7 @@ export default Home;
           ref={referencia}
           id={id}
         >
-          {carregando ? (
+          {loadingGoogle ? (
             <p>Carregando livros...</p>
           ) : livros.length > 0 ? (
             livros.map(renderizarLivro)
@@ -406,7 +313,7 @@ export default Home;
           className={`${styles.botaoScroll} ${styles.direitaScroll}`}
           onClick={() => rolar(referencia, 1)}
           aria-label={`Ver próximos livros de ${titulo}`}
-          disabled={carregando || livros.length === 0}
+          disabled={loadingGoogle || livros.length === 0}
         >
           <ChevronRight size={26} />
         </button>
@@ -414,48 +321,82 @@ export default Home;
     </>
   );
 
+  // Exibe o carregamento inicial da API do Readduo.
+  if (loading && obras.length === 0 && nome.length === 0) {
+    return <p>Carregando os dados...</p>;
+  }
+
+  if (erro) {
+    return <p style={{ color: "red" }}>{erro}</p>;
+  }
+
   return (
     <div className={styles.Conteiner}>
+
       <div className={styles.header}>
         <House />
         <h1>Início</h1>
       </div>
 
       <section className={styles.welcome}>
-        <div>
-          <h2>Olá, nome do usuário</h2>
+
+        <div className={styles.welcomeInfo}>
+
+          <span className={styles.welcomeLabel}>
+            SEJA BEM-VINDO AO READDUO
+          </span>
+
+          <h2>
+            Olá, <span className={styles.distaque}>
+              {nome[0]?.US_nome || "leitor"}!
+            </span>
+          </h2>
 
           <p>
-            Continue sua jornada literária. Você está indo muito bem!!
+            Que tal continuar sua jornada literária hoje?
+            Cada página lida é uma nova conquista!
           </p>
+
         </div>
 
         <div className={styles.stats}>
+
           <div className={styles.statCard}>
-            <BookOpen color="#61a6fa" />
             <h3>3</h3>
-            <span>Lidos</span>
+            <span>Livros lidos</span>
           </div>
 
           <div className={styles.statCard}>
-            <PenTool color="#4ade80" />
             <h3>4.2K</h3>
-            <span>Palavras</span>
+            <span>Palavras lidas</span>
           </div>
 
-          <div className={styles.statCard}>
-            <Flame color="#fb923c" />
-            <h3>8 dias</h3>
-            <span>Sequência</span>
-          </div>
-
-          <div className={styles.statCard}>
-            <Star color="#ffdb0c" />
-            <h3>+850</h3>
-            <span>XP</span>
-          </div>
         </div>
+
       </section>
+
+      <section>
+        <h2>Descubra algo novo</h2>
+
+        {loading ? (
+          <p>Carregando...</p>
+        ) : (
+          <div className={styles.leitCard}>
+            {obras.map((obra) => (
+              <CardLivro
+                key={obra.Ob_ID}
+                id={obra.Ob_ID}
+                titulo={obra.Ob_titulo}
+                autor={obra.Autor}
+                tipo={obra.Genero}
+                imagem={obra.Imagem}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Google Books API */}
 
       {renderizarSecao(
         "Explore novos Caminhos",
@@ -473,20 +414,22 @@ export default Home;
         "livros-misterios"
       )}
 
-      {erro && (
+      {erroGoogle && (
         <div role="alert" className={styles.erroLivros}>
-          <p>{erro}</p>
+          <p>{erroGoogle}</p>
 
           <button
             type="button"
             onClick={carregarLivros}
-            disabled={carregando}
+            disabled={loadingGoogle}
           >
-            {carregando ? "Carregando..." : "Tentar novamente"}
+            {loadingGoogle ? "Carregando..." : "Tentar novamente"}
           </button>
         </div>
       )}
+
     </div>
   );
-}*/
+}
 
+export default Home;
