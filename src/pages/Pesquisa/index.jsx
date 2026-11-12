@@ -41,9 +41,6 @@ function Pesquisa() {
   const explorarRef = useRef(null);
   const resultadosRef = useRef(null);
 
-  // --------------------------------------------------
-  // BUSCAR NA GOOGLE BOOKS
-  // --------------------------------------------------
 
   const buscarNaGoogleBooks = async (termo, tentativa = 0) => {
     const MAX_TENTATIVAS = 3;

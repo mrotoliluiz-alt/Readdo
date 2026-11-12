@@ -15,6 +15,8 @@ function CardLivro({
 }) {
   const navigate = useNavigate();
 
+  const tituloSeguro = titulo || "Título não disponível";
+
   const abrirLivro = () => {
     if (onClick) {
         onClick();
@@ -62,9 +64,10 @@ function CardLivro({
       </div>
 
       <div className={styles.info}>
-        <h3> {titulo.length > 25
-              ? titulo.substring(0, 25) + "..."
-              : titulo}
+        <h3>
+          {tituloSeguro.length > 25
+            ? tituloSeguro.substring(0, 25) + "..."
+            : tituloSeguro}
         </h3>
 
         <p>{autor}</p>

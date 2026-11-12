@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
 import CardLivro from "../../componentes/CardLivro";
 import api from "../../services/api";
+import apiGoogle from "../../services/googleBooks";
 
 import {
   House,
@@ -21,7 +22,7 @@ function Home() {
   const scrollRef2 = useRef(null);
 
   const [obras, setObras] = useState([]);
-  const [nome, setNome] = useState([]);
+  const [us, setUs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
@@ -41,8 +42,8 @@ function Home() {
       const responseObra = await api.get("/obras");
       setObras(responseObra.data.dados);
 
-      const responseNome = await api.get("/usuarios");
-      setNome(responseNome.data.dados);
+      const responseUs = await api.get("/usuarios");
+      setUs(responseUs.data.dados);
 
     } catch (err) {
       console.error("Erro na requisição:", err.message);
@@ -54,50 +55,39 @@ function Home() {
   };
 
   // Busca livros na Google Books API.
-  const GoogleBooks = async (termo, tentativa = 0) => {
-    const MAX_TENTATIVAS = 3;
+  
+const GoogleBooks = async (termo, tentativa = 0) => {
+  const MAX_TENTATIVAS = 3;
 
-    const parametros = new URLSearchParams({
-      q: termo,
-      maxResults: "20",
-      orderBy: "relevance",
-      printType: "books",
+  try {
+    const resposta = await apiGoogle.get("/volumes", {
+      params: {
+        q: termo,
+        maxResults: 20,
+        orderBy: "relevance",
+        printType: "books",
+        ...(API_KEY && { key: API_KEY }),
+      },
     });
 
-    if (API_KEY) {
-      parametros.set("key", API_KEY);
+    return Array.isArray(resposta.data.items)
+      ? resposta.data.items
+      : [];
+
+  } catch (erro) {
+    if (erro.response?.status === 429 && tentativa < MAX_TENTATIVAS) {
+      const espera = 2000 * 2 ** tentativa;
+
+      await new Promise((resolve) => setTimeout(resolve, espera));
+
+      return GoogleBooks(termo, tentativa + 1);
     }
 
-    const url = `https://www.googleapis.com/books/v1/volumes?${parametros.toString()}`;
+    console.error(`Erro na busca "${termo}":`, erro);
+    throw erro;
+  }
+};
 
-    try {
-      const resposta = await fetch(url);
-
-      if (resposta.status === 429) {
-        if (tentativa >= MAX_TENTATIVAS) {
-          throw new Error("Limite de requisições da Google Books atingido.");
-        }
-
-        const espera = 2000 * 2 ** tentativa;
-
-        await new Promise((resolve) => setTimeout(resolve, espera));
-
-        return GoogleBooks(termo, tentativa + 1);
-      }
-
-      if (!resposta.ok) {
-        throw new Error(`Erro na Google Books: ${resposta.status}`);
-      }
-
-      const dados = await resposta.json();
-
-      return Array.isArray(dados.items) ? dados.items : [];
-
-    } catch (erro) {
-      console.error(`Erro na busca "${termo}":`, erro);
-      throw erro;
-    }
-  };
 
   // Remove resultados duplicados e livros sem título.
   const prepararLivros = (livros) => {
@@ -322,7 +312,7 @@ function Home() {
   );
 
   //estatus do loading 
-  if (loading && obras.length === 0 && nome.length === 0) return <p>Carregando os dados...</p>;
+  if (loading && obras.length === 0 && us.length === 0) return <p>Carregando os dados...</p>;
   if (erro) return <p style={{ color: "red" }}>{erro}</p>;
 
   return (
@@ -343,7 +333,7 @@ function Home() {
 
           <h2>
             Olá, <span className={styles.distaque}>
-              {nome.US_nome}!
+              {us.nome}!
             </span>
           </h2>
 
@@ -379,9 +369,9 @@ function Home() {
           <div className={styles.leitCard}>
             {obras.map((obra) => (
               <CardLivro
-                key={obra.Ob_ID}
-                id={obra.Ob_ID}
-                titulo={obra.Ob_titulo}
+                key={obra.id}
+                id={obra.id}
+                titulo={obra.titulo}
                 autor={obra.Autor}
                 tipo={obra.Genero}
                 imagem={obra.Imagem}

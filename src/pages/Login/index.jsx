@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
 import logo from "../../assets/Group 50.svg";
 import Botao from '../../componentes/botao';
-import { Navigate } from "react-router-dom";
+import api from "../../services/api";
 import {
   BookOpen,
   ArrowLeft,
@@ -12,22 +12,54 @@ import {
 } from "lucide-react";
 
 function Login() {
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    try {
-      const user = await signInWithEmailAndPassword(auth, email, senha);
-      console.log("Usuário logado:", user.user);
-      alert("Login realizado!");
-    } catch (err) {
-      setErro("Email ou senha inválidos");
+
+  function handleSubmit(event){
+    event.preventDefault();
+    logar();
+  }
+
+  async function logar () {
+    try{
+      setLoading(true);
+      setErro("");
+
+      const resposta = await api.get('/login', {
+            params: {
+                email: email,
+                senha: senha,
+          }
+      });
+
+      // Recebe os dados do usuário do back
+      const usuarioEncontrado = resposta.data.dados;
+       // Salva os dados no navegador
+      localStorage.setItem(
+        "usuario",
+        JSON.stringify(usuarioEncontrado)
+      );
+      
+      navigate ("/Home");
+    } catch (error) {
+      console.error("Erro ao realizar Login", error);
+
+      if (error.response?.status === 403){
+        setErro("E-mail ou senha inválidos.");
+      } else {
+        setErro("não foi possivel realizar o login.");
+      }
+      
+    } finally {
+      setLoading(false);
     }
-  };
+  }
+  
 
   return (
   <div className={styles.loginContainer}>
@@ -76,7 +108,7 @@ function Login() {
     {/* Lado direito */}
     <div className={styles.rightSide}>
 
-      <form onSubmit={handleLogin} className={styles.formCard}>
+      <form onSubmit={handleSubmit} className={styles.formCard}>
 
         <h2>Entrar na conta</h2>
 
@@ -90,9 +122,10 @@ function Login() {
 
           <input
           type="email"
-          placeholder= "Seu e-mail"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder= "Seu e-mail"
+          onChange={(event) => setEmail(event.target.value)}
+          required
         />
         </div>
 
@@ -105,23 +138,22 @@ function Login() {
           type="password"
           placeholder="Sua senha"
           value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          onChange={(event) => setSenha(event.target.value)}
+          required
         />
 
         </div>
         
+        {/*Erro ao entrar */}
+        {erro && <p>{erro}</p>}
 
         <Botao
         texto='Entrar'
         variante= 'login'
-        onClick={() => navigate('/Home')}
-        />
+        type="submit"
+        disabled={loading}
+        >{loading ? "Entrando..." : "Entrar"}</Botao>
 
-        {erro && (
-          <span className={styles.erro}>
-            {erro}
-          </span>
-        )}
 
         <div className={styles.register}>
           Não tem conta?

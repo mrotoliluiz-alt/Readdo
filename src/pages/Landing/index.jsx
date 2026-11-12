@@ -180,9 +180,9 @@ function Landing() {
           <div className={styles.leitCard}>
             {obras.map((obra) => (
               <CardLivro
-                key={obra.Ob_ID}
-                id={obra.Ob_ID}
-                titulo={obra.Ob_titulo}
+                key={obra.id}
+                id={obra.id}
+                titulo={obra.titulo}
                 autor={obra.Autor}
                 tipo={obra.Genero}
                 imagem={obra.Imagem}
@@ -198,7 +198,7 @@ function Landing() {
         onClick={rolarDireita}
         aria-label="Ver próximos livros"
     >
-        <ChevronRight size={24} />
+         <ChevronLeft size={32} strokeWidth={2.5} />
     </button>
 
     </div>
