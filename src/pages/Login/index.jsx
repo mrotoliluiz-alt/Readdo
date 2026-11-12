@@ -152,7 +152,7 @@ function Login() {
         variante= 'login'
         type="submit"
         disabled={loading}
-        >{loading ? "Entrando..." : "Entrar"}</Botao>
+        />
 
 
         <div className={styles.register}>

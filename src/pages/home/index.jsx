@@ -42,9 +42,6 @@ function Home() {
       const responseObra = await api.get("/obras");
       setObras(responseObra.data.dados);
 
-      const responseUs = await api.get("/usuarios");
-      setUs(responseUs.data.dados);
-
     } catch (err) {
       console.error("Erro na requisição:", err.message);
       setErro("Não foi possível carregar os dados.");
@@ -53,6 +50,11 @@ function Home() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    setUs(usuario);
+}, []);
 
   // Busca livros na Google Books API.
   
@@ -83,8 +85,14 @@ const GoogleBooks = async (termo, tentativa = 0) => {
       return GoogleBooks(termo, tentativa + 1);
     }
 
-    console.error(`Erro na busca "${termo}":`, erro);
-    throw erro;
+   console.error(`Erro na busca "${termo}":`, {
+    status: erro.response?.status,
+    mensagem: erro.response?.data,
+    url: erro.config?.url,
+    parametros: erro.config?.params
+});
+
+throw erro;
   }
 };
 
@@ -332,7 +340,7 @@ const GoogleBooks = async (termo, tentativa = 0) => {
           </span>
 
           <h2>
-            Olá, <span className={styles.distaque}>
+            Olá, <span key= {us.id}className={styles.distaque}>
               {us.nome}!
             </span>
           </h2>

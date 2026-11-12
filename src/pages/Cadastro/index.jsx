@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./index.module.css";
+import api from '../../services/api'
 
 import logo from "../../assets/Group 50.svg";
 import Botao from "../../componentes/botao";
@@ -12,54 +13,77 @@ import {
   Mail,
   User,
   Lock,
+  ImagePlus
 } from "lucide-react";
 
 function Cadastro() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    US_nome:'',
+    Us_email:'',
+    Us_senha:'',
+    img: null
+  })
 
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
-
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
-    setErro("");
-    setSucesso("");
-
-    // Verifica se as senhas são iguais
-    if (senha !== confirmarSenha) {
-      setErro("As senhas não coincidem.");
-      return;
-    }
-
-    // Verifica tamanho da senha
-    if (senha.length < 6) {
-      setErro("A senha deve ter pelo menos 6 caracteres.");
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     try {
-      await createUserWithEmailAndPassword(auth, email, senha);
+        setLoading(true);
+        setErro('');
 
-      setSucesso("Conta criada com sucesso!");
+        if (formData.Us_senha !== confirmarSenha) {
+            setErro('As senhas não coincidem.');
+            return;
+        }
 
-      // Depois de criar a conta, vai para o Login
-      setTimeout(() => {
-        navigate("/Login");
-      }, 1500);
+        const data = new FormData();
 
-    } catch (err) {
-      console.error(err);
+        data.append('US_nome', formData.US_nome);
+        data.append('Us_email', formData.Us_email);
+        data.append('Us_senha', formData.Us_senha);
 
-      setErro("Não foi possível criar a conta.");
-      setSucesso("");
+        if (formData.img) {
+            data.append('img', formData.img);
+        }
+
+        await api.post('/usuarios', data);
+
+        navigate('/login');
+
+    } catch (error) {
+        console.error('Erro ao realizar o cadastro:', error);
+        console.log("Resposta:", error.response?.data);
+        console.log("Status:", error.response?.status);
+
+        setErro(
+            error.response?.data?.mensagem ||
+            'Não foi possível realizar o cadastro.'
+        );
+
+    } finally {
+        setLoading(false);
     }
-  };
+};
+
+    const selecionarImagem = (event) => {
+    const arquivo = event.target.files[0];
+
+    if (arquivo) {
+        setFormData({
+            ...formData,
+            img: arquivo
+        });
+
+        setPreview(URL.createObjectURL(arquivo));
+    }
+};
+
 
   return (
     <div className={styles.loginContainer}>
@@ -122,7 +146,7 @@ function Cadastro() {
       <div className={styles.rightSide}>
 
         <form
-          onSubmit={handleRegister}
+          onSubmit={handleSubmit}
           className={styles.formCard}
         >
 
@@ -133,6 +157,40 @@ function Cadastro() {
           <p>
             Preencha seus dados para começar
           </p>
+
+          {/* FOTO DE PERFIL */}
+          <div className={styles.imagemPerfil}>
+
+            <div className={styles.previewImagem}>
+              {preview ? (
+                <img src={preview} alt="Prévia da foto de perfil" />
+              ) : (
+                <User size={32} />
+              )}
+            </div>
+
+            <div className={styles.imagemInfo}>
+              <span>Foto de perfil</span>
+
+              <label htmlFor="imagemPerfil" className={styles.botaoImagem}>
+                <ImagePlus size={18} />
+                Adicionar imagem
+              </label>
+
+              <input
+                id="imagemPerfil"
+                type="file"
+                accept="image/*"
+                onChange={selecionarImagem}
+                hidden
+              />
+
+              <small>
+                {formData.img ? formData.img.name : "Escolha uma imagem para seu perfil"}
+              </small>
+            </div>
+
+          </div>
 
 
           {/* NOME */}
@@ -146,8 +204,8 @@ function Cadastro() {
             <input
               type="text"
               placeholder="Nome do usuário"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
+              value={formData.US_nome}
+              onChange={(event) => setFormData({...formData, US_nome: event.target.value})}
               required
             />
 
@@ -165,8 +223,8 @@ function Cadastro() {
             <input
               type="email"
               placeholder="Seu e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.Us_email}
+              onChange={(event) => setFormData({...formData, Us_email: event.target.value})}
               required
             />
 
@@ -184,8 +242,8 @@ function Cadastro() {
             <input
               type="password"
               placeholder="Crie uma senha (mín. 6 caracteres)"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={formData.Us_senha}
+              onChange={(event) => setFormData({...formData, Us_senha: event.target.value})}
               required
             />
 
@@ -204,9 +262,7 @@ function Cadastro() {
               type="password"
               placeholder="Confirmar senha"
               value={confirmarSenha}
-              onChange={(e) =>
-                setConfirmarSenha(e.target.value)
-              }
+              onChange={(event) => setConfirmarSenha(event.target.value)}
               required
             />
 
@@ -218,6 +274,8 @@ function Cadastro() {
           <Botao
             texto="Cadastrar"
             variante="login"
+            type="submit"
+            disabled={loading}
           />
 
 
@@ -226,15 +284,6 @@ function Cadastro() {
           {erro && (
             <span className={styles.erro}>
               {erro}
-            </span>
-          )}
-
-
-          {/* SUCESSO */}
-
-          {sucesso && (
-            <span className={styles.sucesso}>
-              {sucesso}
             </span>
           )}
 
