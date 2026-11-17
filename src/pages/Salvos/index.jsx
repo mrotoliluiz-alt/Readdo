@@ -109,7 +109,7 @@ function Salvos() {
 
       {/* Lista de obras */}
       {livrosFiltrados.length > 0 ? (
-        <section className={styles.grid}>
+       <section className={styles.cardObras}>
           {livrosFiltrados.map((livro) => (
             <CardLivro
               key={livro.titulo}

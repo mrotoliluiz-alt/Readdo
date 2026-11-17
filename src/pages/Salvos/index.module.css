@@ -217,6 +217,14 @@
     transform: translateY(-1px);
 }
 
+.cardObras {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
+    width: 100%;
+}
+
 /* ==================== TEMA ESCURO ==================== */
 
 :global([data-theme="escuro"]) .container {
