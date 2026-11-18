@@ -35,9 +35,8 @@ export default function Oficina() {
   const [erro, setErro] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Guarda a obra que está sendo editada no modal.
-  const [obraSelecionada, setObraSelecionada] = useState(null);
 
+  const [obraSelecionada, setObraSelecionada] = useState(null);
   // Guarda a obra aberta no editor.
   const [obraAberta, setObraAberta] = useState(null);
 
