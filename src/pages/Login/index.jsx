@@ -44,6 +44,7 @@ function Login() {
         "usuario",
         JSON.stringify(usuarioEncontrado)
       );
+     
       
       navigate ("/Home");
     } catch (error) {

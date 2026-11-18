@@ -1,3 +1,4 @@
+
 import styles from "./index.module.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import api from "../../services/api";
@@ -24,427 +25,232 @@ import {
   Save,
 } from "lucide-react";
 
-function Oficina() {
-  const fileInputRef = useRef(null);
-  const imagemInputRef = useRef(null);
-  const editorRef = useRef(null);
+export default function Oficina() {
+  const usuarioSalvo = localStorage.getItem("usuario");
+  const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+  const Us_ID = usuario?.id;
 
   const [obras, setObras] = useState([]);
-  const [obraAtivaId, setObraAtivaId] = useState(null);
-  const [capituloAtivoId, setCapituloAtivoId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const [busca, setBusca] = useState("");
-  const [buscaDebounced, setBuscaDebounced] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState("");
+  // Guarda a obra que está sendo editada no modal.
+  const [obraSelecionada, setObraSelecionada] = useState(null);
 
-  const [modalNovaObra, setModalNovaObra] = useState(false);
-  const [modalEditarObra, setModalEditarObra] = useState(false);
-  const [modalNovoCapitulo, setModalNovoCapitulo] = useState(false);
+  // Guarda a obra aberta no editor.
+  const [obraAberta, setObraAberta] = useState(null);
 
-  const [novaObra, setNovaObra] = useState({
-    titulo: "",
-    genero: "",
-    descricao: "",
-    img: null,
+  // Guarda os capítulos da obra aberta.
+  const [capitulos, setCapitulos] = useState([]);
+  const [capituloSelecionado, setCapituloSelecionado] = useState(null);
+  const [loadingCapitulos, setLoadingCapitulos] = useState(false);
+  const [erroCapitulos, setErroCapitulos] = useState(null);
+
+  const [formData, setFormData] = useState({
+    Ob_titulo: "",
+    Ob_genero: "",
+    Ob_sinopse: "",
   });
 
-  const [obraEditada, setObraEditada] = useState({
-    titulo: "",
-    genero: "",
-    descricao: "",
-    img: null,
-  });
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const [novoCapitulo, setNovoCapitulo] = useState({ titulo: "" });
-  const [preview, setPreview] = useState(null);
-
-  const [menuEstilo, setMenuEstilo] = useState(false);
-  const [menuFonte, setMenuFonte] = useState(false);
-
-  const usuario = useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem("usuario") || "{}");
-    } catch {
-      return {};
-    }
-  }, []);
-
-  const usuarioId =
-    usuario?.Us_ID ??
-    usuario?.us_id ??
-    usuario?.id ??
-    usuario?.ID;
-
-  const normalizarObra = (obra) => {
-    const capitulos = Array.isArray(obra.capitulos)
-      ? obra.capitulos.map((capitulo, index) => ({
-          id: capitulo.id ?? capitulo.Cap_ID ?? index + 1,
-          titulo:
-            capitulo.titulo ??
-            capitulo.Cap_titulo ??
-            `Capítulo ${index + 1}`,
-          conteudo: capitulo.conteudo ?? capitulo.Cap_conteudo ?? "",
-        }))
-      : [];
-
-    return {
-      ...obra,
-      id: obra.id ?? obra.Ob_ID,
-      titulo: obra.titulo ?? obra.Ob_titulo ?? "",
-      descricao: obra.descricao ?? obra.Ob_sinopse ?? "",
-      genero: obra.genero ?? obra.Ob_genero ?? "",
-      imagem: obra.imagem ?? obra.Ob_imagem ?? null,
-      capitulos,
-      data: obra.data ?? "",
-    };
-  };
-
-  const carregarObras = async (idSelecionado = null) => {
+  const fetchDados = async () => {
     try {
       setLoading(true);
-      setErro("");
+      setErro(null);
 
-      if (!usuarioId) {
-        setObras([]);
-        setErro("Não foi possível identificar o usuário conectado.");
-        return;
+      const response = await api.get(`/obras/usuario/${Us_ID}`);
+
+      setObras(response.data.dados);
+    } catch (error) {
+      console.error("Erro ao listar obras:", error);
+      setErro("Não foi possível carregar suas obras.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Busca os capítulos da obra selecionada.
+  const fetchCapitulos = async (Ob_ID) => {
+    try {
+      setLoadingCapitulos(true);
+      setErroCapitulos(null);
+      setCapitulos([]);
+      setCapituloSelecionado(null);
+
+      const response = await api.get(`/capitulos/obra/${Ob_ID}`);
+
+      if (response.data.sucesso) {
+        setCapitulos(response.data.dados);
       }
+    } catch (error) {
+      console.error("Erro ao listar capítulos:", error);
+      console.log("Resposta do backend:", error.response?.data);
 
-      const resposta = await api.get(`/obras/usuario/${usuarioId}`);
-      const dados = Array.isArray(resposta.data?.dados)
-        ? resposta.data.dados
-        : Array.isArray(resposta.data)
-          ? resposta.data
-          : [];
-
-      const lista = dados.map(normalizarObra);
-      setObras(lista);
-
-      const idParaSelecionar = idSelecionado ?? obraAtivaId;
-      const obraSelecionada = lista.find(
-        (obra) => String(obra.id) === String(idParaSelecionar)
+      setErroCapitulos(
+        error.response?.data?.mensagem ||
+          "Não foi possível carregar os capítulos."
       );
+    } finally {
+      setLoadingCapitulos(false);
+    }
+  };
+
+  // Abre uma obra e carrega seus capítulos.
+  const handleObraClick = (obra) => {
+    setObraAberta(obra);
+    fetchCapitulos(obra.Ob_ID);
+  };
+
+  // Seleciona um capítulo para exibir seu conteúdo no editor.
+  const handleCapituloClick = (capitulo) => {
+    setCapituloSelecionado(capitulo);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // Abre o modal preenchendo os campos com os dados da obra selecionada.
+  const handleEditClick = (obra) => {
+    setObraSelecionada(obra);
+
+    setFormData({
+      Ob_titulo: obra.Ob_titulo || "",
+      Ob_genero: obra.Ob_genero || "",
+      Ob_sinopse: obra.Ob_sinopse || "",
+    });
+
+    setSelectedFile(null);
+    setErro(null);
+    setShowModal(true);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      setErro(null);
+
+      const data = new FormData();
+
+      data.append("Us_ID", Us_ID);
+      data.append("Ob_titulo", formData.Ob_titulo);
+      data.append("Ob_sinopse", formData.Ob_sinopse);
+      data.append("Ob_genero", formData.Ob_genero);
+
+      if (selectedFile) {
+        data.append("img", selectedFile);
+      }
 
       if (obraSelecionada) {
-        setObraAtivaId(obraSelecionada.id);
-        setCapituloAtivoId(obraSelecionada.capitulos[0]?.id ?? null);
-      } else if (lista.length > 0) {
-        setObraAtivaId(lista[0].id);
-        setCapituloAtivoId(lista[0].capitulos[0]?.id ?? null);
+        // EDIÇÃO: PUT /obras/:id
+        const response = await api.put(
+          `/obras/${obraSelecionada.Ob_ID}`,
+          data
+        );
+
+        if (response.data.sucesso) {
+          alert("Obra atualizada com sucesso!");
+
+          // Atualiza a listagem com os dados do servidor.
+          await fetchDados();
+
+          // Atualiza também a obra que está aberta no editor.
+          if (obraAberta?.Ob_ID === obraSelecionada.Ob_ID) {
+            setObraAberta(response.data.dados);
+          }
+        }
       } else {
-        setObraAtivaId(null);
-        setCapituloAtivoId(null);
+        // CADASTRO: POST /obras
+        const response = await api.post("/obras", data);
+
+        setObras([...obras, response.data.dados]);
+
+        alert("Obra cadastrada com sucesso!");
       }
+
+      setFormData({
+        Ob_titulo: "",
+        Ob_genero: "",
+        Ob_sinopse: "",
+      });
+
+      setSelectedFile(null);
+      setObraSelecionada(null);
+      setShowModal(false);
     } catch (error) {
-      console.error("Erro ao carregar as obras:", error);
+      console.error("Erro ao salvar obra:", error);
+      console.log("Resposta do backend:", error.response?.data);
+      console.log("ID do usuário:", Us_ID);
+
       setErro(
         error.response?.data?.mensagem ||
-          "Não foi possível carregar suas obras."
+          "Não foi possível salvar a obra."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    carregarObras();
-    // A carga inicial deve acontecer apenas quando a tela abrir.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const obraAtiva = obras.find(
-    (obra) => String(obra.id) === String(obraAtivaId)
-  );
-
-  const capituloAtivo = obraAtiva?.capitulos?.find(
-    (capitulo) => String(capitulo.id) === String(capituloAtivoId)
-  );
-
-  // Aguarda 500 ms após a digitação antes de atualizar o filtro,
-  // seguindo a técnica de debounce apresentada no material do professor.
-  useEffect(() => {
-    const temporizador = setTimeout(() => {
-      setBuscaDebounced(busca);
-    }, 500);
-
-    return () => clearTimeout(temporizador);
-  }, [busca]);
-
-  const obrasFiltradas = useMemo(
-    () =>
-      obras.filter((obra) =>
-        (obra.titulo || "").toLowerCase().includes(buscaDebounced.toLowerCase())
-      ),
-    [obras, buscaDebounced]
-  );
-
-  const palavras = editorRef.current?.innerText
-    ?.trim()
-    .split(/\s+/)
-    .filter(Boolean).length || 0;
-
-  useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.innerHTML = capituloAtivo?.conteudo || "";
-    }
-  }, [obraAtivaId, capituloAtivoId]);
-
-  const abrirModalNovaObra = () => {
-    setNovaObra({
-      titulo: "",
-      genero: "",
-      descricao: "",
-      img: null,
-    });
-    setPreview(null);
-    setErro("");
-    setModalNovaObra(true);
-  };
-
-  const abrirModalEditarObra = () => {
-    if (!obraAtiva) return;
-
-    setObraEditada({
-      titulo: obraAtiva.titulo,
-      genero: obraAtiva.genero,
-      descricao: obraAtiva.descricao,
-      img: null,
-    });
-    setPreview(obraAtiva.imagem || null);
-    setErro("");
-    setModalEditarObra(true);
-  };
-
-  const selecionarObra = (id) => {
-    setObraAtivaId(id);
-    const obra = obras.find((item) => String(item.id) === String(id));
-    setCapituloAtivoId(obra?.capitulos?.[0]?.id ?? null);
-  };
-
-  const selecionarCapitulo = (id) => {
-    setCapituloAtivoId(id);
-  };
-
-  const criarNovaObra = async () => {
-    if (!novaObra.titulo.trim()) {
-      setErro("Informe o título da obra.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setErro("");
-
-      const data = new FormData();
-      data.append("Ob_titulo", novaObra.titulo.trim());
-      data.append("Ob_sinopse", novaObra.descricao);
-      data.append("Ob_genero", novaObra.genero);
-
-      if (novaObra.img) {
-        data.append("img", novaObra.img);
-      }
-
-      // Caso o backend associe a obra ao usuário pelo corpo da requisição.
-      if (usuarioId) data.append("Us_ID", usuarioId);
-
-      const resposta = await api.post("/obras", data);
-      const idCriado =
-        resposta.data?.dados?.id ??
-        resposta.data?.dados?.Ob_ID ??
-        resposta.data?.dados?.insertId;
-
-      setModalNovaObra(false);
-      await carregarObras(idCriado ?? null);
-    } catch (error) {
-      console.error("Erro ao criar a obra:", error);
-      console.log("Resposta do backend:", error.response?.data);
-      console.log("Status:", error.response?.status);
-      console.log("Dados enviados:", [...data.entries()]);
-
-      setErro(
-          error.response?.data?.mensagem ||
-          "Não foi possível criar a obra."
-      );
-  }
-  };
-
-  const salvarEdicaoObra = async () => {
-    if (!obraAtiva) return;
-
-    if (!obraEditada.titulo.trim()) {
-      setErro("Informe o título da obra.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setErro("");
-
-      const data = new FormData();
-      data.append("Ob_titulo", obraEditada.titulo.trim());
-      data.append("Ob_sinopse", obraEditada.descricao);
-      data.append("Ob_genero", obraEditada.genero);
-
-      if (obraEditada.img) {
-        data.append("img", obraEditada.img);
-      }
-
-      await api.put(`/obras/${obraAtiva.id}`, data);
-
-      setModalEditarObra(false);
-      await carregarObras(obraAtiva.id);
-    } catch (error) {
-      console.error("Erro ao editar a obra:", error);
-      setErro(
-        error.response?.data?.mensagem || "Não foi possível editar a obra."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const excluirObra = async (id) => {
+  // Exclui uma obra.
+  const excluirObra = async (Ob_ID) => {
     const confirmar = window.confirm(
-      "Tem certeza de que deseja excluir esta obra?"
+      "Tem certeza que deseja excluir esta obra?"
     );
-    if (!confirmar) return;
+
+    if (!confirmar) {
+      return;
+    }
 
     try {
       setLoading(true);
-      setErro("");
-      await api.delete(`/obras/${id}`);
+      setErro(null);
 
-      // Atualiza a lista local após a exclusão, sem fazer outro GET.
-      const novaLista = obras.filter((obra) => String(obra.id) !== String(id));
-      setObras(novaLista);
+      const response = await api.delete(`/obras/${Ob_ID}`);
 
-      if (String(obraAtivaId) === String(id)) {
-        setObraAtivaId(novaLista[0]?.id ?? null);
-        setCapituloAtivoId(novaLista[0]?.capitulos?.[0]?.id ?? null);
+      if (response.data.sucesso) {
+        setObras(obras.filter((obra) => obra.Ob_ID !== Ob_ID));
+
+        // Limpa o editor caso a obra excluída estivesse aberta.
+        if (obraAberta?.Ob_ID === Ob_ID) {
+          setObraAberta(null);
+          setCapitulos([]);
+          setCapituloSelecionado(null);
+        }
+
+        alert("Obra excluída com sucesso!");
       }
     } catch (error) {
-      console.error("Erro ao excluir a obra:", error);
+      console.error("Erro ao excluir obra:", error);
+      console.log("Resposta do backend:", error.response?.data);
+
       setErro(
-        error.response?.data?.mensagem || "Não foi possível excluir a obra."
+        error.response?.data?.mensagem ||
+          "Não foi possível excluir a obra."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const selecionarImagemNova = (event) => {
-    const arquivo = event.target.files?.[0];
-    if (!arquivo) return;
-
-    setNovaObra((anterior) => ({ ...anterior, img: arquivo }));
-    setPreview(URL.createObjectURL(arquivo));
-  };
-
-  const selecionarImagemEdicao = (event) => {
-    const arquivo = event.target.files?.[0];
-    if (!arquivo) return;
-
-    setObraEditada((anterior) => ({ ...anterior, img: arquivo }));
-    setPreview(URL.createObjectURL(arquivo));
-  };
-
-  const adicionarImagem = (event) => {
-    const arquivo = event.target.files?.[0];
-    if (!arquivo || !obraAtiva) return;
-
-    setObraEditada((anterior) => ({ ...anterior, img: arquivo }));
-    setPreview(URL.createObjectURL(arquivo));
-    setModalEditarObra(true);
-  };
-
-  const importarArquivo = (event) => {
-    const arquivo = event.target.files?.[0];
-    if (!arquivo) return;
-
-    const leitor = new FileReader();
-    leitor.onload = () => {
-      const texto = String(leitor.result || "");
-      if (editorRef.current) {
-        editorRef.current.innerText = texto;
-        atualizarConteudo();
-      }
-    };
-    leitor.readAsText(arquivo);
-    event.target.value = "";
-  };
-
-  const atualizarConteudo = () => {
-    if (!editorRef.current || !obraAtiva || !capituloAtivoId) return;
-
-    const conteudo = editorRef.current.innerHTML;
-    setObras((anteriores) =>
-      anteriores.map((obra) =>
-        String(obra.id) === String(obraAtivaId)
-          ? {
-              ...obra,
-              capitulos: obra.capitulos.map((capitulo) =>
-                String(capitulo.id) === String(capituloAtivoId)
-                  ? { ...capitulo, conteudo }
-                  : capitulo
-              ),
-            }
-          : obra
-      )
-    );
-  };
-
-  const abrirModalNovoCapitulo = () => {
-    setNovoCapitulo({ titulo: "" });
-    setModalNovoCapitulo(true);
-  };
-
-  const criarNovoCapitulo = () => {
-    if (!novoCapitulo.titulo.trim() || !obraAtiva) return;
-
-    const novoId = `local-${Date.now()}`;
-    const capitulo = {
-      id: novoId,
-      titulo: novoCapitulo.titulo.trim(),
-      conteudo: "",
-    };
-
-    setObras((anteriores) =>
-      anteriores.map((obra) =>
-        String(obra.id) === String(obraAtivaId)
-          ? { ...obra, capitulos: [...obra.capitulos, capitulo] }
-          : obra
-      )
-    );
-    setCapituloAtivoId(novoId);
-    setModalNovoCapitulo(false);
-  };
-
-  const formatarTexto = (comando) => {
-    editorRef.current?.focus();
-    document.execCommand(comando, false, null);
-    atualizarConteudo();
-  };
-
-  const aplicarEstilo = (estilo) => {
-    const comandos = {
-      titulo1: "H1",
-      titulo2: "H2",
-      titulo3: "H3",
-      paragrafo: "P",
-    };
-    editorRef.current?.focus();
-    document.execCommand("formatBlock", false, comandos[estilo]);
-    setMenuEstilo(false);
-    atualizarConteudo();
-  };
-
-  const aplicarFonte = (fonte) => {
-    editorRef.current?.focus();
-    document.execCommand("fontName", false, fonte);
-    setMenuFonte(false);
-    atualizarConteudo();
-  };
+  useEffect(() => {
+    if (Us_ID) {
+      fetchDados();
+    } else {
+      setErro("Usuário não identificado. Faça login novamente.");
+      setLoading(false);
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -458,90 +264,124 @@ function Oficina() {
         </div>
 
         <div className={styles.headerButtons}>
-          <button
-            className={styles.importar}
-            onClick={() => fileInputRef.current?.click()}
-          >
+          <button className={styles.importar}>
             <Upload size={18} />
             Importar obra
           </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".txt"
-            style={{ display: "none" }}
-            onChange={importarArquivo}
-          />
-          <button className={styles.novaObra} onClick={abrirModalNovaObra}>
+
+          <input type="file" accept=".txt" />
+
+          <button
+            className={styles.novaObra}
+            onClick={() => {
+              setObraSelecionada(null);
+              setFormData({
+                Ob_titulo: "",
+                Ob_genero: "",
+                Ob_sinopse: "",
+              });
+              setSelectedFile(null);
+              setErro(null);
+              setShowModal(true);
+            }}
+          >
             <Plus size={18} />
             Nova Obra
           </button>
         </div>
       </div>
 
-      {erro && <p role="alert" className={styles.semObras}>{erro}</p>}
+      {erro && (
+        <p role="alert" className={styles.semObras}>
+          {erro}
+        </p>
+      )}
 
       <section className={styles.workspace}>
         <aside className={styles.sidebar}>
           <div className={styles.searchBar}>
-            <input
-              placeholder="Buscar obra..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-            />
+            <input type="text" placeholder="Buscar obra..." />
             <Search size={18} />
           </div>
 
           <div className={styles.obrasHeader}>
             <span>MINHAS OBRAS</span>
-            <button onClick={abrirModalNovaObra} title="Nova obra">
+            <button
+              title="Nova obra"
+              onClick={() => {
+                setObraSelecionada(null);
+                setFormData({
+                  Ob_titulo: "",
+                  Ob_genero: "",
+                  Ob_sinopse: "",
+                });
+                setSelectedFile(null);
+                setErro(null);
+                setShowModal(true);
+              }}
+            >
               <Plus size={16} />
             </button>
           </div>
 
           <div className={styles.listaObras}>
-            {loading && obras.length === 0 ? (
+            {loading ? (
               <p className={styles.semObras}>Carregando obras...</p>
-            ) : obrasFiltradas.length === 0 ? (
-              <p className={styles.semObras}>Nenhuma obra encontrada.</p>
+            ) : erro ? (
+              <p className={styles.semObras}>{erro}</p>
+            ) : obras.length === 0 ? (
+              <p className={styles.semObras}>Nenhuma obra ainda :(</p>
             ) : (
-              obrasFiltradas.map((obra) => (
+              obras.map((obra) => (
                 <div
-                  key={obra.id}
-                  className={`${styles.obraCard} ${
-                    String(obra.id) === String(obraAtivaId)
-                      ? styles.obraAtiva
-                      : ""
-                  }`}
-                  onClick={() => selecionarObra(obra.id)}
+                  key={obra.Ob_ID}
+                  className={styles.obraCard}
+                  onClick={() => handleObraClick(obra)}
+                  style={{
+                    cursor: "pointer",
+                    border:
+                      obraAberta?.Ob_ID === obra.Ob_ID
+                        ? "1px solid #0FA6B3"
+                        : undefined,
+                  }}
                 >
                   <div className={styles.miniCapa}>
-                    {obra.imagem ? (
-                      <img src={obra.imagem} alt={`Capa de ${obra.titulo}`} />
+                    {obra.Ob_imagem ? (
+                      <img
+                        src={obra.Ob_imagem}
+                        alt={`Capa de ${obra.Ob_titulo}`}
+                      />
                     ) : (
                       <Image size={20} />
                     )}
                   </div>
 
                   <div className={styles.obraTextos}>
-                    <h3 title={obra.titulo}>{obra.titulo}</h3>
-                    <span>{obra.genero}</span>
-                    <p>
-                      {obra.capitulos.length || 0} capítulo
-                      {obra.capitulos.length === 1 ? "" : "s"}
-                      {obra.data ? ` • ${obra.data}` : ""}
-                    </p>
+                    <h3 title={obra.Ob_titulo}>{obra.Ob_titulo}</h3>
+                    <span>{obra.Ob_genero}</span>
+                    <p></p>
                   </div>
 
                   <button
                     className={styles.botaoExcluir}
                     onClick={(e) => {
                       e.stopPropagation();
-                      excluirObra(obra.id);
+                      excluirObra(obra.Ob_ID);
                     }}
                     title="Excluir obra"
                   >
                     <Trash2 size={18} />
+                  </button>
+
+                  <button
+                    className={styles.editarInfo}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditClick(obra);
+                    }}
+                    title="Editar obra"
+                  >
+                    <Pencil size={16} />
                   </button>
                 </div>
               ))
@@ -550,232 +390,303 @@ function Oficina() {
         </aside>
 
         <main className={styles.editor}>
-          {obraAtiva ? (
-            <>
-              <div className={styles.editorHeader}>
-                <div className={styles.infoObra}>
-                  <div
-                    className={styles.capaObra}
-                    onClick={() => imagemInputRef.current?.click()}
-                    title="Clique para adicionar ou trocar a imagem"
-                  >
-                    {preview && modalEditarObra ? (
-                      <img src={preview} alt="Prévia da capa" />
-                    ) : obraAtiva.imagem ? (
-                      <img src={obraAtiva.imagem} alt={`Capa de ${obraAtiva.titulo}`} />
-                    ) : (
-                      <div className={styles.semImagem}>
-                        <Image size={30} />
-                        <span>Adicionar imagem</span>
-                      </div>
-                    )}
-                  </div>
+          <>
+            <div className={styles.editorHeader}>
+              <div className={styles.infoObra}>
+                <div
+                  className={styles.capaObra}
+                  title="Clique para adicionar ou trocar a imagem"
+                >
+                  {obraAberta?.Ob_imagem ? (
+                    <img
+                      src={obraAberta.Ob_imagem}
+                      alt={`Capa de ${obraAberta.Ob_titulo}`}
+                    />
+                  ) : (
+                    <div className={styles.semImagem}>
+                      <Image size={30} />
+                      <span>Adicionar imagem</span>
+                    </div>
+                  )}
+                </div>
 
-                  <input
-                    ref={imagemInputRef}
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={adicionarImagem}
-                  />
+                <input type="file" accept="image/*" hidden />
 
-                  <div className={styles.dadosObra}>
-                    <div className={styles.tituloLinha}>
-                      <h2>{obraAtiva.titulo}</h2>
+                <div className={styles.dadosObra}>
+                  <div className={styles.tituloLinha}>
+                    <h2>{obraAberta?.Ob_titulo || ""}</h2>
+                    {obraAberta && (
                       <button
                         className={styles.editarInfo}
-                        onClick={abrirModalEditarObra}
                         title="Editar obra"
+                        onClick={() => handleEditClick(obraAberta)}
                       >
                         <Pencil size={15} />
                         Editar
                       </button>
-                    </div>
+                    )}
+                  </div>
 
-                    <p className={styles.descricaoObra}>
-                      {obraAtiva.descricao ||
-                        "Adicione uma descrição para sua obra."}
-                    </p>
+                  <p className={styles.descricaoObra}>
+                    {obraAberta?.Ob_sinopse || ""}
+                  </p>
 
-                    <div className={styles.salvamento}>
-                      <CheckCircle2 size={15} color="#22c55e" />
-                      <span>
-                        {"Texto não salvo no servidor"}
-                      </span>
-                    </div>
+                  <div className={styles.salvamento}>
+                    <CheckCircle2 size={15} color="#22c55e" />
+                    <span>
+                      {capituloSelecionado
+                        ? "Texto carregado do servidor"
+                        : "Selecione um capítulo"}
+                    </span>
                   </div>
                 </div>
-
-                <span className={styles.palavras}>
-                  {palavras.toLocaleString("pt-BR")} palavras
-                </span>
               </div>
 
-              <div className={styles.capitulosContainer}>
-                <div className={styles.capitulosHeader}>
-                  <div>
-                    <span>CAPÍTULOS</span>
-                    <small>
-                      {obraAtiva.capitulos.length} capítulo
-                      {obraAtiva.capitulos.length === 1 ? "" : "s"}
-                    </small>
-                  </div>
+              <span className={styles.palavras}>palavras</span>
+            </div>
+
+            <div className={styles.capitulosContainer}>
+              <div className={styles.capitulosHeader}>
+                <div>
+                  <span>CAPÍTULOS</span>
+                  <small>{capitulos.length} capítulo(s)</small>
+                </div>
+                <button>
+                  <Plus size={16} />
+                  Novo capítulo
+                </button>
+              </div>
+
+              <div className={styles.listaCapitulos}>
+                {loadingCapitulos ? (
+                  <p className={styles.semObras}>
+                    Carregando capítulos...
+                  </p>
+                ) : erroCapitulos ? (
+                  <p className={styles.semObras}>{erroCapitulos}</p>
+                ) : !obraAberta ? (
+                  <p className={styles.semObras}>
+                    Selecione uma obra para visualizar seus capítulos.
+                  </p>
+                ) : capitulos.length === 0 ? (
+                  <p className={styles.semObras}>
+                    Esta obra ainda não possui capítulos.
+                  </p>
+                ) : (
+                  capitulos.map((capitulo) => (
+                    <button
+                      key={capitulo.Cap_ID}
+                      onClick={() => handleCapituloClick(capitulo)}
+                      style={{
+                        border:
+                          capituloSelecionado?.Cap_ID === capitulo.Cap_ID
+                            ? "1px solid #0FA6B3"
+                            : undefined,
+                      }}
+                    >
+                      <span className={styles.numeroCapitulo}>
+                        {capitulo.Cap_ordem}
+                      </span>
+                      <span className={styles.nomeCapitulo}>
+                        {capitulo.Cap_titulo}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className={styles.toolbar}>
+              <div className={styles.dropdown}>
+                <button
+                  className={styles.dropdownBotao}
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  Título 1 <ChevronDown size={15} />
+                </button>
+
+                <div className={styles.dropdownMenu}>
                   <button
-                    className={styles.novoCapitulo}
-                    onClick={abrirModalNovoCapitulo}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => aplicarEstilo("titulo1")}
                   >
-                    <Plus size={16} />
-                    Novo capítulo
+                    <span className={styles.previewH1}>Título 1</span>
+                  </button>
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => aplicarEstilo("titulo2")}
+                  >
+                    <span className={styles.previewH2}>Título 2</span>
+                  </button>
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => aplicarEstilo("titulo3")}
+                  >
+                    <span className={styles.previewH3}>Título 3</span>
+                  </button>
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => aplicarEstilo("paragrafo")}
+                  >
+                    Parágrafo
                   </button>
                 </div>
+              </div>
 
-                <div className={styles.listaCapitulos}>
-                  {obraAtiva.capitulos.map((capitulo, index) => (
+              <div className={styles.dropdown}>
+                <button
+                  className={styles.dropdownBotao}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {}}
+                >
+                  <span id="nomeFonte">Arial</span>
+                  <ChevronDown size={15} />
+                </button>
+
+                <div className={styles.dropdownMenu}>
+                  {[
+                    "Arial",
+                    "Georgia",
+                    "Times New Roman",
+                    "Verdana",
+                    "Trebuchet MS",
+                    "Courier New",
+                  ].map((fonte) => (
                     <button
-                      key={capitulo.id}
-                      className={`${styles.capituloBotao} ${
-                        String(capitulo.id) === String(capituloAtivoId)
-                          ? styles.capituloAtivo
-                          : ""
-                      }`}
-                      onClick={() => selecionarCapitulo(capitulo.id)}
+                      key={fonte}
+                      style={{ fontFamily: fonte }}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => aplicarFonte(fonte)}
                     >
-                      <span className={styles.numeroCapitulo}>{index + 1}</span>
-                      <span className={styles.nomeCapitulo}>
-                        {capitulo.titulo}
-                      </span>
+                      {fonte}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className={styles.toolbar}>
-                <div className={styles.dropdown}>
-                  <button
-                    className={styles.dropdownBotao}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      setMenuEstilo(!menuEstilo);
-                      setMenuFonte(false);
-                    }}
-                  >
-                    Título 1 <ChevronDown size={15} />
-                  </button>
-                  {menuEstilo && (
-                    <div className={styles.dropdownMenu}>
-                      <button onMouseDown={(e) => e.preventDefault()} onClick={() => aplicarEstilo("titulo1")}>
-                        <span className={styles.previewH1}>Título 1</span>
-                      </button>
-                      <button onMouseDown={(e) => e.preventDefault()} onClick={() => aplicarEstilo("titulo2")}>
-                        <span className={styles.previewH2}>Título 2</span>
-                      </button>
-                      <button onMouseDown={(e) => e.preventDefault()} onClick={() => aplicarEstilo("titulo3")}>
-                        <span className={styles.previewH3}>Título 3</span>
-                      </button>
-                      <button onMouseDown={(e) => e.preventDefault()} onClick={() => aplicarEstilo("paragrafo")}>
-                        Parágrafo
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles.dropdown}>
-                  <button
-                    className={styles.dropdownBotao}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      setMenuFonte(!menuFonte);
-                      setMenuEstilo(false);
-                    }}
-                  >
-                    <span id="nomeFonte">Arial</span>
-                    <ChevronDown size={15} />
-                  </button>
-                  {menuFonte && (
-                    <div className={styles.dropdownMenu}>
-                      {[
-                        "Arial",
-                        "Georgia",
-                        "Times New Roman",
-                        "Verdana",
-                        "Trebuchet MS",
-                        "Courier New",
-                      ].map((fonte) => (
-                        <button
-                          key={fonte}
-                          style={{ fontFamily: fonte }}
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => aplicarFonte(fonte)}
-                        >
-                          {fonte}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <button title="Negrito" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("bold")}>
-                  <Bold size={16} />
-                </button>
-                <button title="Itálico" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("italic")}>
-                  <Italic size={16} />
-                </button>
-                <button title="Sublinhado" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("underline")}>
-                  <Underline size={16} />
-                </button>
-                <button title="Tachado" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("strikeThrough")}>
-                  <Strikethrough size={16} />
-                </button>
-                <button title="Alinhar à esquerda" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("justifyLeft")}>
-                  <AlignLeft size={16} />
-                </button>
-                <button title="Centralizar" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("justifyCenter")}>
-                  <AlignCenter size={16} />
-                </button>
-                <button title="Alinhar à direita" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("justifyRight")}>
-                  <AlignRight size={16} />
-                </button>
-                <button title="Justificar" onMouseDown={(e) => e.preventDefault()} onClick={() => formatarTexto("justifyFull")}>
-                  <AlignJustify size={16} />
-                </button>
-              </div>
-
-              <div
-                ref={editorRef}
-                className={styles.textEditor}
-                contentEditable
-                suppressContentEditableWarning
-                onInput={atualizarConteudo}
-              />
-            </>
-          ) : (
-            <div className={styles.editorVazio}>
-              <PenTool size={45} />
-              <h2>{loading ? "Carregando suas obras..." : "Crie sua primeira obra"}</h2>
-              <p>Comece a escrever sua história.</p>
-              <button className={styles.novaObra} onClick={abrirModalNovaObra}>
-                <Plus size={18} />
-                Nova Obra
+              <button
+                title="Negrito"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("bold")}
+              >
+                <Bold size={16} />
+              </button>
+              <button
+                title="Itálico"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("italic")}
+              >
+                <Italic size={16} />
+              </button>
+              <button
+                title="Sublinhado"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("underline")}
+              >
+                <Underline size={16} />
+              </button>
+              <button
+                title="Tachado"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("strikeThrough")}
+              >
+                <Strikethrough size={16} />
+              </button>
+              <button
+                title="Alinhar à esquerda"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("justifyLeft")}
+              >
+                <AlignLeft size={16} />
+              </button>
+              <button
+                title="Centralizar"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("justifyCenter")}
+              >
+                <AlignCenter size={16} />
+              </button>
+              <button
+                title="Alinhar à direita"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("justifyRight")}
+              >
+                <AlignRight size={16} />
+              </button>
+              <button
+                title="Justificar"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => formatarTexto("justifyFull")}
+              >
+                <AlignJustify size={16} />
               </button>
             </div>
-          )}
+
+            <div
+              className={styles.textEditor}
+              contentEditable
+              suppressContentEditableWarning
+            >
+              {capituloSelecionado?.Cap_conteudo || ""}
+            </div>
+          </>
+
+          <div className={styles.editorVazio}>
+            <PenTool size={45} />
+            <h2>
+              {loading ? "Carregando suas obras..." : "Crie sua primeira obra"}
+            </h2>
+            <p>Comece a escrever sua história.</p>
+            <button
+              className={styles.novaObra}
+              onClick={() => {
+                setObraSelecionada(null);
+                setFormData({
+                  Ob_titulo: "",
+                  Ob_genero: "",
+                  Ob_sinopse: "",
+                });
+                setSelectedFile(null);
+                setErro(null);
+                setShowModal(true);
+              }}
+            >
+              <Plus size={18} />
+              Nova Obra
+            </button>
+          </div>
         </main>
       </section>
 
-      {modalNovaObra && (
+      {showModal && (
         <div
           className={styles.modalOverlay}
           onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModalNovaObra(false);
+            if (e.target === e.currentTarget) {
+              setShowModal(false);
+              setObraSelecionada(null);
+            }
           }}
         >
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <div>
-                <h2>Nova obra</h2>
-                <p>Comece uma nova história.</p>
+                <h2>{obraSelecionada ? "Editar obra" : "Nova obra"}</h2>
+                <p>
+                  {obraSelecionada
+                    ? "Altere as informações da sua história."
+                    : "Comece uma nova história."}
+                </p>
               </div>
-              <button className={styles.fecharModal} onClick={() => setModalNovaObra(false)}>
+
+              <button
+                className={styles.fecharModal}
+                onClick={() => {
+                  setShowModal(false);
+                  setObraSelecionada(null);
+                  setErro(null);
+                }}
+              >
                 <X size={20} />
               </button>
             </div>
@@ -785,152 +696,77 @@ function Oficina() {
                 Título da obra
                 <input
                   autoFocus
+                  name="Ob_titulo"
                   placeholder="Ex.: A Cidade Perdida"
-                  value={novaObra.titulo}
-                  onChange={(e) => setNovaObra({ ...novaObra, titulo: e.target.value })}
+                  value={formData.Ob_titulo}
+                  onChange={handleChange}
                 />
               </label>
+
               <label>
                 Gênero
                 <input
+                  name="Ob_genero"
                   placeholder="Ex.: Fantasia"
-                  value={novaObra.genero}
-                  onChange={(e) => setNovaObra({ ...novaObra, genero: e.target.value })}
+                  value={formData.Ob_genero}
+                  onChange={handleChange}
                 />
               </label>
+
               <label>
                 Descrição
                 <textarea
+                  name="Ob_sinopse"
                   placeholder="Escreva uma breve descrição da sua obra..."
-                  value={novaObra.descricao}
-                  onChange={(e) => setNovaObra({ ...novaObra, descricao: e.target.value })}
+                  value={formData.Ob_sinopse}
+                  onChange={handleChange}
                 />
               </label>
+
               <label>
-                Capa da obra
-                <input type="file" accept="image/*" onChange={selecionarImagemNova} />
-                {preview && <img src={preview} alt="Prévia da capa" style={{ maxWidth: 120, marginTop: 8 }} />}
+                {obraSelecionada ? "Trocar capa" : "Capa da obra"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
               </label>
+
+              {selectedFile && (
+                <p>{selectedFile.name}</p>
+              )}
+
               {erro && <p role="alert">{erro}</p>}
             </div>
 
             <div className={styles.modalButtons}>
-              <button className={styles.cancelar} onClick={() => setModalNovaObra(false)}>
+              <button
+                className={styles.cancelar}
+                onClick={() => {
+                  setShowModal(false);
+                  setObraSelecionada(null);
+                  setErro(null);
+                }}
+              >
                 Cancelar
               </button>
-              <button className={styles.confirmar} onClick={criarNovaObra} disabled={loading}>
-                <Plus size={18} />
-                {loading ? "Criando..." : "Criar obra"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {modalEditarObra && (
-        <div
-          className={styles.modalOverlay}
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModalEditarObra(false);
-          }}
-        >
-          <div className={styles.modal}>
-            <div className={styles.modalHeader}>
-              <div>
-                <h2>Editar obra</h2>
-                <p>Altere as informações da sua história.</p>
-              </div>
-              <button className={styles.fecharModal} onClick={() => setModalEditarObra(false)}>
-                <X size={20} />
-              </button>
-            </div>
+              <button
+                className={styles.confirmar}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {obraSelecionada ? (
+                  <Save size={18} />
+                ) : (
+                  <Plus size={18} />
+                )}
 
-            <div className={styles.modalForm}>
-              <label>
-                Título da obra
-                <input
-                  autoFocus
-                  value={obraEditada.titulo}
-                  onChange={(e) => setObraEditada({ ...obraEditada, titulo: e.target.value })}
-                />
-              </label>
-              <label>
-                Gênero
-                <input
-                  placeholder="Ex.: Fantasia"
-                  value={obraEditada.genero}
-                  onChange={(e) => setObraEditada({ ...obraEditada, genero: e.target.value })}
-                />
-              </label>
-              <label>
-                Descrição
-                <textarea
-                  placeholder="Escreva uma breve descrição da sua obra..."
-                  value={obraEditada.descricao}
-                  onChange={(e) => setObraEditada({ ...obraEditada, descricao: e.target.value })}
-                />
-              </label>
-              <label>
-                Trocar capa
-                <input type="file" accept="image/*" onChange={selecionarImagemEdicao} />
-                {preview && <img src={preview} alt="Prévia da capa" style={{ maxWidth: 120, marginTop: 8 }} />}
-              </label>
-              {erro && <p role="alert">{erro}</p>}
-            </div>
-
-            <div className={styles.modalButtons}>
-              <button className={styles.cancelar} onClick={() => setModalEditarObra(false)}>
-                Cancelar
-              </button>
-              <button className={styles.confirmar} onClick={salvarEdicaoObra} disabled={loading}>
-                <Save size={18} />
-                {loading ? "Salvando..." : "Salvar alterações"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {modalNovoCapitulo && (
-        <div
-          className={styles.modalOverlay}
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModalNovoCapitulo(false);
-          }}
-        >
-          <div className={styles.modal}>
-            <div className={styles.modalHeader}>
-              <div>
-                <h2>Novo capítulo</h2>
-                <p>Adicione um novo capítulo à sua obra.</p>
-              </div>
-              <button className={styles.fecharModal} onClick={() => setModalNovoCapitulo(false)}>
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className={styles.modalForm}>
-              <label>
-                Título do capítulo
-                <input
-                  autoFocus
-                  placeholder="Ex.: Capítulo 2 – A descoberta"
-                  value={novoCapitulo.titulo}
-                  onChange={(e) => setNovoCapitulo({ titulo: e.target.value })}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") criarNovoCapitulo();
-                  }}
-                />
-              </label>
-            </div>
-
-            <div className={styles.modalButtons}>
-              <button className={styles.cancelar} onClick={() => setModalNovoCapitulo(false)}>
-                Cancelar
-              </button>
-              <button className={styles.confirmar} onClick={criarNovoCapitulo}>
-                <Plus size={18} />
-                Criar capítulo
+                {loading
+                  ? "Salvando..."
+                  : obraSelecionada
+                    ? "Salvar alterações"
+                    : "Criar obra"}
               </button>
             </div>
           </div>
@@ -939,5 +775,3 @@ function Oficina() {
     </div>
   );
 }
-
-export default Oficina;
