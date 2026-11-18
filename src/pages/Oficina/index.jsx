@@ -55,21 +55,23 @@ export default function Oficina() {
 
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const fetchDados = async () => {
-    try {
-      setLoading(true);
-      setErro(null);
+ const fetchDados = async () => {
+  try {
+    setLoading(true);
+    setErro(null);
 
-      const response = await api.get(`/obras/usuario/${Us_ID}`);
+    const response = await api.get(`/obras/usuario/${Us_ID}`);
 
-      setObras(response.data.dados);
-    } catch (error) {
-      console.error("Erro ao listar obras:", error);
-      setErro("Não foi possível carregar suas obras.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setObras(response.data.dados);
+
+    return response.data.dados;
+  } catch (error) {
+    console.error("Erro ao listar obras:", error);
+    setErro("Não foi possível carregar suas obras.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Busca os capítulos da obra selecionada.
   const fetchCapitulos = async (Ob_ID) => {
@@ -163,12 +165,19 @@ export default function Oficina() {
           alert("Obra atualizada com sucesso!");
 
           // Atualiza a listagem com os dados do servidor.
-          await fetchDados();
+          const obrasAtualizadas = await fetchDados();
 
           // Atualiza também a obra que está aberta no editor.
           if (obraAberta?.Ob_ID === obraSelecionada.Ob_ID) {
-            setObraAberta(response.data.dados);
-          }
+            const obraAtualizada = obrasAtualizadas.find((obra) => obra.Ob_ID === obraSelecionada.Ob_ID)
+
+            if (obraAtualizada) {
+    setObraAberta(obraAtualizada);
+  }
+
+          };
+
+          
         }
       } else {
         // CADASTRO: POST /obras
