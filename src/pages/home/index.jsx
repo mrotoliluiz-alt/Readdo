@@ -190,14 +190,18 @@ throw erro;
       setLivrosMisterio(misterios);
 
       // Salva os resultados no cache.
-      sessionStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({
-          timestamp: Date.now(),
-          explore: explorar,
-          misterios,
-        })
-      );
+      if (explorar.length > 0 || misterios.length > 0) {
+        sessionStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            timestamp: Date.now(),
+            explore: explorar,
+            misterios,
+          })
+        );
+      } else {
+        sessionStorage.removeItem(CACHE_KEY);
+      }
 
       if (falhaExplore && falhaMisterios) {
         throw new Error("Não foi possível consultar a Google Books API.");
