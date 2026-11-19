@@ -3,7 +3,6 @@ import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
 import CardLivro from "../../componentes/CardLivro";
 import api from "../../services/api";
-import apiGoogle from "../../services/googleBooks";
 
 import {
   House,
@@ -13,9 +12,6 @@ import {
   HatGlasses,
 } from "lucide-react";
 
-const CACHE_KEY = "readduo_home_google_books_v2";
-const CACHE_TIME = 30 * 60 * 1000;
-const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
 function Home() {
   const scrollRef1 = useRef(null);
@@ -26,13 +22,8 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
-  // Google Books
-  const carregandoInicial = useRef(false);
-
   const [livrosExplore, setLivrosExplore] = useState([]);
   const [livrosMisterio, setLivrosMisterio] = useState([]);
-  const [loadingGoogle, setLoadingGoogle] = useState(true);
-  const [erroGoogle, setErroGoogle] = useState("");
 
   // Busca as obras cadastradas no banco de dados
   const fetchDados = async () => {
@@ -54,185 +45,13 @@ function Home() {
   useEffect(() => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
     setUs(usuario);
-}, []);
-
-  // Busca livros na Google Books API.
-  
-const GoogleBooks = async (termo, tentativa = 0) => {
-  const MAX_TENTATIVAS = 3;
-
-  try {
-    const resposta = await apiGoogle.get("/volumes", {
-      params: {
-        q: termo,
-        maxResults: 20,
-        orderBy: "relevance",
-        printType: "books",
-        ...(API_KEY && { key: API_KEY }),
-      },
-    });
-
-    return Array.isArray(resposta.data.items)
-      ? resposta.data.items
-      : [];
-
-  } catch (erro) {
-    if (erro.response?.status === 429 && tentativa < MAX_TENTATIVAS) {
-      const espera = 2000 * 2 ** tentativa;
-
-      await new Promise((resolve) => setTimeout(resolve, espera));
-
-      return GoogleBooks(termo, tentativa + 1);
-    }
-
-   console.error(`Erro na busca "${termo}":`, {
-    status: erro.response?.status,
-    mensagem: erro.response?.data,
-    url: erro.config?.url,
-    parametros: erro.config?.params
-});
-
-throw erro;
-  }
-};
+  }, []);
 
 
-  // Remove resultados duplicados e livros sem título.
-  const prepararLivros = (livros) => {
-    const unicos = new Map();
-
-    livros.forEach((livro) => {
-      if (
-        livro?.id &&
-        livro?.volumeInfo?.title &&
-        !unicos.has(livro.id)
-      ) {
-        unicos.set(livro.id, livro);
-      }
-    });
-
-    return Array.from(unicos.values());
-  };
-
-  // Tenta termos alternativos quando uma busca não encontra livros.
-  const buscarComAlternativa = async (termos) => {
-    for (const termo of termos) {
-      const resultados = await GoogleBooks(termo);
-
-      if (resultados.length > 0) {
-        return resultados;
-      }
-    }
-
-    return [];
-  };
-
-  // Carrega as duas seções e guarda os resultados em cache.
-  const carregarLivros = async () => {
-    if (carregandoInicial.current) return;
-
-    carregandoInicial.current = true;
-    setLoadingGoogle(true);
-    setErroGoogle("");
-
-    try {
-      // Reaproveita resultados recentes.
-      const cache = sessionStorage.getItem(CACHE_KEY);
-
-      if (cache) {
-        try {
-          const cacheData = JSON.parse(cache);
-
-          const cacheValido =
-            Date.now() - cacheData.timestamp < CACHE_TIME &&
-            Array.isArray(cacheData.explore) &&
-            Array.isArray(cacheData.misterios);
-
-          if (cacheValido) {
-            setLivrosExplore(cacheData.explore);
-            setLivrosMisterio(cacheData.misterios);
-            return;
-          }
-
-        } catch {
-          sessionStorage.removeItem(CACHE_KEY);
-        }
-      }
-
-      // Busca as duas seções independentemente.
-      const resultados = await Promise.allSettled([
-        buscarComAlternativa([
-          "fiction",
-          "literature",
-          "books",
-        ]),
-        buscarComAlternativa([
-          "mystery",
-          "suspense",
-          "detective fiction",
-        ]),
-      ]);
-
-      const falhaExplore = resultados[0].status === "rejected";
-      const falhaMisterios = resultados[1].status === "rejected";
-
-      const explorar =
-        resultados[0].status === "fulfilled"
-          ? prepararLivros(resultados[0].value)
-          : [];
-
-      const misterios =
-        resultados[1].status === "fulfilled"
-          ? prepararLivros(resultados[1].value)
-          : [];
-
-      setLivrosExplore(explorar);
-      setLivrosMisterio(misterios);
-
-      // Salva os resultados no cache.
-      if (explorar.length > 0 || misterios.length > 0) {
-        sessionStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({
-            timestamp: Date.now(),
-            explore: explorar,
-            misterios,
-          })
-        );
-      } else {
-        sessionStorage.removeItem(CACHE_KEY);
-      }
-
-      if (falhaExplore && falhaMisterios) {
-        throw new Error("Não foi possível consultar a Google Books API.");
-      }
-
-      if (falhaExplore || falhaMisterios) {
-        setErroGoogle(
-          "Alguns livros não puderam ser carregados. Você pode tentar novamente."
-        );
-
-      } else if (!explorar.length && !misterios.length) {
-        setErroGoogle("A busca não encontrou livros. Tente novamente.");
-      }
-
-    } catch (erro) {
-      console.error("Erro ao carregar os livros:", erro);
-
-      setErroGoogle(
-        "Não foi possível carregar os livros. Verifique sua conexão e tente novamente."
-      );
-
-    } finally {
-      setLoadingGoogle(false);
-      carregandoInicial.current = false;
-    }
-  };
 
   // Executa as buscas quando a página é aberta.
   useEffect(() => {
     fetchDados();
-    carregarLivros();
   }, []);
 
   // Controla a rolagem horizontal dos livros.
@@ -344,7 +163,7 @@ throw erro;
           </span>
 
           <h2>
-            Olá, <span key= {us.id}className={styles.distaque}>
+            Olá, <span key={us.id} className={styles.distaque}>
               {us.nome}!
             </span>
           </h2>
@@ -384,46 +203,17 @@ throw erro;
                 key={obra.id}
                 id={obra.id}
                 titulo={obra.titulo}
-                autor={obra.Autor}
-                tipo={obra.Genero}
-                imagem={obra.Imagem}
+                autor={obra.autor}
+                tipo={obra.genero}
+                imagem={obra.imagem}
+                navigationState={obra}
               />
             ))}
           </div>
         )}
       </section>
 
-      {/* Google Books API */}
-
-      {renderizarSecao(
-        "Explore novos Caminhos",
-        Road,
-        livrosExplore,
-        scrollRef1,
-        "livros-explore"
-      )}
-
-      {renderizarSecao(
-        "Mistérios",
-        HatGlasses,
-        livrosMisterio,
-        scrollRef2,
-        "livros-misterios"
-      )}
-
-      {erroGoogle && (
-        <div role="alert" className={styles.erroLivros}>
-          <p>{erroGoogle}</p>
-
-          <button
-            type="button"
-            onClick={carregarLivros}
-            disabled={loadingGoogle}
-          >
-            {loadingGoogle ? "Carregando..." : "Tentar novamente"}
-          </button>
-        </div>
-      )}
+     
 
     </div>
   );

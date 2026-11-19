@@ -11,7 +11,8 @@ function CardLivro({
   id,
   link,
   favorito = false,
-  onClick
+  onClick,
+  navigationState
 }) {
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ function CardLivro({
     }
 
     if (id) {
-        navigate(`/livro/${id}`);
+      navigate(`/livro/${id}`, navigationState ? { state: navigationState } : undefined);
     }
 };
 

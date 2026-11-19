@@ -2,14 +2,15 @@ import styles from "./index.module.css";
 
 import { useEffect, useState } from "react";
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 import { BookOpen, ArrowLeft, Bookmark } from "lucide-react";
 
 function LivroAberto() {
     const { id } = useParams();
-
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [livro, setLivro] = useState(null);
     const [carregando, setCarregando] = useState(true);
@@ -21,26 +22,18 @@ function LivroAberto() {
                 setCarregando(true);
                 setErro("");
 
-                const API_KEY =
-                    import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
-
-                if (!API_KEY) {
-                    throw new Error(
-                        "A chave da Google Books API não foi configurada."
-                    );
+                const obraSelecionada = location.state;
+                if (obraSelecionada && String(obraSelecionada.id) === id) {
+                    setLivro(obraSelecionada);
+                    return;
                 }
 
-                const resposta = await fetch(
-                    `https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`
-                );
+                const resposta = await api.get("/obras");
+                const obras = resposta.data?.dados || [];
+                const obra = obras.find((item) => String(item.id) === id);
 
-                if (!resposta.ok) {
-                    throw new Error("Livro não encontrado.");
-                }
-
-                const dados = await resposta.json();
-
-                setLivro(dados);
+                if (!obra) throw new Error("Livro não encontrado.");
+                setLivro(obra);
             } catch (erro) {
                 console.error(erro);
 
@@ -54,7 +47,7 @@ function LivroAberto() {
         };
 
         buscarLivro();
-    }, [id]);
+    }, [id, location.state]);
 
     /* =========================
        CARREGANDO
@@ -88,7 +81,7 @@ function LivroAberto() {
        INFORMAÇÕES DO LIVRO
     ========================= */
 
-    const info = livro.volumeInfo || {};
+    const imagem = livro.imagem;
 
     return (
         <div className={styles.container}>
@@ -112,12 +105,10 @@ function LivroAberto() {
 
                 <div className={styles.capa}>
 
-                    {info.imageLinks?.thumbnail ? (
+                    {imagem ? (
                         <img
-                            src={info.imageLinks.thumbnail}
-                            alt={`Capa de ${
-                                info.title || "livro"
-                            }`}
+                            src={imagem}
+                            alt={`Capa de ${livro.titulo || "livro"}`}
                         />
                     ) : (
                         <div className={styles.semCapa}>
@@ -133,29 +124,28 @@ function LivroAberto() {
                 <div className={styles.informacoes}>
 
                     <span className={styles.tipo}>
-                        Livro
+                        {livro.genero || "Livro"}
                     </span>
 
                     <h1>
-                        {info.title ||
+                        {livro.titulo ||
                             "Título desconhecido"}
                     </h1>
 
                     <h2>
-                        {info.authors?.join(", ") ||
+                        {livro.autor ||
                             "Autor desconhecido"}
                     </h2>
 
 
                     {/* DESCRIÇÃO */}
 
-                    {info.description && (
+                    {livro.sinopse && (
                         <div
                             className={styles.descricao}
-                            dangerouslySetInnerHTML={{
-                                __html: info.description,
-                            }}
-                        />
+                        >
+                            {livro.sinopse}
+                        </div>
                     )}
 
 
