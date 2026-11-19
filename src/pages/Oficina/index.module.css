@@ -1,3 +1,9 @@
+
+/* =========================================================
+   OFICINA AUTORAL — READDUO
+   Temas claro e escuro
+   ========================================================= */
+
 .container {
     display: flex;
     flex-direction: column;
@@ -7,15 +13,12 @@
     min-height: 100%;
     box-sizing: border-box;
     padding: 30px;
-
     background: #f8fafc;
     color: #0F1C64;
-
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
         "Open Sans", "Helvetica Neue", sans-serif;
-
-    transition: background 0.25s ease, color 0.25s ease;
+    transition: background .25s ease, color .25s ease;
 }
 
 /* ================= HEADER ================= */
@@ -25,13 +28,13 @@
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    margin-bottom: 30px;
+    margin-bottom: 26px;
 }
 
 .headerInfo {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
 }
 
@@ -43,22 +46,23 @@
 
 .title > svg {
     flex-shrink: 0;
+    width: 30px;
+    height: 30px;
     color: #0FA6B3;
-    filter: drop-shadow(0 2px 5px rgba(15, 166, 179, 0.15));
 }
 
 .title h1 {
     margin: 0;
     color: #0F1C64;
-    font-size: 3.2rem;
+    font-size: 3rem;
     font-weight: 750;
-    letter-spacing: -1px;
+    letter-spacing: -1.2px;
 }
 
 .headerInfo p {
     margin: 0;
     color: #64748b;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 1.5;
 }
 
@@ -69,7 +73,7 @@
     gap: 12px;
 }
 
-/* ================= BOTÕES DO HEADER ================= */
+/* ================= BOTÕES ================= */
 
 .importar,
 .novaObra {
@@ -77,30 +81,22 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-
     min-height: 44px;
     padding: 11px 20px;
     box-sizing: border-box;
-
-    border-radius: 13px;
+    border-radius: 12px;
     cursor: pointer;
-
     font: inherit;
     font-size: 1.3rem;
-    font-weight: 600;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    font-weight: 650;
+    transition: all .2s ease;
 }
 
 .importar {
     background: #ffffff;
     border: 1px solid #dbe4ee;
     color: #0F1C64;
-    box-shadow: 0 2px 5px rgba(15, 28, 100, 0.03);
+    box-shadow: 0 2px 5px rgba(15, 28, 100, .04);
 }
 
 .importar svg {
@@ -108,41 +104,47 @@
 }
 
 .importar:hover {
-    background: #f5fdff;
-    border-color: #b8eef4;
-    box-shadow: 0 5px 13px rgba(15, 166, 179, 0.09);
-    transform: translateY(-1px);
+    background: #f0fcfd;
+    border-color: #0FA6B3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 13px rgba(15, 166, 179, .10);
 }
 
 .novaObra {
     border: 1px solid transparent;
     color: #ffffff;
-    background: linear-gradient(100deg, #7c3aed, #ec4899);
-    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.13);
+    background: linear-gradient(110deg, #0FA6B3, #087e9b);
+    box-shadow: 0 4px 12px rgba(15, 166, 179, .20);
 }
 
 .novaObra:hover {
-    box-shadow: 0 7px 17px rgba(124, 58, 237, 0.22);
+    background: linear-gradient(110deg, #0d929e, #076b85);
+    box-shadow: 0 7px 17px rgba(15, 166, 179, .25);
     transform: translateY(-2px);
 }
 
 .importar:active,
 .novaObra:active {
-    transform: scale(0.98);
+    transform: scale(.98);
+}
+
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .importar:focus-visible,
 .novaObra:focus-visible,
 .obrasHeader button:focus-visible,
 .obraCard button:focus-visible,
-.verTodas:focus-visible,
 .toolbar button:focus-visible,
 .dropdownBotao:focus-visible,
 .dropdownMenu button:focus-visible,
-.novoCapitulo:focus-visible,
-.capituloBotao:focus-visible,
+.capitulosHeader button:focus-visible,
+.listaCapitulos button:focus-visible,
 .editarInfo:focus-visible,
-.botaoImagem:focus-visible,
 .cancelar:focus-visible,
 .confirmar:focus-visible,
 .fecharModal:focus-visible {
@@ -158,7 +160,7 @@
     gap: 20px;
     width: 100%;
     min-width: 0;
-    height: calc(100vh - 220px);
+    height: calc(100vh - 210px);
     min-height: 480px;
 }
 
@@ -167,61 +169,47 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    flex: 0 0 320px;
-    width: 320px;
+    flex: 0 0 310px;
+    width: 310px;
     min-width: 0;
     min-height: 0;
     box-sizing: border-box;
     padding: 18px;
-
     background: #ffffff;
-    border: 1px solid #dbe4ee;
-    border-radius: 20px;
-
-    box-shadow: 0 5px 18px rgba(15, 28, 100, 0.045);
-
-    transition:
-        background 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(15, 28, 100, .045);
+    transition: background .25s ease, border-color .25s ease;
 }
 
-/* ================= BARRA DE BUSCA ================= */
+/* ================= BUSCA ================= */
 
 .searchBar {
     display: flex;
     align-items: center;
     gap: 10px;
-
-    padding: 12px 15px;
-    min-height: 48px;
+    padding: 12px 14px;
+    min-height: 46px;
     box-sizing: border-box;
-
     background: #f8fafc;
-    border: 1px solid #dbe4ee;
-    border-radius: 13px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    transition: all .2s ease;
 }
 
 .searchBar:focus-within {
     background: #ffffff;
     border-color: #0FA6B3;
-    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.11);
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, .10);
 }
 
 .searchBar input {
     flex: 1;
     width: 100%;
     min-width: 0;
-
     border: none;
     outline: none;
     background: transparent;
-
     color: #0F1C64;
     font: inherit;
     font-size: 1.3rem;
@@ -234,7 +222,6 @@
 .searchBar > svg {
     flex-shrink: 0;
     color: #64748b;
-    transition: color 0.2s ease;
 }
 
 .searchBar:focus-within > svg {
@@ -248,76 +235,45 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    margin: 22px 0 14px;
+    margin: 22px 0 13px;
 }
 
 .obrasHeader span {
     color: #64748b;
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0.7px;
+    font-size: 1.15rem;
+    font-weight: 750;
+    letter-spacing: .8px;
 }
 
-/* Botão de adicionar obra */
 .obrasHeader button {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     padding: 0;
-
     color: #0FA6B3;
-    background: #f5fdff;
-    border: 1px solid #b8eef4;
-    border-radius: 12px;
-
+    background: #f0fcfd;
+    border: 1px solid #c5edf0;
+    border-radius: 10px;
     cursor: pointer;
-
-    box-shadow: 0 2px 5px rgba(15, 28, 100, 0.04);
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-.obrasHeader button svg {
-    width: 19px;
-    height: 19px;
-    stroke-width: 2;
+    transition: all .2s ease;
 }
 
 .obrasHeader button:hover {
     color: #ffffff;
     background: #0FA6B3;
     border-color: #0FA6B3;
-    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
     transform: translateY(-1px);
 }
-
-.obrasHeader button:active {
-    transform: scale(0.96);
-}
-
-.obrasHeader button:focus-visible {
-    outline: 2px solid #0FA6B3;
-    outline-offset: 3px;
-}
-
-
 
 /* ================= LISTA DE OBRAS ================= */
 
 .listaObras {
     display: flex;
     flex-direction: column;
-    gap: 11px;
-
+    gap: 10px;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -329,69 +285,55 @@
 .obraCard {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 10px;
-
-    padding: 14px;
+    padding: 12px;
     border: 1px solid transparent;
-    border-radius: 15px;
-
+    border-radius: 13px;
     background: #f8fafc;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: all .2s ease;
 }
 
 .obraCard:hover {
-    background: #f5fdff;
-    border-color: #b8eef4;
-    box-shadow: 0 5px 14px rgba(15, 28, 100, 0.055);
+    background: #f0fcfd;
+    border-color: #b8e8ed;
+    box-shadow: 0 4px 12px rgba(15, 28, 100, .05);
     transform: translateY(-1px);
 }
 
 .obraCard h3 {
     margin: 0 0 5px;
     color: #0F1C64;
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     font-weight: 700;
     overflow-wrap: anywhere;
 }
 
 .obraCard span {
-    color: #0FA6B3;
-    font-size: 1.2rem;
+    color: #0b929e;
+    font-size: 1.15rem;
 }
 
 .obraCard p {
     margin: 5px 0 0;
     color: #64748b;
-    font-size: 1.15rem;
-    line-height: 1.5;
+    font-size: 1.1rem;
+    line-height: 1.4;
 }
 
 .obraCard button {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-
-    width: 34px;
-    height: 34px;
-
+    width: 32px;
+    height: 32px;
+    padding: 0;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 9px;
-
+    border-radius: 8px;
     color: #94a3b8;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease;
+    transition: all .2s ease;
 }
 
 .obraCard button:hover {
@@ -403,7 +345,7 @@
 .obraAtiva {
     background: #e8fafd;
     border: 1px solid #0FA6B3;
-    box-shadow: 0 3px 10px rgba(15, 166, 179, 0.09);
+    box-shadow: 0 3px 10px rgba(15, 166, 179, .09);
 }
 
 .obraAtiva:hover {
@@ -416,7 +358,7 @@
 }
 
 .obraAtiva span {
-    color: #0b8d99;
+    color: #087e8b;
 }
 
 .obraAtiva p {
@@ -429,24 +371,20 @@
     display: flex;
     align-items: center;
     gap: 9px;
-
     margin-top: auto;
     padding: 16px 8px 3px;
-
     border: none;
     border-radius: 9px;
     background: transparent;
-
     color: #64748b;
     font: inherit;
     font-size: 1.3rem;
-
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: all .2s ease;
 }
 
 .verTodas:hover {
-    background: #f5fdff;
+    background: #f0fcfd;
     color: #0FA6B3;
 }
 
@@ -456,18 +394,14 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-
     min-width: 0;
     min-height: 0;
-
     background: #ffffff;
-    border: 1px solid #dbe4ee;
-    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
     overflow: hidden;
-
-    box-shadow: 0 5px 20px rgba(15, 28, 100, 0.045);
-
-    transition: background 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 4px 18px rgba(15, 28, 100, .045);
+    transition: background .25s ease, border-color .25s ease;
 }
 
 /* ================= CABEÇALHO DO EDITOR ================= */
@@ -477,15 +411,14 @@
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-
-    padding: 24px;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e8edf3;
 }
 
 .editorHeader h2 {
     margin: 0;
     color: #0F1C64;
-    font-size: 2.5rem;
+    font-size: 2.3rem;
     font-weight: 750;
     overflow-wrap: anywhere;
 }
@@ -494,10 +427,8 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-
-    margin-top: 8px;
-
+    gap: 7px;
+    margin-top: 9px;
     color: #64748b;
     font-size: 1.2rem;
 }
@@ -505,15 +436,15 @@
 .palavras {
     flex-shrink: 0;
     color: #64748b;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 }
 
-/* ================= CAPAS E INFORMAÇÕES DA OBRA ================= */
+/* ================= CAPA E INFORMAÇÕES ================= */
 
 .infoObra {
     display: flex;
     align-items: flex-start;
-    gap: 14px;
+    gap: 15px;
     min-width: 0;
 }
 
@@ -523,26 +454,19 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
-    width: 90px;
-    height: 110px;
+    width: 82px;
+    height: 105px;
     overflow: hidden;
-
-    background: #f5fdff;
+    background: #f0fcfd;
     border: 1px solid #dbe4ee;
-    border-radius: 12px;
-
+    border-radius: 11px;
     cursor: pointer;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: all .2s ease;
 }
 
 .capaObra:hover {
     border-color: #0FA6B3;
-    box-shadow: 0 5px 15px rgba(15, 166, 179, 0.15);
+    box-shadow: 0 4px 12px rgba(15, 166, 179, .13);
     transform: translateY(-2px);
 }
 
@@ -558,14 +482,12 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-
     width: 100%;
     height: 100%;
     padding: 8px;
     box-sizing: border-box;
-
     color: #64748b;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     text-align: center;
 }
 
@@ -577,22 +499,17 @@
     position: absolute;
     right: 5px;
     bottom: 5px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 26px;
     height: 26px;
-
     border: none;
     border-radius: 7px;
-
     background: #0FA6B3;
     color: #ffffff;
-
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: all .2s ease;
 }
 
 .botaoImagem:hover {
@@ -619,11 +536,10 @@
 
 .descricaoObra {
     max-width: 600px;
-    margin: 5px 0 7px;
-
+    margin: 7px 0;
     color: #64748b;
-    font-size: 1.3rem;
-
+    font-size: 1.25rem;
+    line-height: 1.5;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -634,44 +550,35 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-
     padding: 7px 11px;
-
     border: 1px solid #dbe4ee;
     border-radius: 9px;
-
     background: #ffffff;
     color: #52657e;
-
     font: inherit;
-    font-size: 1.2rem;
-
+    font-size: 1.15rem;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all .2s ease;
 }
 
 .editarInfo:hover {
-    background: #f5fdff;
+    background: #f0fcfd;
     color: #0FA6B3;
     border-color: #0FA6B3;
-    box-shadow: 0 3px 8px rgba(15, 166, 179, 0.08);
 }
 
 /* ================= CAPÍTULOS ================= */
 
 .capitulosContainer {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    flex-shrink: 0;
     margin-top: 8px;
-    padding: 9px 18px;
+    padding: 12px 18px;
     box-sizing: border-box;
-
     background: #ffffff;
-    border: 1px solid #dbe4ee;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
 }
 
@@ -680,9 +587,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-
-    min-height: 30px;
-    margin-bottom: 6px;
+    min-height: 34px;
+    margin-bottom: 8px;
 }
 
 .capitulosHeader > div {
@@ -696,7 +602,7 @@
     color: #64748b;
     font-size: 1.1rem;
     font-weight: 750;
-    letter-spacing: 0.5px;
+    letter-spacing: .6px;
 }
 
 .capitulosHeader small {
@@ -704,117 +610,97 @@
     font-size: 1.1rem;
 }
 
-/* Botão Novo Capítulo */
+/* Botão novo capítulo */
 
-.novoCapitulo {
+.novoCapitulo,
+.capitulosHeader > button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-
     min-height: 35px;
     padding: 0 13px;
-
     border: 1px solid #0FA6B3;
     border-radius: 9px;
-
-    background: #ffffff;
-    color: #0FA6B3;
-
+    background: #f0fcfd;
+    color: #087e8b;
     font: inherit;
     font-size: 1.2rem;
     font-weight: 650;
-
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: all .2s ease;
 }
 
-.novoCapitulo:hover {
+.capitulosHeader > button:hover:not(:disabled) {
     background: #0FA6B3;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.15);
-    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15, 166, 179, .15);
+}
+
+.capitulosHeader > button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 /* Lista dos capítulos */
 
 .listaCapitulos {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-
+    gap: 10px;
     width: 100%;
-    padding: 1px 1px 4px;
-
-    overflow-x: auto;
-    overflow-y: hidden;
+    min-width: 0;
+    padding: 8px 1px;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
-.listaCapitulos::-webkit-scrollbar {
-    height: 5px;
-}
+/* Cada capítulo: sobrescreve o width: 100% do JSX */
 
-.listaCapitulos::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.listaCapitulos::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-
-.listaCapitulos::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-
-/* Botão do capítulo */
-
-.capituloBotao {
-    display: flex;
+.listaCapitulos > div {
+    display: flex !important;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+    flex: 0 0 auto !important;
+    gap: 5px;
+    width: auto !important;
+    max-width: 100%;
+}
 
-    height: 38px;
+/* Botão com o nome do capítulo */
+
+.listaCapitulos > div > button:first-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+
+    flex: 0 1 auto !important;
+    width: 190px;
     min-width: 145px;
     max-width: 210px;
+    height: 40px;
+
     padding: 0 10px;
+    box-sizing: border-box;
 
     border: 1px solid #dbe4ee;
     border-radius: 9px;
-
     background: #ffffff;
     color: #475569;
 
     cursor: pointer;
     text-align: left;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all .2s ease;
 }
 
-.capituloBotao:hover {
-    background: #f5fdff;
-    border-color: #b8eef4;
-    color: #0F1C64;
-}
-
-/* Capítulo selecionado */
-
-.capituloAtivo,
-.capituloAtivo:hover {
-    background: #e8fafd;
+.listaCapitulos > div > button:first-child:hover {
+    background: #f0fcfd;
     border-color: #0FA6B3;
     color: #0F1C64;
-    box-shadow: 0 2px 7px rgba(15, 166, 179, 0.10);
 }
 
 /* Número do capítulo */
@@ -836,15 +722,13 @@
     font-weight: 750;
 }
 
-.capituloAtivo .numeroCapitulo {
-    background: #0FA6B3;
-    color: #ffffff;
-}
-
 /* Nome do capítulo */
 
 .nomeCapitulo {
+    display: block;
+    flex: 1;
     min-width: 0;
+
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -853,17 +737,98 @@
     font-weight: 650;
 }
 
+/* Botão de excluir capítulo */
+
+.listaCapitulos > div > button:last-child {
+    flex-shrink: 0;
+    border-radius: 7px;
+    transition: background .2s ease;
+}
+
+.listaCapitulos > div > button:last-child:hover {
+    background: #fee2e2 !important;
+}
+
+/* Mensagens de carregamento e estado vazio */
+
+.listaCapitulos > p {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 5px 0;
+}
+
+/* ================= TEMA ESCURO ================= */
+
+:global([data-theme="escuro"]) .capitulosContainer {
+    background: #161c33;
+    border-color: #2a3153;
+}
+
+:global([data-theme="escuro"]) .capitulosHeader span {
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .capitulosHeader small {
+    color: #7d86a8;
+}
+
+:global([data-theme="escuro"]) .capitulosHeader > button {
+    background: #161c33;
+    border-color: #0FA6B3;
+    color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .capitulosHeader > button:hover:not(:disabled) {
+    background: #0FA6B3;
+    color: #ffffff;
+}
+
+:global([data-theme="escuro"]) .listaCapitulos > div > button:first-child {
+    background: #161c33;
+    border-color: #2a3153;
+    color: #cbd5e1;
+}
+
+:global([data-theme="escuro"]) .listaCapitulos > div > button:first-child:hover {
+    background: #1c2340;
+    border-color: #0FA6B3;
+    color: #ffffff;
+}
+
+:global([data-theme="escuro"]) .numeroCapitulo {
+    background: #202a4b;
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .listaCapitulos > div > button:last-child:hover {
+    background: #3b2432 !important;
+}
+
+/* ================= RESPONSIVIDADE ================= */
+
+@media (max-width: 700px) {
+    .capitulosContainer {
+        padding: 12px;
+    }
+
+    .capitulosHeader {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .listaCapitulos > div > button:first-child {
+        width: 170px;
+    }
+}
 /* ================= BARRA DE FERRAMENTAS ================= */
 
 .toolbar {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-
-    padding: 12px 18px;
-    border-bottom: 1px solid #e2e8f0;
-
+    gap: 7px;
+    padding: 11px 16px;
+    border-bottom: 1px solid #e8edf3;
     background: #ffffff;
 }
 
@@ -872,39 +837,28 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-
-    min-width: 38px;
-    min-height: 36px;
-    padding: 0 10px;
-
-    border: 1px solid #dbe4ee;
-    border-radius: 9px;
-
+    min-width: 36px;
+    min-height: 35px;
+    padding: 0 9px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     background: #ffffff;
     color: #334155;
-
     cursor: pointer;
-
-    transition:
-        background 0.18s ease,
-        color 0.18s ease,
-        border-color 0.18s ease,
-        box-shadow 0.18s ease,
-        transform 0.18s ease;
+    transition: all .18s ease;
 }
 
 .toolbar button:hover {
-    background: #f5fdff;
+    background: #f0fcfd;
     color: #0FA6B3;
-    border-color: #b8eef4;
-    box-shadow: 0 3px 8px rgba(15, 166, 179, 0.08);
+    border-color: #b8e8ed;
 }
 
 .toolbar button:active {
-    transform: scale(0.96);
+    transform: scale(.96);
 }
 
-/* ================= MENUS DA BARRA DE FERRAMENTAS ================= */
+/* ================= DROPDOWNS ================= */
 
 .dropdown {
     position: relative;
@@ -916,30 +870,21 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-
     min-width: 105px;
-    min-height: 36px;
+    min-height: 35px;
     padding: 7px 11px;
-
-    border: 1px solid #dbe4ee;
-    border-radius: 9px;
-
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     background: #ffffff;
     color: #334155;
-
     cursor: pointer;
     font: inherit;
     font-size: 1.2rem;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all .2s ease;
 }
 
 .dropdownBotao:hover {
-    background: #f5fdff;
+    background: #f0fcfd;
     border-color: #0FA6B3;
     color: #0F1C64;
 }
@@ -949,19 +894,15 @@
     top: calc(100% + 7px);
     left: 0;
     z-index: 1000;
-
     min-width: 180px;
     max-height: 280px;
     overflow-y: auto;
     padding: 6px;
-
     background: #ffffff;
-    border: 1px solid #dbe4ee;
-    border-radius: 12px;
-
-    box-shadow: 0 12px 30px rgba(15, 28, 100, 0.13);
-
-    animation: abrirDropdown 0.15s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    box-shadow: 0 12px 30px rgba(15, 28, 100, .13);
+    animation: abrirDropdown .15s ease;
 }
 
 @keyframes abrirDropdown {
@@ -969,7 +910,6 @@
         opacity: 0;
         transform: translateY(-4px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -980,26 +920,21 @@
     display: flex;
     align-items: center;
     gap: 9px;
-
     width: 100%;
     padding: 9px 10px;
-
     border: none;
     border-radius: 8px;
-
     background: transparent;
     color: #0F1C64;
-
     cursor: pointer;
     text-align: left;
     font: inherit;
-    font-size: 1.25rem;
-
-    transition: background 0.15s ease, color 0.15s ease;
+    font-size: 1.2rem;
+    transition: all .15s ease;
 }
 
 .dropdownMenu button:hover {
-    background: #f5fdff;
+    background: #f0fcfd;
     color: #0FA6B3;
 }
 
@@ -1022,19 +957,15 @@
 
 .textEditor {
     flex: 1;
-    min-height: 300px;
+    min-height: 0;
     overflow-y: auto;
-
-    padding: 40px;
+    padding: 38px 48px;
     box-sizing: border-box;
-
     outline: none;
     background: #ffffff;
     color: #334155;
-
-    font-size: 1.8rem;
-    line-height: 1.9;
-
+    font-size: 1.7rem;
+    line-height: 1.85;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     cursor: text;
@@ -1045,32 +976,28 @@
 }
 
 .textEditor h1 {
-    margin-top: 0;
-    margin-bottom: 30px;
+    margin: 0 0 26px;
     color: #0F1C64;
-    font-size: 4rem;
+    font-size: 3.6rem;
     line-height: 1.25;
 }
 
 .textEditor h2 {
-    margin-top: 25px;
-    margin-bottom: 20px;
+    margin: 25px 0 18px;
     color: #0F1C64;
-    font-size: 3rem;
+    font-size: 2.8rem;
     line-height: 1.3;
 }
 
 .textEditor h3 {
-    margin-top: 20px;
-    margin-bottom: 15px;
+    margin: 20px 0 14px;
     color: #0F1C64;
-    font-size: 2.3rem;
+    font-size: 2.2rem;
     line-height: 1.35;
 }
 
 .textEditor p {
-    margin-top: 0;
-    margin-bottom: 24px;
+    margin: 0 0 22px;
     color: #334155;
 }
 
@@ -1083,17 +1010,21 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-
     padding: 30px;
     box-sizing: border-box;
-
     background: #ffffff;
     color: #64748b;
     text-align: center;
 }
 
-.editorVazio svg {
+.editorVazio > svg {
     color: #0FA6B3;
+    padding: 17px;
+    width: 76px;
+    height: 76px;
+    box-sizing: border-box;
+    background: #f0fcfd;
+    border-radius: 20px;
 }
 
 .editorVazio h2 {
@@ -1111,9 +1042,10 @@
     padding: 20px;
     color: #64748b;
     text-align: center;
+    font-size: 1.25rem;
 }
 
-/* ================= MINIATURAS DAS OBRAS ================= */
+/* ================= MINIATURAS ================= */
 
 .obraConteudo {
     display: flex;
@@ -1127,15 +1059,12 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
     width: 42px;
     height: 54px;
     overflow: hidden;
-
     border: 1px solid #dbe4ee;
     border-radius: 7px;
-
-    background: #f5fdff;
+    background: #f0fcfd;
     color: #0FA6B3;
 }
 
@@ -1156,21 +1085,18 @@
     text-overflow: ellipsis;
 }
 
-/* ================= MENSAGENS E MODAIS ================= */
+/* ================= MODAIS ================= */
 
 .modalOverlay {
     position: fixed;
     inset: 0;
     z-index: 9999;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 20px;
     box-sizing: border-box;
-
-    background: rgba(15, 28, 100, 0.40);
+    background: rgba(15, 28, 100, .42);
     backdrop-filter: blur(5px);
 }
 
@@ -1181,22 +1107,18 @@
     overflow-y: auto;
     box-sizing: border-box;
     padding: 26px;
-
     background: #ffffff;
-    border: 1px solid #dbe4ee;
-    border-radius: 20px;
-
-    box-shadow: 0 25px 70px rgba(15, 28, 100, 0.20);
-
-    animation: abrirModal 0.2s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 25px 70px rgba(15, 28, 100, .20);
+    animation: abrirModal .2s ease;
 }
 
 @keyframes abrirModal {
     from {
         opacity: 0;
-        transform: translateY(10px) scale(0.98);
+        transform: translateY(10px) scale(.98);
     }
-
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -1208,19 +1130,20 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 15px;
-
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 }
 
 .modalHeader h2 {
     margin: 0 0 6px;
     color: #0F1C64;
-    font-size: 1.8rem;
+    font-size: 1.9rem;
 }
 
 .modalHeader p {
     margin: 0;
     color: #64748b;
+    font-size: 1.3rem;
+    line-height: 1.5;
 }
 
 .fecharModal {
@@ -1228,18 +1151,14 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-
     width: 36px;
     height: 36px;
-
     border: 1px solid transparent;
-    border-radius: 10px;
-
+    border-radius: 9px;
     background: transparent;
     color: #64748b;
-
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: all .2s ease;
 }
 
 .fecharModal:hover {
@@ -1247,62 +1166,80 @@
     color: #0F1C64;
 }
 
-/* ================= FORMULÁRIO DO MODAL ================= */
+/* ================= FORMULÁRIO ================= */
 
 .modalForm {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
 }
 
 .modalForm label {
     display: flex;
     flex-direction: column;
     gap: 8px;
-
     color: #0F1C64;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 650;
 }
 
-.modalForm input {
+.modalForm input,
+.modalForm textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 13px 14px;
-
+    padding: 12px 14px;
     border: 1px solid #dbe4ee;
-    border-radius: 12px;
-
+    border-radius: 10px;
     background: #f8fafc;
     color: #0F1C64;
-
     font: inherit;
+    font-size: 1.3rem;
     outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all .2s ease;
 }
 
-.modalForm input::placeholder {
+.modalForm textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.modalForm input::placeholder,
+.modalForm textarea::placeholder {
     color: #94a3b8;
 }
 
-.modalForm input:focus {
+.modalForm input:focus,
+.modalForm textarea:focus {
     background: #ffffff;
     border-color: #0FA6B3;
-    box-shadow: 0 0 0 3px rgba(15, 166, 179, 0.11);
+    box-shadow: 0 0 0 3px rgba(15, 166, 179, .10);
 }
 
-/* ================= BOTÕES DO MODAL ================= */
+.modalForm input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.modalForm > p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1.2rem;
+    overflow-wrap: anywhere;
+}
+
+.modalForm [role="alert"] {
+    color: #dc2626;
+}
+
+/* ================= BOTÕES DOS MODAIS ================= */
 
 .modalButtons {
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
-    gap: 12px;
-
-    margin-top: 28px;
+    gap: 10px;
+    margin-top: 26px;
 }
 
 .cancelar,
@@ -1311,22 +1248,14 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-
     min-height: 42px;
-    padding: 11px 18px;
-
-    border-radius: 11px;
+    padding: 10px 18px;
+    border-radius: 10px;
     cursor: pointer;
-
     font: inherit;
+    font-size: 1.3rem;
     font-weight: 650;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: all .2s ease;
 }
 
 .cancelar {
@@ -1350,17 +1279,17 @@
 .confirmar:hover {
     background: #0d8e9a;
     border-color: #0d8e9a;
-    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
+    box-shadow: 0 4px 10px rgba(15, 166, 179, .18);
     transform: translateY(-1px);
 }
 
-/* ================= SCROLLBARS — MODO CLARO ================= */
+/* ================= SCROLLBARS — CLARO ================= */
 
 .textEditor::-webkit-scrollbar,
 .listaObras::-webkit-scrollbar,
 .dropdownMenu::-webkit-scrollbar,
 .modal::-webkit-scrollbar {
-    width: 8px;
+    width: 7px;
 }
 
 .textEditor::-webkit-scrollbar-track,
@@ -1386,8 +1315,7 @@
 }
 
 /* =========================================================
-   TEMA ESCURO — OFICINA AUTORAL
-   Aplicado somente quando data-theme="escuro"
+   TEMA ESCURO
    ========================================================= */
 
 :global([data-theme="escuro"]) .container {
@@ -1397,19 +1325,24 @@
 
 :global([data-theme="escuro"]) .title h1,
 :global([data-theme="escuro"]) .editorHeader h2,
-:global([data-theme="escuro"]) .tituloLinha h2 {
+:global([data-theme="escuro"]) .tituloLinha h2,
+:global([data-theme="escuro"]) .textEditor h1,
+:global([data-theme="escuro"]) .textEditor h2,
+:global([data-theme="escuro"]) .textEditor h3 {
     color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .title > svg {
+    color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .headerInfo p,
+:global([data-theme="escuro"]) .salvamento,
+:global([data-theme="escuro"]) .palavras {
     color: #a8b1cc;
 }
 
-:global([data-theme="escuro"]) .headerInfo p {
-    color: #a8b1cc;
-}
-
-/* Botões do cabeçalho */
+/* Botões */
 
 :global([data-theme="escuro"]) .importar {
     background: #161c33;
@@ -1432,7 +1365,7 @@
 :global([data-theme="escuro"]) .editor {
     background: #161c33;
     border-color: #2a3153;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
 }
 
 /* Busca */
@@ -1448,7 +1381,6 @@
 }
 
 :global([data-theme="escuro"]) .searchBar input {
-    background: transparent;
     color: #f1f5f9;
 }
 
@@ -1457,28 +1389,23 @@
     color: #7d86a8;
 }
 
-/* Cabeçalho da lista */
+/* Lista de obras */
 
 :global([data-theme="escuro"]) .obrasHeader span {
     color: #a8b1cc;
 }
 
-/* Botão no tema escuro */
 :global([data-theme="escuro"]) .obrasHeader button {
     color: #0FA6B3;
     background: #1c2340;
     border-color: #34416a;
-    box-shadow: none;
 }
 
 :global([data-theme="escuro"]) .obrasHeader button:hover {
     color: #ffffff;
     background: #0FA6B3;
     border-color: #0FA6B3;
-    box-shadow: 0 4px 10px rgba(15, 166, 179, 0.18);
 }
-
-/* Cards das obras */
 
 :global([data-theme="escuro"]) .obraCard {
     background: #12182b;
@@ -1495,7 +1422,7 @@
 }
 
 :global([data-theme="escuro"]) .obraCard span {
-    color: #7d86a8;
+    color: #6fd5dd;
 }
 
 :global([data-theme="escuro"]) .obraCard p {
@@ -1530,8 +1457,6 @@
     color: #a8b1cc;
 }
 
-/* Ver todas */
-
 :global([data-theme="escuro"]) .verTodas {
     color: #0FA6B3;
 }
@@ -1547,9 +1472,30 @@
     border-color: #2a3153;
 }
 
-:global([data-theme="escuro"]) .salvamento,
-:global([data-theme="escuro"]) .palavras {
+/* Capas */
+
+:global([data-theme="escuro"]) .capaObra,
+:global([data-theme="escuro"]) .miniCapa {
+    background: #202a4b;
+    border-color: #2a3153;
+    color: #0FA6B3;
+}
+
+:global([data-theme="escuro"]) .semImagem,
+:global([data-theme="escuro"]) .descricaoObra {
     color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editarInfo {
+    background: #161c33;
+    border-color: #34416a;
+    color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editarInfo:hover {
+    background: #1c2340;
+    border-color: #0FA6B3;
+    color: #0FA6B3;
 }
 
 /* Capítulos */
@@ -1567,33 +1513,28 @@
     color: #7d86a8;
 }
 
-:global([data-theme="escuro"]) .novoCapitulo {
+:global([data-theme="escuro"]) .novoCapitulo,
+:global([data-theme="escuro"]) .capitulosHeader > button {
     background: #161c33;
     border-color: #0FA6B3;
     color: #0FA6B3;
 }
 
-:global([data-theme="escuro"]) .novoCapitulo:hover {
+:global([data-theme="escuro"]) .novoCapitulo:hover,
+:global([data-theme="escuro"]) .capitulosHeader > button:hover {
     background: #0FA6B3;
     color: #ffffff;
 }
 
-:global([data-theme="escuro"]) .capituloBotao {
+:global([data-theme="escuro"]) .listaCapitulos > div > button:first-child {
     background: #161c33;
     border-color: #2a3153;
     color: #cbd5e1;
 }
 
-:global([data-theme="escuro"]) .capituloBotao:hover {
+:global([data-theme="escuro"]) .listaCapitulos > div > button:first-child:hover {
     background: #1c2340;
     border-color: #0FA6B3;
-}
-
-:global([data-theme="escuro"]) .capituloAtivo,
-:global([data-theme="escuro"]) .capituloAtivo:hover {
-    background: #12343d;
-    border-color: #0FA6B3;
-    color: #f1f5f9;
 }
 
 :global([data-theme="escuro"]) .numeroCapitulo {
@@ -1626,46 +1567,11 @@
     color: #f1f5f9;
 }
 
-/* Informações da obra */
-
-:global([data-theme="escuro"]) .capaObra,
-:global([data-theme="escuro"]) .miniCapa {
-    background: #202a4b;
-    border-color: #2a3153;
-    color: #0FA6B3;
-}
-
-:global([data-theme="escuro"]) .semImagem {
-    color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .descricaoObra {
-    color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .editarInfo {
-    background: #161c33;
-    border-color: #34416a;
-    color: #a8b1cc;
-}
-
-:global([data-theme="escuro"]) .editarInfo:hover {
-    background: #1c2340;
-    border-color: #0FA6B3;
-    color: #0FA6B3;
-}
-
-/* Texto editável */
+/* Editor de texto */
 
 :global([data-theme="escuro"]) .textEditor {
     background: #161c33;
     color: #e2e8f0;
-}
-
-:global([data-theme="escuro"]) .textEditor h1,
-:global([data-theme="escuro"]) .textEditor h2,
-:global([data-theme="escuro"]) .textEditor h3 {
-    color: #f8fafc;
 }
 
 :global([data-theme="escuro"]) .textEditor p {
@@ -1677,6 +1583,10 @@
 :global([data-theme="escuro"]) .editorVazio {
     background: #161c33;
     color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .editorVazio > svg {
+    background: #1c2340;
 }
 
 :global([data-theme="escuro"]) .editorVazio h2 {
@@ -1693,7 +1603,7 @@
 :global([data-theme="escuro"]) .dropdownMenu {
     background: #161c33;
     border-color: #2a3153;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
 }
 
 :global([data-theme="escuro"]) .dropdownMenu button {
@@ -1709,13 +1619,13 @@
 /* Modal */
 
 :global([data-theme="escuro"]) .modalOverlay {
-    background: rgba(4, 8, 20, 0.72);
+    background: rgba(4, 8, 20, .76);
 }
 
 :global([data-theme="escuro"]) .modal {
     background: #161c33;
     border-color: #2a3153;
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .45);
 }
 
 :global([data-theme="escuro"]) .modalHeader h2,
@@ -1723,7 +1633,8 @@
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .modalHeader p {
+:global([data-theme="escuro"]) .modalHeader p,
+:global([data-theme="escuro"]) .modalForm > p {
     color: #a8b1cc;
 }
 
@@ -1736,17 +1647,20 @@
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .modalForm input {
+:global([data-theme="escuro"]) .modalForm input,
+:global([data-theme="escuro"]) .modalForm textarea {
     background: #1c2340;
     border-color: #2a3153;
     color: #f1f5f9;
 }
 
-:global([data-theme="escuro"]) .modalForm input::placeholder {
+:global([data-theme="escuro"]) .modalForm input::placeholder,
+:global([data-theme="escuro"]) .modalForm textarea::placeholder {
     color: #7d86a8;
 }
 
-:global([data-theme="escuro"]) .modalForm input:focus {
+:global([data-theme="escuro"]) .modalForm input:focus,
+:global([data-theme="escuro"]) .modalForm textarea:focus {
     background: #1c2340;
     border-color: #0FA6B3;
 }
@@ -1773,7 +1687,7 @@
     border-color: #0d8e9a;
 }
 
-/* Scrollbars no tema escuro */
+/* Scrollbars escuros */
 
 :global([data-theme="escuro"]) .textEditor::-webkit-scrollbar-track,
 :global([data-theme="escuro"]) .listaObras::-webkit-scrollbar-track,
@@ -1817,7 +1731,7 @@
     }
 
     .editor {
-        min-height: 520px;
+        min-height: 560px;
     }
 
     .listaObras {
@@ -1837,11 +1751,11 @@
     }
 
     .title h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
     }
 
     .headerInfo p {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
     }
 
     .headerButtons {
@@ -1857,28 +1771,37 @@
     .editorHeader {
         align-items: flex-start;
         flex-direction: column;
-        padding: 18px;
+        padding: 17px;
     }
 
     .editorHeader h2 {
         font-size: 2rem;
     }
 
+    .infoObra {
+        width: 100%;
+    }
+
+    .capaObra {
+        width: 70px;
+        height: 90px;
+    }
+
     .textEditor {
         padding: 22px;
-        font-size: 1.6rem;
+        font-size: 1.55rem;
     }
 
     .textEditor h1 {
-        font-size: 3rem;
+        font-size: 2.8rem;
     }
 
     .textEditor h2 {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
     }
 
     .textEditor h3 {
-        font-size: 2rem;
+        font-size: 1.9rem;
     }
 
     .toolbar {
@@ -1899,7 +1822,6 @@
     .capitulosHeader {
         align-items: flex-start;
         flex-wrap: wrap;
-        height: auto;
     }
 
     .modal {
@@ -1916,12 +1838,46 @@
     }
 }
 
+@media (max-width: 420px) {
+    .container {
+        padding: 12px;
+    }
+
+    .title h1 {
+        font-size: 2.1rem;
+    }
+
+    .headerButtons {
+        flex-direction: column;
+    }
+
+    .importar,
+    .novaObra {
+        width: 100%;
+        flex: none;
+    }
+
+    .infoObra {
+        gap: 10px;
+    }
+
+    .descricaoObra {
+        white-space: normal;
+    }
+
+    .tituloLinha h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* ================= ACESSIBILIDADE ================= */
+
 @media (prefers-reduced-motion: reduce) {
     .container *,
     .container *::before,
     .container *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
         scroll-behavior: auto !important;
     }
 }
