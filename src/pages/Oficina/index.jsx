@@ -334,12 +334,6 @@ export default function Oficina() {
         </div>
 
         <div className={styles.headerButtons}>
-          <button className={styles.importar}>
-            <Upload size={18} />
-            Importar obra
-          </button>
-
-          <input type="file" accept=".txt" />
 
           <button
             className={styles.novaObra}
