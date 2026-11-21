@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import CardLivro from "../../componentes/CardLivro";
 import { Bookmark, Search, X } from "lucide-react";
@@ -7,35 +6,78 @@ import api from "../../services/api";
 
 
 function Salvos() {
-  const [favoritos, setFavoritos] = useState([])
+  const [obras, setObras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
   const usuarioId = localStorage.getItem("Us_ID");
 
-  const fetchDados = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/favoritos/usuario/${usuarioId}`);
-      setFavoritos(response.data.dados);
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-      setErro("Não foi possível carregar os dados.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  
-
   useEffect(() => {
+    let requisicaoAtiva = true;
+
+    const fetchDados = async () => {
+      try {
+        setLoading(true);
+        setErro("");
+
+        if (!usuarioId) {
+          throw new Error("Não foi possível identificar o usuário.");
+        }
+
+        const respostaFavoritos = await api.get(
+          `/favoritos/usuario/${usuarioId}`
+        );
+        const favoritos = respostaFavoritos.data?.dados;
+
+        if (!Array.isArray(favoritos)) {
+          throw new Error("A resposta da API não contém uma lista de favoritos.");
+        }
+
+        const obrasDetalhadas = await Promise.all(
+          favoritos.map(async (favorito) => {
+            const obraId = Number(favorito.Ob_ID);
+
+            if (!Number.isInteger(obraId) || obraId <= 0) {
+              throw new Error("Um favorito não possui um ID de obra válido.");
+            }
+
+            const respostaObra = await api.get(`/obras/detalhada/${obraId}`);
+            const obra = respostaObra.data?.dados ?? respostaObra.data;
+
+            if (!obra?.Ob_ID) {
+              throw new Error(`Não foi possível carregar a obra ${obraId}.`);
+            }
+
+            return obra;
+          })
+        );
+
+        if (requisicaoAtiva) {
+          setObras(obrasDetalhadas);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar obras salvas:", error);
+
+        if (requisicaoAtiva) {
+          setErro(
+            error.response?.data?.mensagem ||
+              error.message ||
+              "Não foi possível carregar os dados."
+          );
+        }
+      } finally {
+        if (requisicaoAtiva) {
+          setLoading(false);
+        }
+      }
+    };
+
     fetchDados();
-  }, []);
 
-  if (loading && favoritos.length === 0) return <p>Carregando...</p>;
-  if (erro) return <p>{erro}</p>;
-
-
+    return () => {
+      requisicaoAtiva = false;
+    };
+  }, [usuarioId]);
 
   return (
     <div className={styles.container}>
@@ -48,19 +90,32 @@ function Salvos() {
         </div>
       </header>
 
-      {loading ? <p>carregando...</p> : (
-       <section className={styles.cardObras}>
-          {obras.map((livro) => (
+      {loading ? (
+        <p>Carregando...</p>
+      ) : erro ? (
+        <p role="alert">{erro}</p>
+      ) : obras.length > 0 ? (
+        <section className={styles.cardObras}>
+          {obras.map((obra) => (
             <CardLivro
-              key={livro.id}
-              titulo={livro.titulo}
-              autor={livro.autor}
-              tipo={livro.tipo}
-              tag={livro.tag}
-              corTag={livro.corTag}
+              key={obra.Ob_ID}
+              id={obra.Ob_ID}
+              titulo={obra.Ob_titulo}
+              autor={obra.Autor}
+              tipo={obra.Ob_genero}
+              imagem={
+                obra.Ob_imagem && /^https?:\/\//i.test(obra.Ob_imagem)
+                  ? obra.Ob_imagem
+                  : obra.Ob_imagem
+                    ? `${api.defaults.baseURL.replace(/\/$/, "")}/public/obras/${encodeURIComponent(obra.Ob_imagem)}`
+                    : undefined
+              }
+              navigationState={obra}
             />
           ))}
         </section>
+      ) : (
+        <p>Você ainda não salvou nenhuma obra.</p>
       )}
     </div>
   );
