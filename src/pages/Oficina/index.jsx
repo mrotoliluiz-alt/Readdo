@@ -122,8 +122,13 @@ export default function Oficina() {
 
   // Seleciona um capítulo para exibir seu conteúdo no editor.
   const handleCapituloClick = (capitulo) => {
+    const conteudo = capitulo.Cap_conteudo || "";
     setCapituloSelecionado(capitulo);
-    setConteudoCapitulo(capitulo.Cap_conteudo || "");
+    setConteudoCapitulo(conteudo);
+
+    if (editorRef.current) {
+      editorRef.current.innerHTML = conteudo;
+    }
   };
 
   const handleChange = (e) => {
@@ -807,10 +812,6 @@ export default function Oficina() {
               ref={editorRef}
               className={styles.textEditor}
               contentEditable={!!capituloSelecionado}
-              suppressContentEditableWarning
-              dangerouslySetInnerHTML={{
-                __html: conteudoCapitulo,
-              }}
               onInput={(e) => {
                 setConteudoCapitulo(e.currentTarget.innerHTML);
               }}

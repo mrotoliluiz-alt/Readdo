@@ -16,14 +16,12 @@ import {
 function Home() {
   const scrollRef1 = useRef(null);
   const scrollRef2 = useRef(null);
+  const scrollRefObras = useRef(null);
 
   const [obras, setObras] = useState([]);
   const [us, setUs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
-
-  const [livrosExplore, setLivrosExplore] = useState([]);
-  const [livrosMisterio, setLivrosMisterio] = useState([]);
 
   // Busca as obras cadastradas no banco de dados
   const fetchDados = async () => {
@@ -194,23 +192,48 @@ function Home() {
       <section>
         <h2>Descubra algo novo</h2>
 
+        <div className={styles.areaLivros}>
+          
+          <button 
+        type="button"
+        className={`${styles.botaoScroll} ${styles.direitaScroll}`}
+        onClick={() => rolar(scrollRefObras, 1)}
+        aria-label="Ver próximos livros"
+        disabled={loading || obras.length === 0}>
+          {'>'}
+        </button>
+
         {loading ? (
           <p>Carregando...</p>
         ) : (
-          <div className={styles.leitCard}>
+          <div className={styles.leitCard}
+          ref={scrollRefObras}>
             {obras.map((obra) => (
               <CardLivro
-                key={obra.id}
-                id={obra.id}
-                titulo={obra.titulo}
-                autor={obra.autor}
-                tipo={obra.genero}
-                imagem={obra.imagem}
+                key={obra.Ob_ID ?? obra.id}
+                id={obra.Ob_ID ?? obra.id}
+                titulo={obra.titulo ?? obra.Ob_titulo}
+                autor={obra.autor ?? obra.Ob_autor ?? obra.Autor}
+                tipo={obra.genero ?? obra.Genero}
+                imagem={obra.imagem ?? obra.Ob_imagem ?? obra.Imagem}
                 navigationState={obra}
               />
             ))}
           </div>
         )}
+        
+        <button 
+        type="button"
+        className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
+        onClick={() => rolar(scrollRefObras, -1)}
+        aria-label="Ver livros anteriores"
+        disabled={loading || obras.length === 0}>
+          {'<'}
+        </button>
+      
+      </ div>
+        
+        
       </section>
 
      

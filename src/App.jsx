@@ -25,6 +25,7 @@ function App() {
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route path="/livro/:id" element={<Livro />} />
         <Route path="/livro/:id/ler" element={<Leitura />} />
+        <Route path="/livro/:id/ler/:capituloId" element={<Leitura />} />
         <Route element={<Layout />}>
         <Route path="/Home" element={<Home />} />
         <Route path="/Salvos" element={<Salvos />} />

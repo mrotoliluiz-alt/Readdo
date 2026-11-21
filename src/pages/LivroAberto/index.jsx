@@ -15,22 +15,32 @@ function LivroAberto() {
     const [livro, setLivro] = useState(null);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+    const [salvandoFavorito, setSalvandoFavorito] = useState(false);
+    const [favoritoSalvo, setFavoritoSalvo] = useState(false);
+    const [erroFavorito, setErroFavorito] = useState("");
 
     useEffect(() => {
         const buscarLivro = async () => {
             try {
                 setCarregando(true);
                 setErro("");
+                setFavoritoSalvo(false);
+                setErroFavorito("");
 
                 const obraSelecionada = location.state;
-                if (obraSelecionada && String(obraSelecionada.id) === id) {
+                if (
+                    obraSelecionada &&
+                    String(obraSelecionada.Ob_ID ?? obraSelecionada.id) === id
+                ) {
                     setLivro(obraSelecionada);
                     return;
                 }
 
                 const resposta = await api.get("/obras");
                 const obras = resposta.data?.dados || [];
-                const obra = obras.find((item) => String(item.id) === id);
+                const obra = obras.find(
+                    (item) => String(item.Ob_ID ?? item.id) === id
+                );
 
                 if (!obra) throw new Error("Livro não encontrado.");
                 setLivro(obra);
@@ -49,9 +59,60 @@ function LivroAberto() {
         buscarLivro();
     }, [id, location.state]);
 
-    /* =========================
-       CARREGANDO
-    ========================= */
+    const salvarFavorito = async () => {
+        setErroFavorito("");
+
+        let usuario;
+        try {
+            usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+        } catch (error) {
+            console.error("Erro ao ler o usuário salvo:", error);
+            setErroFavorito("Não foi possível identificar o usuário salvo.");
+            return;
+        }
+
+        const usuarioId = usuario?.id ?? usuario?.Us_ID;
+        const obraId = livro?.Ob_ID ?? livro?.id;
+        const usuarioIdNumerico = Number(usuarioId);
+        const obraIdNumerico = Number(obraId);
+
+        if (
+            !Number.isInteger(usuarioIdNumerico) ||
+            usuarioIdNumerico <= 0 ||
+            !Number.isInteger(obraIdNumerico) ||
+            obraIdNumerico <= 0
+        ) {
+            setErroFavorito("Não foi possível identificar o usuário ou a obra.");
+            return;
+        }
+
+        try {
+            setSalvandoFavorito(true);
+
+            const resposta = await api.post("/favoritossalvos", {
+                Ob_ID: obraIdNumerico,
+                Us_ID: usuarioIdNumerico,
+                Fav_status: "favorito",
+            });
+
+            if (resposta.data?.sucesso === false) {
+                throw new Error(
+                    resposta.data.mensagem || "Não foi possível salvar a obra."
+                );
+            }
+
+            setFavoritoSalvo(true);
+        } catch (error) {
+            console.error("Erro ao salvar obra nos favoritos:", error);
+            setErroFavorito(
+                error.response?.data?.mensagem ||
+                    error.message ||
+                    "Não foi possível salvar a obra."
+            );
+        } finally {
+            setSalvandoFavorito(false);
+        }
+    };
 
     if (carregando) {
         return (
@@ -60,10 +121,6 @@ function LivroAberto() {
             </div>
         );
     }
-
-    /* =========================
-       ERRO
-    ========================= */
 
     if (erro || !livro) {
         return (
@@ -77,16 +134,12 @@ function LivroAberto() {
         );
     }
 
-    /* =========================
-       INFORMAÇÕES DO LIVRO
-    ========================= */
 
-    const imagem = livro.imagem;
+    const imagem = livro.imagem || livro.Ob_imagem || livro.Imagem;
 
     return (
         <div className={styles.container}>
 
-            {/* BOTÃO VOLTAR */}
 
             <button
                 className={styles.voltar}
@@ -97,11 +150,7 @@ function LivroAberto() {
             </button>
 
 
-            {/* LIVRO */}
-
             <div className={styles.livro}>
-
-                {/* CAPA */}
 
                 <div className={styles.capa}>
 
@@ -119,32 +168,29 @@ function LivroAberto() {
                 </div>
 
 
-                {/* INFORMAÇÕES */}
 
                 <div className={styles.informacoes}>
 
                     <span className={styles.tipo}>
-                        {livro.genero || "Livro"}
+                        {livro.genero || livro.Genero || "Livro"}
                     </span>
 
                     <h1>
-                        {livro.titulo ||
+                        {livro.titulo || livro.Ob_titulo ||
                             "Título desconhecido"}
                     </h1>
 
                     <h2>
-                        {livro.autor ||
+                        {livro.autor || livro.Ob_autor || livro.Autor ||
                             "Autor desconhecido"}
                     </h2>
 
 
-                    {/* DESCRIÇÃO */}
-
-                    {livro.sinopse && (
+                    {(livro.sinopse || livro.Ob_sinopse) && (
                         <div
                             className={styles.descricao}
                         >
-                            {livro.sinopse}
+                            {livro.sinopse || livro.Ob_sinopse}
                         </div>
                     )}
 
@@ -155,7 +201,9 @@ function LivroAberto() {
                         <button
                         className={styles.ler}
                         onClick={() =>
-                            navigate(`/livro/${id}/ler`)
+                            navigate(`/livro/${id}/ler`, {
+                                state: { livro },
+                            })
                         }
                     >
                         <BookOpen size={20} />
@@ -164,12 +212,36 @@ function LivroAberto() {
                     </button>
 
                     <button
-                    className={styles.salvar}>
-                        <Bookmark size={20} />
-
+                        type="button"
+                        className={styles.salvar}
+                        onClick={salvarFavorito}
+                        disabled={salvandoFavorito || favoritoSalvo}
+                        aria-label={favoritoSalvo ? "Obra salva" : "Salvar obra"}
+                        title={favoritoSalvo ? "Obra salva" : "Salvar obra"}
+                    >
+                        <Bookmark
+                            size={20}
+                            fill={favoritoSalvo ? "currentColor" : "none"}
+                        />
                     </button>
 
                     </div>
+
+                    {salvandoFavorito && (
+                        <p className={styles.feedbackFavorito} role="status">
+                            Salvando obra...
+                        </p>
+                    )}
+                    {favoritoSalvo && (
+                        <p className={styles.feedbackFavorito} role="status">
+                            Obra adicionada aos salvos.
+                        </p>
+                    )}
+                    {erroFavorito && (
+                        <p className={styles.erroFavorito} role="alert">
+                            {erroFavorito}
+                        </p>
+                    )}
                     
                 </div>
 

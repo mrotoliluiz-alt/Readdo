@@ -164,6 +164,25 @@
   background: #e8fbfd;
 }
 
+.salvar:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.feedbackFavorito,
+.erroFavorito {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.feedbackFavorito {
+  color: #0d8e9a;
+}
+
+.erroFavorito {
+  color: #dc2626;
+}
+
 
 
 [data-theme="escuro"] .container {

@@ -1,62 +1,138 @@
 import styles from "./index.module.css";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  ArrowLeft,
-  BookOpen,
-  ExternalLink,
-  LoaderCircle,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
+import DOMPurify from "dompurify";
+import api from "../../services/api";
+
+const tagsPermitidas = [
+  "p",
+  "h1",
+  "h2",
+  "h3",
+  "div",
+  "span",
+  "br",
+  "b",
+  "strong",
+  "i",
+  "em",
+  "u",
+  "s",
+  "strike",
+  "font",
+  "ul",
+  "ol",
+  "li",
+];
+
+const fontesPermitidas = new Set([
+  "Arial",
+  "Georgia",
+  "Times New Roman",
+  "Verdana",
+  "Trebuchet MS",
+  "Courier New",
+]);
+
+function sanitizarConteudo(conteudo) {
+  const htmlSeguro = DOMPurify.sanitize(conteudo || "", {
+    ALLOWED_TAGS: tagsPermitidas,
+    ALLOWED_ATTR: ["style", "face", "align"],
+    ALLOW_DATA_ATTR: false,
+  });
+  const documento = new DOMParser().parseFromString(htmlSeguro, "text/html");
+
+  documento.body.querySelectorAll("[style]").forEach((elemento) => {
+    const estilos = [];
+    const alinhamento = elemento.style.textAlign.toLowerCase();
+
+    if (["left", "center", "right", "justify"].includes(alinhamento)) {
+      estilos.push(`text-align: ${alinhamento}`);
+    }
+
+    const fonte = elemento.style.fontFamily
+      .replace(/["']/g, "")
+      .split(",")[0]
+      .trim();
+
+    if (fontesPermitidas.has(fonte)) {
+      estilos.push(`font-family: "${fonte}"`);
+    }
+
+    if (estilos.length > 0) {
+      elemento.setAttribute("style", estilos.join("; "));
+    } else {
+      elemento.removeAttribute("style");
+    }
+  });
+
+  documento.body.querySelectorAll("font[face]").forEach((elemento) => {
+    const fonte = elemento.getAttribute("face").trim();
+
+    if (!fontesPermitidas.has(fonte)) {
+      elemento.removeAttribute("face");
+    }
+  });
+
+  documento.body.querySelectorAll("[align]").forEach((elemento) => {
+    const alinhamento = elemento.getAttribute("align").toLowerCase();
+
+    if (["left", "center", "right", "justify"].includes(alinhamento)) {
+      elemento.setAttribute("align", alinhamento);
+    } else {
+      elemento.removeAttribute("align");
+    }
+  });
+
+  return documento.body.innerHTML;
+}
 
 function Leitura() {
-  const { id } = useParams();
+  const { id, capituloId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const viewerRef = useRef(null);
-
-  const [livro, setLivro] = useState(null);
+  const [capitulos, setCapitulos] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [carregandoViewer, setCarregandoViewer] = useState(true);
   const [erro, setErro] = useState("");
-  const [erroViewer, setErroViewer] = useState(false);
 
-  const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
-
-  // =====================================================
-  // BUSCAR LIVRO
-  // =====================================================
+  const livro = location.state?.livro;
+  const tituloLivro =
+    livro?.titulo || livro?.Ob_titulo || `Obra ${id}`;
+  const autor =
+    livro?.autor || livro?.Ob_autor || livro?.Autor || "Leitura";
 
   useEffect(() => {
-    const buscarLivro = async () => {
+    const buscarCapitulos = async () => {
       try {
         setCarregando(true);
         setErro("");
 
-        if (!API_KEY) {
+        const resposta = await api.get(`/capitulos/obra/${id}`);
+        const dados = resposta.data?.dados;
+
+        if (resposta.data?.sucesso === false) {
           throw new Error(
-            "A chave da Google Books API não foi configurada."
+            resposta.data.mensagem || "Não foi possível carregar os capítulos."
           );
         }
 
-        const resposta = await fetch(
-          `https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`
+        if (!Array.isArray(dados)) {
+          throw new Error("A resposta da API não contém uma lista de capítulos.");
+        }
+
+        setCapitulos(
+          [...dados].sort(
+            (a, b) => Number(a.Cap_ordem) - Number(b.Cap_ordem)
+          )
         );
-
-        if (!resposta.ok) {
-          throw new Error(
-            "Não foi possível encontrar este livro."
-          );
-        }
-
-        const dados = await resposta.json();
-
-        setLivro(dados);
       } catch (error) {
-        console.error("Erro ao buscar livro:", error);
-
+        console.error("Erro ao carregar capítulos:", error);
         setErro(
-          error.message ||
-            "Não foi possível carregar o livro."
+          error.response?.data?.mensagem ||
+            error.message ||
+            "Não foi possível carregar os capítulos."
         );
       } finally {
         setCarregando(false);
@@ -64,214 +140,62 @@ function Leitura() {
     };
 
     if (id) {
-      buscarLivro();
+      buscarCapitulos();
     }
   }, [id]);
 
-  // =====================================================
-  // GOOGLE BOOKS VIEWER
-  // =====================================================
+  const indiceCapitulo = useMemo(() => {
+    if (capitulos.length === 0) return -1;
+    if (!capituloId) return 0;
 
-  useEffect(() => {
-  if (!livro || !viewerRef.current) {
-    return;
-  }
-
-  let intervalo;
-  let timeout;
-
-  setCarregandoViewer(true);
-  setErroViewer(false);
-
-  const iniciarViewer = () => {
-    if (
-      !window.google ||
-      !window.google.books ||
-      !window.google.books.DefaultViewer
-    ) {
-      return false;
-    }
-
-    try {
-      viewerRef.current.innerHTML = "";
-
-      const viewer =
-        new window.google.books.DefaultViewer(
-          viewerRef.current
-        );
-
-      viewer.load(
-        id,
-
-        // Caso o Google não consiga abrir o livro
-        () => {
-          console.error(
-            "A Google Books não conseguiu incorporar este livro."
-          );
-
-          setCarregandoViewer(false);
-          setErroViewer(true);
-        },
-
-        // Caso carregue corretamente
-        () => {
-          console.log(
-            "Livro carregado com sucesso no Google Books Viewer."
-          );
-
-          setCarregandoViewer(false);
-          setErroViewer(false);
-        }
-      );
-
-      /*
-       * Segurança:
-       * não deixamos o carregamento ficar infinito.
-       *
-       * Se o Google demorar demais para responder,
-       * removemos a tela de carregamento e deixamos
-       * o próprio Viewer aparecer.
-       */
-      timeout = setTimeout(() => {
-        console.log(
-          "Google Books demorou para responder. Removendo carregamento."
-        );
-
-        setCarregandoViewer(false);
-      }, 10000);
-
-      return true;
-    } catch (error) {
-      console.error(
-        "Erro ao inicializar Google Books Viewer:",
-        error
-      );
-
-      setCarregandoViewer(false);
-      setErroViewer(true);
-
-      return true;
-    }
-  };
-
-  const verificarAPI = () => {
-    if (iniciarViewer()) {
-      clearInterval(intervalo);
-    }
-  };
-
-  verificarAPI();
-
-  intervalo = setInterval(verificarAPI, 300);
-
-  return () => {
-    clearInterval(intervalo);
-    clearTimeout(timeout);
-  };
-}, [livro, id]);
-
-  // =====================================================
-  // CARREGANDO
-  // =====================================================
-
-  if (carregando) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.estado}>
-          <LoaderCircle
-            size={42}
-            className={styles.spinner}
-          />
-
-          <h2>Carregando livro...</h2>
-
-          <p>
-            Buscando a obra na Google Books.
-          </p>
-        </div>
-      </div>
+    return capitulos.findIndex(
+      (capitulo) => String(capitulo.Cap_ID) === capituloId
     );
-  }
+  }, [capitulos, capituloId]);
 
-  // =====================================================
-  // ERRO
-  // =====================================================
+  const capituloAtual =
+    indiceCapitulo >= 0 ? capitulos[indiceCapitulo] : null;
 
-  if (erro || !livro) {
+  const navegarParaCapitulo = (capitulo) => {
+    navigate(`/livro/${id}/ler/${capitulo.Cap_ID}`, {
+      state: location.state,
+    });
+  };
+
+  if (carregando || erro || capitulos.length === 0 || !capituloAtual) {
+    const mensagem = carregando
+      ? "Carregando capítulos..."
+      : erro ||
+        (capitulos.length === 0
+          ? "Esta obra ainda não possui capítulos."
+          : "Capítulo não encontrado para esta obra.");
+
     return (
       <div className={styles.container}>
         <button
+          type="button"
           className={styles.voltar}
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={19} />
-          Voltar
+          <span>Voltar</span>
         </button>
-
-        <div className={styles.estado}>
-          <BookOpen size={48} />
-
-          <h2>
-            Não foi possível carregar o livro
-          </h2>
-
-          <p>
-            {erro || "Livro não encontrado."}
-          </p>
-        </div>
+        <main className={styles.estado} role={erro ? "alert" : undefined}>
+          <BookOpen size={42} />
+          <h2>{mensagem}</h2>
+        </main>
       </div>
     );
   }
 
-  // =====================================================
-  // INFORMAÇÕES
-  // =====================================================
-
-  const info = livro.volumeInfo || {};
-  const acesso = livro.accessInfo || {};
-
-  const titulo =
-    info.title || "Livro";
-
-  const autor =
-    info.authors?.join(", ") ||
-    "Autor desconhecido";
-
-  const viewability =
-    acesso.viewability || "UNKNOWN";
-
-  const embeddable =
-    acesso.embeddable === true;
-
-  const webReaderLink =
-    acesso.webReaderLink || "";
-
-  // =====================================================
-  // STATUS DA LEITURA
-  // =====================================================
-
-  let textoStatus = "Visualização disponível";
-
-  if (viewability === "ALL_PAGES") {
-    textoStatus = "Livro completo disponível";
-  } else if (viewability === "PARTIAL") {
-    textoStatus = "Prévia disponível";
-  }
-
-  // =====================================================
-  // INTERFACE
-  // =====================================================
+  const anterior = capitulos[indiceCapitulo - 1];
+  const proximo = capitulos[indiceCapitulo + 1];
 
   return (
     <div className={styles.container}>
-
-      {/* =================================================
-          CABEÇALHO
-      ================================================= */}
-
       <header className={styles.topo}>
-
         <button
+          type="button"
           className={styles.voltar}
           onClick={() => navigate(-1)}
         >
@@ -280,235 +204,70 @@ function Leitura() {
         </button>
 
         <div className={styles.informacoesLivro}>
-
           <div className={styles.iconeLivro}>
             <BookOpen size={22} />
           </div>
-
           <div className={styles.textosLivro}>
-
-            <h1 title={titulo}>
-              {titulo}
-            </h1>
-
-            <span title={autor}>
-              {autor}
-            </span>
-
+            <h1 title={tituloLivro}>{tituloLivro}</h1>
+            <span title={autor}>{autor}</span>
           </div>
-
         </div>
 
         <div className={styles.status}>
-
-          <span className={styles.statusPonto}></span>
-
-          <span>{textoStatus}</span>
-
-        </div>
-
-      </header>
-
-
-      {/* =================================================
-          ÁREA DE LEITURA
-      ================================================= */}
-
-      <main className={styles.areaLeitura}>
-
-        <div className={styles.tituloArea}>
-
-          <div>
-            <span>LEITURA</span>
-
-            <h2>
-              {titulo}
-            </h2>
-          </div>
-
-          <div className={styles.indicadorLeitura}>
-            <BookOpen size={17} />
-
-            <span>
-              Google Books
-            </span>
-          </div>
-
-        </div>
-
-
-        {/* =================================================
-            VISUALIZADOR
-        ================================================= */}
-
-        {embeddable ? (
-
-          <section
-            className={styles.leitorWrapper}
-          >
-
-            {/* Carregamento */}
-
-            {carregandoViewer && (
-              <div
-                className={
-                  styles.carregandoViewer
-                }
-              >
-
-                <div
-                  className={
-                    styles.carregandoIcone
-                  }
-                >
-                  <LoaderCircle
-                    size={35}
-                    className={styles.spinner}
-                  />
-                </div>
-
-                <h3>
-                  Abrindo o livro...
-                </h3>
-
-                <p>
-                  Preparando sua leitura.
-                </p>
-
-              </div>
-            )}
-
-
-            {/* Google Books */}
-
-            <div
-              ref={viewerRef}
-              className={styles.viewer}
-            />
-
-
-            {/* Erro do Viewer */}
-
-            {erroViewer && (
-              <div
-                className={styles.erroViewer}
-              >
-
-                <div
-                  className={styles.erroIcone}
-                >
-                  <BookOpen size={38} />
-                </div>
-
-                <h2>
-                  Não foi possível abrir
-                  este livro aqui
-                </h2>
-
-                <p>
-                  A Google Books não
-                  disponibilizou uma
-                  visualização incorporável
-                  para esta obra.
-                </p>
-
-                {webReaderLink && (
-                  <a
-                    href={webReaderLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={
-                      styles.botaoGoogle
-                    }
-                  >
-                    <ExternalLink
-                      size={18}
-                    />
-
-                    Abrir no Google Books
-                  </a>
-                )}
-
-              </div>
-            )}
-
-          </section>
-
-        ) : (
-
-          /* =================================================
-             SEM VISUALIZAÇÃO
-          ================================================= */
-
-          <section
-            className={
-              styles.semVisualizacao
-            }
-          >
-
-            <div
-              className={styles.erroIcone}
-            >
-              <BookOpen size={40} />
-            </div>
-
-            <h2>
-              Este livro não pode ser
-              incorporado
-            </h2>
-
-            <p>
-              A Google Books não permite
-              que a visualização desta
-              obra seja incorporada
-              diretamente ao Readduo.
-            </p>
-
-            {webReaderLink && (
-              <a
-                href={webReaderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={
-                  styles.botaoGoogle
-                }
-              >
-                <ExternalLink
-                  size={18}
-                />
-
-                Abrir no Google Books
-              </a>
-            )}
-
-          </section>
-
-        )}
-
-      </main>
-
-
-      {/* =================================================
-          RODAPÉ
-      ================================================= */}
-
-      <footer className={styles.rodape}>
-
-        <div>
-          <BookOpen size={16} />
-
+          <span className={styles.statusPonto} />
           <span>
-            Leitura integrada ao Readduo
+            Capítulo {indiceCapitulo + 1} de {capitulos.length}
           </span>
         </div>
+      </header>
 
-        <span>
-          Conteúdo fornecido pelo
-          Google Books
-        </span>
+      <main className={styles.areaLeitura}>
+        <div className={styles.tituloArea}>
+          <div>
+            <span>LEITURA</span>
+            <h2>{capituloAtual.Cap_titulo}</h2>
+          </div>
+          <div className={styles.indicadorLeitura}>
+            <BookOpen size={17} />
+            <span>Capítulo {capituloAtual.Cap_ordem}</span>
+          </div>
+        </div>
 
+        <article
+          className={styles.conteudoCapitulo}
+          dangerouslySetInnerHTML={{
+            __html: sanitizarConteudo(capituloAtual.Cap_conteudo),
+          }}
+        />
+
+        <nav className={styles.navegacaoCapitulos} aria-label="Navegação entre capítulos">
+          <button
+            type="button"
+            className={styles.botaoCapitulo}
+            onClick={() => navegarParaCapitulo(anterior)}
+            disabled={!anterior}
+          >
+            <ChevronLeft size={18} />
+            Capítulo anterior
+          </button>
+          <button
+            type="button"
+            className={styles.botaoCapitulo}
+            onClick={() => navegarParaCapitulo(proximo)}
+            disabled={!proximo}
+          >
+            Próximo capítulo
+            <ChevronRight size={18} />
+          </button>
+        </nav>
+      </main>
+
+      <footer className={styles.rodape}>
+        <div>
+          <BookOpen size={16} />
+          <span>Leitura integrada ao Readduo</span>
+        </div>
       </footer>
-
     </div>
   );
 }
