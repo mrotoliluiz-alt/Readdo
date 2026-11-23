@@ -45,6 +45,9 @@ function Perfil() {
     fetchDados();
   }, []);
 
+  if (loading && usuario.length === 0) return <p>Carregando usuario...</p>
+  if (erro) return <p>{erro}</p>
+
   return (
     <div className={styles.container}>
 

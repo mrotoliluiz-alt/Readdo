@@ -28,7 +28,7 @@ function Salvos() {
         const usuarioId = Number(usuario?.id ?? usuario?.Us_ID);
 
         if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
-          throw new Error("Não foi possível identificar o usuário.");
+          throw new Error("Usuario invalido");
         }
 
         const respostaFavoritos = await api.get(
