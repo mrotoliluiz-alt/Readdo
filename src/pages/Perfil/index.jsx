@@ -21,240 +21,32 @@ import {
   Trophy,
 } from "lucide-react";
 
-const estatisticas = [
-  {
-    titulo: "Livros lidos",
-    valor: "48",
-    extra: "+3 este mês",
-    icone: <BookOpen color="#61a6fa" size={20} />,
-  },
-  {
-    titulo: "Horas de leitura",
-    valor: "126h",
-    extra: "+8h este mês",
-    icone: <Circle color="#c084fc" size={20} />,
-  },
-  {
-    titulo: "Obras escritas",
-    valor: "7",
-    extra: "+2 este mês",
-    icone: <PenTool color="#4ade80" size={20} />,
-  },
-  {
-    titulo: "Palavras escritas",
-    valor: "124.8K",
-    extra: "+15.2K este mês",
-    icone: <PenTool color="#fb7185" size={20} />,
-  },
-  {
-    titulo: "Sequências",
-    valor: "8 dias",
-    extra: "Melhor: 16 dias",
-    icone: <Flame color="#fb923c" size={20} />,
-  },
-  {
-    titulo: "XP acumulado",
-    valor: "24.850",
-    extra: "Top 18%",
-    icone: <Star color="#facc15" size={20} />,
-  },
-];
 
-const atividades = [
-  {
-    titulo: 'Você concluiu a leitura de "Duna"',
-    subtitulo: "Frank Herbert",
-    tempo: "Hoje",
-  },
-  {
-    titulo: 'Escreveu 1.250 palavras em "Ecos de Éter"',
-    subtitulo: "Capítulo 8",
-    tempo: "Ontem",
-  },
-  {
-    titulo: 'Concluiu a lição "Construção de Mundos"',
-    subtitulo: "Trilha intermediária",
-    tempo: "2 dias atrás",
-  },
-  {
-    titulo: "Nova conquista desbloqueada",
-    subtitulo: "Leitor dedicado",
-    tempo: "3 dias atrás",
-  },
-  {
-    titulo: "Começou a seguir Mariana Costa",
-    subtitulo: "Escritora",
-    tempo: "4 dias atrás",
-  },
-];
-
-const conquistas = [
-  {
-    titulo: "Leitor Dedicado",
-    descricao: "Estude por 7 dias seguidos",
-    tempo: "Hoje",
-  },
-  {
-    titulo: "Explorador de Mundos",
-    descricao: "Leia livros de 5 gêneros",
-    tempo: "3 dias atrás",
-  },
-  {
-    titulo: "Escritor Consistente",
-    descricao: "Escreva por 5 dias seguidos",
-    tempo: "1 semana atrás",
-  },
-  {
-    titulo: "Primeiras Palavras",
-    descricao: "Escreva sua primeira obra",
-    tempo: "2 semanas atrás",
-  },
-  {
-    titulo: "Leitor Curioso",
-    descricao: "Leia seu primeiro livro",
-    tempo: "1 mês atrás",
-  },
-];
-
-const amigos = [
-  {
-    nome: "Mariana Costa",
-    nivel: "Nível 14",
-    status: "Online",
-  },
-  {
-    nome: "Lucas Ferreira",
-    nivel: "Nível 11",
-    status: "Online",
-  },
-  {
-    nome: "Rafael Monteiro",
-    nivel: "Nível 10",
-    status: "Offline",
-  },
-];
-
-const dias = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom", "Hoje"];
-
-const perfilInicial = {
-  nome: "Nome Cliente",
-  nivel: 12,
-  tituloNivel: "Viajante das Histórias",
-  xpAtual: 8450,
-  xpMaximo: 12000,
-  bio: "Apaixonada por fantasia, mistério e boas reviravoltas.",
-  membroDesde: "15/04/2024",
-  localizacao: "Brasil",
-  interesses: ["Fantasia", "Distopia", "Mistério"],
-  seguindo: false,
-  seguidores: 128,
-};
-
-function carregarPerfil() {
-  try {
-    const salvo = localStorage.getItem("readduo_perfil");
-
-    if (salvo) {
-      return {
-        ...perfilInicial,
-        ...JSON.parse(salvo),
-      };
-    }
-  } catch (erro) {
-    console.error("Erro ao carregar perfil:", erro);
-  }
-
-  return perfilInicial;
-}
 
 function Perfil() {
-  const [perfil, setPerfil] = useState(carregarPerfil);
+  const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
 
-  const [modalAberto, setModalAberto] = useState(false);
-
-  const [formulario, setFormulario] = useState(perfil);
-
-  const [mostrarAtividades, setMostrarAtividades] = useState(false);
-
-  const [mostrarConquistas, setMostrarConquistas] = useState(false);
-
-  const [mostrarAmigos, setMostrarAmigos] = useState(false);
-
-  const [mensagem, setMensagem] = useState("");
+  const fetchDados = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/usuario");
+      setUsuario(response.data.dados);
+    } catch (error) {
+      console.error("Erro ao carregar dados do usuário:", error);
+      setErro("Erro ao carregar dados do usuário.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    localStorage.setItem("readduo_perfil", JSON.stringify(perfil));
-  }, [perfil]);
-
-  const porcentagemXP = Math.min(
-    (perfil.xpAtual / perfil.xpMaximo) * 100,
-    100
-  );
-
-  const abrirEdicao = () => {
-    setFormulario(perfil);
-    setModalAberto(true);
-  };
-
-  const fecharModal = () => {
-    setFormulario(perfil);
-    setModalAberto(false);
-  };
-
-  const alterarCampo = (campo, valor) => {
-    setFormulario((anterior) => ({
-      ...anterior,
-      [campo]: valor,
-    }));
-  };
-
-  const salvarPerfil = (event) => {
-    event.preventDefault();
-
-    const interessesArray = formulario.interesses
-      .toString()
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-
-    const novoPerfil = {
-      ...formulario,
-      interesses: interessesArray,
-    };
-
-    setPerfil(novoPerfil);
-    setModalAberto(false);
-
-    setMensagem("Perfil atualizado com sucesso!");
-
-    setTimeout(() => {
-      setMensagem("");
-    }, 3000);
-  };
-
-  const alternarSeguir = () => {
-    setPerfil((anterior) => ({
-      ...anterior,
-      seguindo: !anterior.seguindo,
-      seguidores: anterior.seguindo
-        ? Math.max(anterior.seguidores - 1, 0)
-        : anterior.seguidores + 1,
-    }));
-  };
-
-  const mostrarMensagem = (texto) => {
-    setMensagem(texto);
-
-    setTimeout(() => {
-      setMensagem("");
-    }, 2500);
-  };
+    fetchDados();
+  }, []);
 
   return (
     <div className={styles.container}>
-      {/* =========================================
-          HEADER
-      ========================================= */}
 
       <div className={styles.header}>
         <div className={styles.titulo}>

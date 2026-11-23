@@ -10,8 +10,6 @@ function Salvos() {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
-  const usuarioId = localStorage.getItem("Us_ID");
-
   useEffect(() => {
     let requisicaoAtiva = true;
 
@@ -20,7 +18,16 @@ function Salvos() {
         setLoading(true);
         setErro("");
 
-        if (!usuarioId) {
+        let usuario;
+        try {
+          usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+        } catch (error) {
+          console.error("Erro ao encontrar o usuário salvo:", error);
+        }
+
+        const usuarioId = Number(usuario?.id ?? usuario?.Us_ID);
+
+        if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
           throw new Error("Não foi possível identificar o usuário.");
         }
 
@@ -77,7 +84,7 @@ function Salvos() {
     return () => {
       requisicaoAtiva = false;
     };
-  }, [usuarioId]);
+  }, []);
 
   return (
     <div className={styles.container}>
