@@ -2,6 +2,7 @@ import styles from "./index.module.css";
 
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 import {
   Target,
@@ -28,6 +29,9 @@ import {
    ========================================================= */
 
 const CHAVE_MISSOES_CONCLUIDAS = "readduo_missoes_concluidas";
+const CHAVE_MISSOES_DIARIAS = "readduo_missoes_diarias";
+const DURACAO_DIA_MISSOES = 24 * 60 * 60 * 1000;
+const QUANTIDADE_MISSOES_DIA = 5;
 
 const ABAS = [
   {
@@ -48,62 +52,6 @@ const ABAS = [
   },
 ];
 
-
-/* =========================================================
-   MISSÕES MOCK
-   ---------------------------------------------------------
-   Essa estrutura foi feita para ser fácil de trocar pela API.
-   Os nomes Ms_ID, Ms_titulo etc. são compatíveis com o banco.
-   ========================================================= */
-
-const missoesMock = [
-  {
-    Ms_ID: 1,
-    Ms_titulo: "Leitura diária",
-    Ms_descricao: "Leia por 30 minutos.",
-    Ms_recompensasXP: 50,
-    Ms_tipo: "leitura",
-    ordem: 1,
-  },
-  {
-    Ms_ID: 2,
-    Ms_titulo: "Escrita do dia",
-    Ms_descricao: "Escreva 500 palavras.",
-    Ms_recompensasXP: 75,
-    Ms_tipo: "escrita",
-    ordem: 2,
-  },
-  {
-    Ms_ID: 3,
-    Ms_titulo: "Aprendizado",
-    Ms_descricao: "Conclua uma lição.",
-    Ms_recompensasXP: 100,
-    Ms_tipo: "licao",
-    ordem: 3,
-  },
-  {
-    Ms_ID: 4,
-    Ms_titulo: "Vocabulário",
-    Ms_descricao: "Aprenda 5 novas palavras.",
-    Ms_recompensasXP: 100,
-    Ms_tipo: "vocabulario",
-    ordem: 4,
-  },
-  {
-    Ms_ID: 5,
-    Ms_titulo: "Baú Diário",
-    Ms_descricao: "Complete todas as missões do dia.",
-    Ms_recompensasXP: 500,
-    Ms_tipo: "bonus",
-    ordem: 5,
-    bonus: true,
-  },
-];
-
-
-/* =========================================================
-   ÍCONE DE CADA TIPO DE MISSÃO
-   ========================================================= */
 
 function IconeMissao({ tipo, tamanho = 30 }) {
   const props = {
@@ -133,54 +81,16 @@ function IconeMissao({ tipo, tamanho = 30 }) {
 }
 
 
-/* =========================================================
-   NORMALIZADOR
-   ---------------------------------------------------------
-   Aceita tanto os nomes do banco quanto os nomes do frontend.
-   ========================================================= */
-
 function normalizarMissao(missao, index) {
   return {
-    id:
-      missao.id ??
-      missao.Ms_ID ??
-      index + 1,
-
-    titulo:
-      missao.titulo ??
-      missao.Ms_titulo ??
-      "Missão",
-
-    descricao:
-      missao.descricao ??
-      missao.Ms_descricao ??
-      "",
-
-    xp: Number(
-      missao.xp ??
-      missao.Ms_recompensasXP ??
-      0
-    ),
-
-    tipo:
-      missao.tipo ??
-      missao.Ms_tipo ??
-      "geral",
-
-    ordem:
-      Number(
-        missao.ordem ??
-        index + 1
-      ),
-
-    bonus:
-      Boolean(missao.bonus),
-
-    concluida:
-      Boolean(
-        missao.concluida ||
-        missao.status === "concluida"
-      ),
+    id: missao.Ms_ID,
+    titulo: missao.Ms_titulo,
+    descricao: missao.Ms_descricao,
+    xp: Number(missao.Ms_recompensaXP),
+    tipo: String(missao.Ms_tipo).toLowerCase(),
+    ordem: index + 1,
+    bonus: false,
+    concluida: false,
   };
 }
 
@@ -188,23 +98,109 @@ function normalizarMissao(missao, index) {
 /* =========================================================
    BUSCAR MISSÕES
    ---------------------------------------------------------
-   FUTURO BACKEND:
-
-   const resposta = await fetch("http://localhost:3000/missoes");
-   const json = await resposta.json();
-   return json.dados.map(normalizarMissao);
-
-   Por enquanto usamos o mock.
+   Os dados exibidos são obtidos exclusivamente da API.
    ========================================================= */
 
 async function buscarMissoes() {
-  return missoesMock.map(normalizarMissao);
+  const resposta = await api.get("/missoes");
+  const dados = resposta.data;
+
+  if (!dados?.sucesso || !Array.isArray(dados.dados)) {
+    throw new Error(
+      dados?.mensagem || "Não foi possível carregar as missões."
+    );
+  }
+
+  return dados.dados
+    .filter((missao) =>
+      missao &&
+      missao.Ms_ID != null &&
+      missao.Ms_titulo &&
+      missao.Ms_descricao &&
+      missao.Ms_recompensaXP != null &&
+      missao.Ms_tipo
+    )
+    .map(normalizarMissao);
 }
 
 
-/* =========================================================
-   ÚLTIMO LIVRO LIDO
-   ========================================================= */
+function embaralharMissao(missoes) {
+  const embaralhadas = [...missoes];
+
+  for (let index = embaralhadas.length - 1; index > 0; index -= 1) {
+    const aleatorio = Math.floor(Math.random() * (index + 1));
+    [embaralhadas[index], embaralhadas[aleatorio]] = [
+      embaralhadas[aleatorio],
+      embaralhadas[index],
+    ];
+  }
+
+  return embaralhadas;
+}
+
+
+function selecionarCicloMisssoes(todasMissoes) {
+  const agora = Date.now();
+  let cicloSalvo = null;
+
+  try {
+    cicloSalvo = JSON.parse(
+      localStorage.getItem(CHAVE_MISSOES_DIARIAS)
+    );
+  } catch {
+    cicloSalvo = null;
+  }
+
+  let renovou = false;
+  let idsSelecionados;
+  let expiresAt;
+
+  if (
+    cicloSalvo &&
+    Number.isFinite(cicloSalvo.expiresAt) &&
+    cicloSalvo.expiresAt > agora &&
+    Array.isArray(cicloSalvo.ids)
+  ) {
+    idsSelecionados = cicloSalvo.ids
+      .map(String)
+      .filter((id) =>
+        todasMissoes.some((missao) => String(missao.id) === id)
+      );
+    expiresAt = cicloSalvo.expiresAt;
+  }
+
+  if (idsSelecionados?.length !== QUANTIDADE_MISSOES_DIA) {
+    idsSelecionados = embaralharMissao(todasMissoes)
+      .slice(0, QUANTIDADE_MISSOES_DIA)
+      .map((missao) => String(missao.id));
+    expiresAt = agora + DURACAO_DIA_MISSOES;
+    renovou = true;
+  }
+
+  const selecionadas = idsSelecionados
+    .map((id) =>
+      todasMissoes.find((missao) => String(missao.id) === id)
+    )
+    .filter(Boolean)
+    .map((missao, index) => ({
+      ...missao,
+      ordem: index + 1,
+    }));
+
+  if (renovou) {
+    localStorage.setItem(
+      CHAVE_MISSOES_DIARIAS,
+      JSON.stringify({ expiresAt, ids: idsSelecionados })
+    );
+  }
+
+  return {
+    missoes: selecionadas,
+    expiresAt,
+    renovou,
+  };
+}
+
 
 function obterUltimoLivro() {
   const chaves = [
@@ -235,10 +231,6 @@ function obterUltimoLivro() {
 }
 
 
-/* =========================================================
-   FORMATAR TEMPO
-   ========================================================= */
-
 function formatarTempo(segundos) {
   const horas = Math.floor(segundos / 3600);
 
@@ -261,18 +253,12 @@ function formatarTempo(segundos) {
 }
 
 
-/* =========================================================
-   COMPONENTE
-   ========================================================= */
 
 function Missoes() {
   const navigate = useNavigate();
 
-  /* -------------------------------------------------------
-     ESTADOS
-     ------------------------------------------------------- */
-
   const [missoes, setMissoes] = useState([]);
+  const [todasMissoes, setTodasMissoes] = useState([]);
 
   const [concluidasIds, setConcluidasIds] =
     useState([]);
@@ -289,16 +275,115 @@ function Missoes() {
   const [segundosRestantes, setSegundosRestantes] =
     useState(8 * 60 * 60 + 41 * 60 + 46);
 
-  /* -------------------------------------------------------
-     CARREGAR DADOS
-     ------------------------------------------------------- */
+  const usuarioInicial =
+    (() => {
+      try {
+        return JSON.parse(
+          localStorage.getItem("usuario") || "null"
+        );
+      } catch {
+        return null;
+      }
+    })();
+
+  const [nivelUsuario, setNivelUsuario] =
+    useState(
+      Number(
+        usuarioInicial?.Us_nivel ??
+        usuarioInicial?.nivel ??
+        1
+      ) || 1
+    );
+
+  const [xpUsuario, setXpUsuario] =
+    useState(
+      Number(
+        usuarioInicial?.Us_XP_total ??
+        usuarioInicial?.xpTotal ??
+        0
+      ) || 0
+    );
+
 
   useEffect(() => {
     const carregar = async () => {
       try {
         const dados = await buscarMissoes();
+        const ciclo = selecionarCicloMisssoes(dados);
 
-        setMissoes(dados);
+        setTodasMissoes(dados);
+        setMissoes(ciclo.missoes);
+        setSegundosRestantes(
+          Math.max(
+            0,
+            Math.ceil((ciclo.expiresAt - Date.now()) / 1000)
+          )
+        );
+
+        const usuarioSalvo =
+          localStorage.getItem("usuario");
+
+        if (usuarioSalvo) {
+          try {
+            const usuario =
+              JSON.parse(usuarioSalvo);
+            const usuarioId =
+              Number(usuario?.Us_ID ?? usuario?.id);
+
+            if (
+              Number.isInteger(usuarioId) &&
+              usuarioId > 0
+            ) {
+              const respostaUsuario =
+                await api.get("/usuarios");
+              const usuarios =
+                Array.isArray(respostaUsuario.data)
+                  ? respostaUsuario.data
+                  : respostaUsuario.data?.dados;
+
+              if (Array.isArray(usuarios)) {
+                const usuarioBanco =
+                  usuarios.find((item) =>
+                    Number(item.Us_ID ?? item.id) === usuarioId
+                  );
+
+                if (usuarioBanco) {
+                  const nivelBanco =
+                    Number(
+                      usuarioBanco.Us_nivel ??
+                      usuarioBanco.nivel ??
+                      1
+                    ) || 1;
+                  const xpBanco =
+                    Number(
+                      usuarioBanco.Us_XP_total ??
+                      usuarioBanco.xpTotal ??
+                      0
+                    ) || 0;
+
+                  setNivelUsuario(nivelBanco);
+                  setXpUsuario(xpBanco);
+                  localStorage.setItem(
+                    "usuario",
+                    JSON.stringify({
+                      ...usuario,
+                      ...usuarioBanco,
+                      Us_nivel: nivelBanco,
+                      nivel: nivelBanco,
+                      Us_XP_total: xpBanco,
+                      xpTotal: xpBanco,
+                    })
+                  );
+                }
+              }
+            }
+          } catch (erroUsuario) {
+            console.error(
+              "Erro ao sincronizar nível do usuário:",
+              erroUsuario
+            );
+          }
+        }
 
         const salvo = localStorage.getItem(
           CHAVE_MISSOES_CONCLUIDAS
@@ -324,14 +409,22 @@ function Missoes() {
             String(missao.id)
           );
 
-        const todas = [
-          ...concluidasSalvas,
-          ...concluidasDoBanco,
-        ];
+        if (ciclo.renovou) {
+          localStorage.removeItem(CHAVE_MISSOES_CONCLUIDAS);
+          setConcluidasIds([]);
+        } else {
+          const idsSelecionados = new Set(
+            ciclo.missoes.map((missao) => String(missao.id))
+          );
+          const todas = [
+            ...concluidasSalvas,
+            ...concluidasDoBanco,
+          ];
 
-        setConcluidasIds([
-          ...new Set(todas),
-        ]);
+          setConcluidasIds([
+            ...new Set(todas),
+          ].filter((id) => idsSelecionados.has(id)));
+        }
       } catch (erro) {
         console.error(
           "Erro ao carregar missões:",
@@ -348,28 +441,59 @@ function Missoes() {
   }, []);
 
 
-  /* -------------------------------------------------------
-     CONTADOR
-     ------------------------------------------------------- */
 
   useEffect(() => {
     const intervalo = setInterval(() => {
-      setSegundosRestantes((valor) => {
-        if (valor <= 0) {
-          return 24 * 60 * 60;
+      let cicloSalvo = null;
+
+      try {
+        cicloSalvo = JSON.parse(
+          localStorage.getItem(CHAVE_MISSOES_DIARIAS)
+        );
+      } catch {
+        cicloSalvo = null;
+      }
+
+      const expiresAt = Number(cicloSalvo?.expiresAt);
+
+      if (!Number.isFinite(expiresAt)) {
+        setSegundosRestantes(0);
+        return;
+      }
+
+      const restante = expiresAt - Date.now();
+
+      if (restante <= 0) {
+        if (todasMissoes.length > 0) {
+          const novoCiclo =
+            selecionarCicloMisssoes(todasMissoes);
+
+          setMissoes(novoCiclo.missoes);
+          setConcluidasIds([]);
+          localStorage.removeItem(
+            CHAVE_MISSOES_CONCLUIDAS
+          );
+          setMissaoSelecionada(null);
+          setSegundosRestantes(
+            Math.ceil(
+              (novoCiclo.expiresAt - Date.now()) /
+                1000
+            )
+          );
         }
 
-        return valor - 1;
-      });
+        return;
+      }
+
+      setSegundosRestantes(
+        Math.ceil(restante / 1000)
+      );
     }, 1000);
 
     return () => clearInterval(intervalo);
-  }, []);
+  }, [todasMissoes]);
 
 
-  /* -------------------------------------------------------
-     MISSÕES ORDENADAS
-     ------------------------------------------------------- */
 
   const missoesOrdenadas = useMemo(() => {
     return [...missoes].sort(
@@ -379,9 +503,6 @@ function Missoes() {
   }, [missoes]);
 
 
-  /* -------------------------------------------------------
-     STATUS DE CADA MISSÃO
-     ------------------------------------------------------- */
 
   const obterStatusMissao = (
     missao,
@@ -438,9 +559,6 @@ function Missoes() {
   };
 
 
-  /* -------------------------------------------------------
-     MISSÕES COM STATUS
-     ------------------------------------------------------- */
 
   const missoesComStatus = useMemo(() => {
     return missoesOrdenadas.map(
@@ -459,9 +577,6 @@ function Missoes() {
   ]);
 
 
-  /* -------------------------------------------------------
-     CONTADORES
-     ------------------------------------------------------- */
 
   const quantidadeConcluidas =
     concluidasIds.length;
@@ -481,6 +596,16 @@ function Missoes() {
       0
     );
 
+  const nivelAtual = nivelUsuario;
+
+  const progressoNivel =
+    xpUsuario > 0
+      ? Math.min(
+          (xpUsuario % 500) / 5,
+          100
+        )
+      : 0;
+
   const todasNormaisConcluidas =
     missoesComStatus
       .filter((missao) => !missao.bonus)
@@ -490,9 +615,317 @@ function Missoes() {
         )
       );
 
-  /* -------------------------------------------------------
-     CONCLUIR MISSÃO
-     ------------------------------------------------------- */
+
+  const atualizarProgressoUsuario =
+    async (missao) => {
+      try {
+        const usuarioSalvo =
+          localStorage.getItem("usuario");
+
+        if (!usuarioSalvo) {
+          return;
+        }
+
+        const usuario =
+          JSON.parse(usuarioSalvo);
+        const usuarioId =
+          Number(usuario?.Us_ID ?? usuario?.id);
+
+        if (
+          !Number.isInteger(usuarioId) ||
+          usuarioId <= 0
+        ) {
+          return;
+        }
+
+        const resposta =
+          await api.get("/usuarios");
+        const usuarios =
+          Array.isArray(resposta.data)
+            ? resposta.data
+            : resposta.data?.dados;
+
+        if (!Array.isArray(usuarios)) {
+          throw new Error(
+            "Não foi possível carregar o usuário."
+          );
+        }
+
+        const usuarioBanco =
+          usuarios.find((item) =>
+            Number(item.Us_ID ?? item.id) === usuarioId
+          );
+
+        if (!usuarioBanco) {
+          throw new Error(
+            "Usuário não encontrado."
+          );
+        }
+
+        const xpAtual =
+          Number(
+            usuarioBanco.Us_XP_total ??
+            usuarioBanco.xpTotal ??
+            usuario.Us_XP_total ??
+            usuario.xpTotal ??
+            0
+          ) || 0;
+        const xpNovo =
+          xpAtual + Number(missao.xp);
+        const nivelNovo =
+          xpNovo >= 500
+            ? Math.floor(xpNovo / 500) + 1
+            : 1;
+
+        const dados =
+          new FormData();
+        dados.append(
+          "Us_XP_total",
+          String(xpNovo)
+        );
+        dados.append(
+          "Us_nivel",
+          String(nivelNovo)
+        );
+
+        await api.put(
+          `/usuarios/${usuarioId}`,
+          dados
+        );
+
+        const usuarioAtualizado = {
+          ...usuario,
+          ...usuarioBanco,
+          Us_XP_total: xpNovo,
+          xpTotal: xpNovo,
+          Us_nivel: nivelNovo,
+          nivel: nivelNovo,
+        };
+
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify(usuarioAtualizado)
+        );
+        setXpUsuario(xpNovo);
+        setNivelUsuario(nivelNovo);
+      } catch (erro) {
+        console.error(
+          "Erro ao atualizar nível do usuário:",
+          erro
+        );
+      }
+    };
+
+
+  const verificarMissao =
+    async (missao) => {
+      try {
+        const usuarioSalvo =
+          localStorage.getItem("usuario");
+
+        if (!usuarioSalvo) {
+          return false;
+        }
+
+        const usuario =
+          JSON.parse(usuarioSalvo);
+        const usuarioId =
+          Number(usuario?.Us_ID ?? usuario?.id);
+
+        if (
+          !Number.isInteger(usuarioId) ||
+          usuarioId <= 0
+        ) {
+          return false;
+        }
+
+        const titulo =
+          String(missao.titulo).toLowerCase();
+
+        if (
+          missao.tipo === "leitura" ||
+          titulo.includes("leitor") ||
+          titulo.includes("mestre") ||
+          titulo.includes("primeira leitura") ||
+          titulo.includes("leitura")
+        ) {
+          const chave =
+            `readduo-capitulos-lidos-${usuarioId}`;
+          const registros =
+            JSON.parse(
+              localStorage.getItem(chave) || "[]"
+            );
+          const capitulosLidos =
+            Array.isArray(registros)
+              ? new Set(registros).size
+              : 0;
+
+          if (titulo.includes("primeira leitura")) {
+            return capitulosLidos >= 1;
+          }
+          if (titulo.includes("iniciante")) {
+            return capitulosLidos >= 3;
+          }
+          if (titulo.includes("dedicado")) {
+            return capitulosLidos >= 5;
+          }
+          if (titulo.includes("mestre da leitura")) {
+            const meta =
+              String(missao.descricao).includes("22")
+                ? 22
+                : 20;
+            return capitulosLidos >= meta;
+          }
+        }
+
+        if (titulo.includes("primeira obra")) {
+          const resposta =
+            await api.get(
+              `/obras/usuario/${usuarioId}`
+            );
+          const obras =
+            resposta.data?.dados;
+          return (
+            Array.isArray(obras) &&
+            obras.length >= 1
+          );
+        }
+
+        if (titulo.includes("primeiro capítulo")) {
+          const obrasResposta =
+            await api.get(
+              `/obras/usuario/${usuarioId}`
+            );
+          const obras =
+            obrasResposta.data?.dados;
+
+          if (!Array.isArray(obras)) {
+            return false;
+          }
+
+          for (const obra of obras) {
+            const resposta =
+              await api.get(
+                `/capitulos/obra/${obra.Ob_ID}`
+              );
+            if (
+              Array.isArray(resposta.data?.dados) &&
+              resposta.data.dados.length >= 1
+            ) {
+              return true;
+            }
+          }
+
+          return false;
+        }
+
+        if (titulo.includes("comentarista")) {
+          const resposta =
+            await api.get(
+              `/comentarios/usuario/${usuarioId}`
+            );
+          const comentarios =
+            resposta.data?.dados;
+          return (
+            Array.isArray(comentarios) &&
+            comentarios.length >= 1
+          );
+        }
+
+        if (titulo.includes("conhecendo a comunidade")) {
+          const registros =
+            JSON.parse(
+              localStorage.getItem(
+                `readduo-usuarios-seguidos-${usuarioId}`
+              ) || "[]"
+            );
+          return (
+            Array.isArray(registros) &&
+            new Set(registros).size >= 5
+          );
+        }
+
+        if (
+          titulo.includes("incansavel") ||
+          titulo.includes("incansável") ||
+          titulo.includes("ofensiva") ||
+          titulo.includes("semana de leitura")
+        ) {
+          const registro =
+            JSON.parse(
+              localStorage.getItem(
+                `readduo-sequencia-${usuarioId}`
+              ) || "null"
+            );
+          return (
+            Number(registro?.sequencia) >= 7
+          );
+        }
+
+        return false;
+      } catch (erro) {
+        console.error(
+          "Erro ao verificar missão:",
+          erro
+        );
+        return false;
+      }
+    };
+
+
+  useEffect(() => {
+    if (missoesComStatus.length === 0) {
+      return;
+    }
+
+    let cancelado = false;
+
+    const sincronizarMisssoes = async () => {
+      for (const missao of missoesComStatus) {
+        if (
+          missao.status === "concluida" ||
+          cancelado
+        ) {
+          continue;
+        }
+
+        const cumprida =
+          await verificarMissao(missao);
+
+        if (cumprida && !cancelado) {
+          setConcluidasIds((anteriores) => {
+            if (
+              anteriores.includes(
+                String(missao.id)
+              )
+            ) {
+              return anteriores;
+            }
+
+            const novas = [
+              ...anteriores,
+              String(missao.id),
+            ];
+
+            localStorage.setItem(
+              CHAVE_MISSOES_CONCLUIDAS,
+              JSON.stringify(novas)
+            );
+
+            atualizarProgressoUsuario(missao);
+            return novas;
+          });
+        }
+      }
+    };
+
+    sincronizarMisssoes();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [missoesComStatus]);
+
 
   const concluirMissao = (id) => {
     const idString = String(id);
@@ -509,6 +942,18 @@ function Missoes() {
         CHAVE_MISSOES_CONCLUIDAS,
         JSON.stringify(novas)
       );
+
+      if (!anteriores.includes(idString)) {
+        const missao =
+          missoesComStatus.find(
+            (item) =>
+              String(item.id) === idString
+          );
+
+        if (missao) {
+          atualizarProgressoUsuario(missao);
+        }
+      }
 
       return novas;
     });
@@ -532,20 +977,13 @@ function Missoes() {
   };
 
 
-  /* -------------------------------------------------------
-     ABRIR MISSÃO
-     ------------------------------------------------------- */
 
   const abrirMissao = (missao) => {
     setMissaoSelecionada(missao);
   };
 
 
-  /* -------------------------------------------------------
-     AÇÃO DA MISSÃO
-     ------------------------------------------------------- */
-
-  const executarMissao = (missao) => {
+  const executarMissao = async (missao) => {
     const status =
       obterStatusMissao(
         missao,
@@ -559,16 +997,12 @@ function Missoes() {
       return;
     }
 
-    /*
-      No protótipo, iniciar a missão
-      também marca como concluída.
+    const cumprida =
+      await verificarMissao(missao);
 
-      Quando o backend estiver pronto,
-      essa função deve fazer um POST
-      para USUARIO_MISSAO.
-    */
-
-    concluirMissao(missao.id);
+    if (cumprida) {
+      concluirMissao(missao.id);
+    }
 
     /* Leitura */
     if (
@@ -593,10 +1027,9 @@ function Missoes() {
     }
 
     /* Outras missões */
-    setMissaoSelecionada({
-      ...missao,
-      status: "concluida",
-    });
+    if (!cumprida) {
+      setMissaoSelecionada(missao);
+    }
   };
 
 
@@ -1243,7 +1676,9 @@ function Missoes() {
             </span>
 
             <strong>
-              8 dias
+              {quantidadeConcluidas > 0
+                ? "Em andamento"
+                : "0 dias"}
             </strong>
 
             <small>
@@ -1623,7 +2058,7 @@ function Missoes() {
                 styles.levelCircle
               }
             >
-              12
+              {nivelAtual}
             </div>
 
 
@@ -1632,7 +2067,7 @@ function Missoes() {
                 styles.nivelNumero
               }
             >
-              Nível 12
+              Nível {nivelAtual}
             </h3>
 
             <p
@@ -1640,7 +2075,7 @@ function Missoes() {
                 styles.nivelNome
               }
             >
-              Narrador Experiente
+              Progresso de hoje
             </p>
 
 
@@ -1654,7 +2089,7 @@ function Missoes() {
                   styles.progressFill
                 }
                 style={{
-                  width: "84%",
+                  width: `${progressoNivel}%`,
                 }}
               />
             </div>
@@ -1664,7 +2099,7 @@ function Missoes() {
                 styles.progressTexto
               }
             >
-              4200 / 5000 XP
+              {xpUsuario} XP acumulados
             </span>
 
           </div>

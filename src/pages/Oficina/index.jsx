@@ -28,7 +28,7 @@ import {
 export default function Oficina() {
   const usuarioSalvo = localStorage.getItem("usuario");
   const usuario = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
-  const Us_ID = usuario?.id;
+  const Us_ID = usuario?.Us_ID ?? usuario?.id;
 
   const [obras, setObras] = useState([]);
   const [loading, setLoading] = useState(true);

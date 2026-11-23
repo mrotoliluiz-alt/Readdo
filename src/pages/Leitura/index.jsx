@@ -156,6 +156,44 @@ function Leitura() {
   const capituloAtual =
     indiceCapitulo >= 0 ? capitulos[indiceCapitulo] : null;
 
+  useEffect(() => {
+    if (!capituloAtual) {
+      return;
+    }
+
+    try {
+      const usuario =
+        JSON.parse(localStorage.getItem("usuario") || "null");
+      const usuarioId =
+        Number(usuario?.Us_ID ?? usuario?.id);
+
+      if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
+        return;
+      }
+
+      const chave =
+        `readduo-capitulos-lidos-${usuarioId}`;
+      const salvo =
+        JSON.parse(localStorage.getItem(chave) || "[]");
+      const registros =
+        Array.isArray(salvo) ? salvo : [];
+      const registro =
+        String(capituloAtual.Cap_ID);
+
+      if (!registros.includes(registro)) {
+        localStorage.setItem(
+          chave,
+          JSON.stringify([...registros, registro])
+        );
+      }
+    } catch (erro) {
+      console.error(
+        "Erro ao registrar capítulo lido:",
+        erro
+      );
+    }
+  }, [capituloAtual]);
+
   const navegarParaCapitulo = (capitulo) => {
     navigate(`/livro/${id}/ler/${capitulo.Cap_ID}`, {
       state: location.state,

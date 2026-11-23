@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 
 import {
@@ -15,6 +15,7 @@ import {
   Check,
   Save,
   Trophy,
+  ImagePlus,
 } from "lucide-react";
 
 
@@ -26,8 +27,10 @@ function Perfil() {
   const [seguindo, setSeguindo] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagem, setMensagem] = useState("");
-  const [formulario, setFormulario] = useState({ nome: "", bio: "" });
+  const [formulario, setFormulario] = useState({ nome: "", bio: "", imagem: null });
+  const [previewImagem, setPreviewImagem] = useState("");
   const [sequencia, setSequencia] = useState(0);
+  const seletorImagem = useRef(null);
 
   const atividades = [];
   const conquistas = [];
@@ -63,31 +66,132 @@ function Perfil() {
     setFormulario({
       nome: us.nome,
       bio: us.Us_biografia ?? "",
+      imagem: null,
     });
+    setPreviewImagem("");
     setModalAberto(true);
   }
 
   function fecharModal() {
     setModalAberto(false);
+    setPreviewImagem("");
   }
 
-  function salvarPerfil(event) {
+  async function selecionarImagem(event) {
+    const arquivo = event.target.files?.[0];
+    if (!arquivo) return;
+
+    if (!arquivo.type.startsWith("image/")) {
+      setErro("Selecione um arquivo de imagem válido.");
+      return;
+    }
+
+    setFormulario((anterior) => ({ ...anterior, imagem: arquivo }));
+    setPreviewImagem(URL.createObjectURL(arquivo));
+
+    if (!modalAberto) {
+      try {
+        const usuarioAtualizado = {
+          ...us,
+          imagemArquivo: arquivo,
+        };
+        const usuarioId = us.id ?? us.Us_ID;
+        const dados = montarDadosUsuario(
+          usuarioAtualizado,
+          us.Us_dt_ultimo_acesso
+        );
+        await api.put(`/usuarios/${usuarioId}`, dados);
+
+        setUs((anterior) => ({ ...anterior, imagemArquivo: arquivo }));
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify({ ...us, imagemArquivo: undefined })
+        );
+        mostrarMensagem("Imagem do perfil atualizada.");
+      } catch (error) {
+        console.error("Erro ao atualizar imagem:", error);
+        setErro("Não foi possível atualizar a imagem do perfil.");
+      }
+    }
+  }
+
+  function montarDadosUsuario(usuarioAtualizado, dataUltimoAcesso) {
+    const dados = new FormData();
+    // Nome
+    const nome =
+        usuarioAtualizado.US_nome ??
+        usuarioAtualizado.nome;
+
+    if (nome !== undefined) {
+        dados.append("US_nome", nome);
+    }
+
+    // Biografia
+    const biografia =
+        usuarioAtualizado.Us_biografia ??
+        usuarioAtualizado.biografia;
+
+    if (biografia !== undefined) {
+        dados.append("Us_biografia", biografia);
+    }
+
+    // Imagem nova
+    if (usuarioAtualizado.imagemArquivo) {
+        dados.append("img", usuarioAtualizado.imagemArquivo);
+    }
+
+    // Data de último acesso, somente quando informada
+   if (dataUltimoAcesso) {
+    const dataFormatada = new Date(dataUltimoAcesso)
+        .toISOString()
+        .slice(0, 10);
+
+    dados.append("Us_dt_ultimo_acesso", dataFormatada);
+}
+
+    return dados;
+}
+  async function salvarPerfil(event) {
     event.preventDefault();
     const usuarioAtualizado = {
       ...us,
       nome: formulario.nome,
+      US_nome: formulario.nome,
       Us_biografia: formulario.bio,
+      imagemArquivo: formulario.imagem,
     };
 
     try {
-      localStorage.setItem("usuario", JSON.stringify(usuarioAtualizado));
-      setUs(usuarioAtualizado);
+      const usuarioId = usuarioAtualizado.id ?? usuarioAtualizado.Us_ID;
+      const dados = montarDadosUsuario(usuarioAtualizado, usuarioAtualizado.Us_dt_ultimo_acesso);
+      const resposta = await api.put(`/usuarios/${usuarioId}`, dados);
+      const dadosAtualizados = resposta.data?.dados ?? resposta.data?.usuario ?? {};
+      const usuarioSalvo = {
+        ...usuarioAtualizado,
+        ...dadosAtualizados,
+        id: dadosAtualizados.Us_ID ?? usuarioAtualizado.id,
+        nome: dadosAtualizados.US_nome ?? dadosAtualizados.Us_nome ?? formulario.nome,
+        Us_biografia: dadosAtualizados.Us_biografia ?? formulario.bio,
+        Us_imagem: dadosAtualizados.Us_imagem ?? dadosAtualizados.img ?? usuarioAtualizado.Us_imagem,
+        imagemPerfil: dadosAtualizados.Us_imagem ?? dadosAtualizados.img ?? usuarioAtualizado.imagemPerfil,
+      };
+
+      localStorage.setItem("usuario", JSON.stringify(usuarioSalvo));
+      setUs(usuarioSalvo);
       fecharModal();
       mostrarMensagem("Perfil atualizado.");
-    } catch (error) {
-      console.error("Erro ao salvar dados do usuário:", error);
-      setErro("Não foi possível salvar as alterações do perfil.");
-    }
+    }catch (error) {
+    console.error("ERRO AO SALVAR PERFIL:");
+    console.error("Status:", error.response?.status);
+    console.error("Resposta do backend:", error.response?.data);
+    console.error("Erro completo:", error);
+
+    setErro(
+        error.response?.data?.dados ||
+        error.response?.data?.mensagem ||
+        "Não foi possível salvar as alterações do perfil."
+    );
+}
   }
 
   useEffect(() => {
@@ -131,6 +235,12 @@ function Perfil() {
         nivel: usuarioEncontrado.Us_nivel ?? usuarioEncontrado.nivel,
         xpTotal:
           usuarioEncontrado.Us_XP_total ?? usuarioEncontrado.xpTotal,
+        biografia:
+          usuarioEncontrado.Us_biografia ?? usuarioEncontrado.biografia ?? "",
+        imagemPerfil:
+          usuarioEncontrado.Us_imagem ??
+          usuarioEncontrado.img ??
+          "",
       };
       setUs(usuarioPerfil);
       localStorage.setItem("usuario", JSON.stringify(usuarioPerfil));
@@ -152,16 +262,14 @@ function Perfil() {
             ].join("-")
           : null;
 
-      if (dataUltimoAcessoLocal !== hoje) {
-        setSequencia(0);
-        return;
-      }
-
       const chaveSequencia = `readduo-sequencia-${usuarioId}`;
       const sequenciaSalva = localStorage.getItem(chaveSequencia);
-      const registroAnterior = sequenciaSalva
-        ? JSON.parse(sequenciaSalva)
-        : null;
+      let registroAnterior = null;
+      try {
+        registroAnterior = sequenciaSalva ? JSON.parse(sequenciaSalva) : null;
+      } catch {
+        registroAnterior = null;
+      }
       const ontemData = new Date(agora);
       ontemData.setDate(ontemData.getDate() - 1);
       const ontem = [
@@ -170,18 +278,40 @@ function Perfil() {
         String(ontemData.getDate()).padStart(2, "0"),
       ].join("-");
 
-      const proximaSequencia =
-        registroAnterior?.data === hoje
-          ? Math.max(1, Number(registroAnterior.sequencia) || 1)
-          : registroAnterior?.data === ontem
-            ? Math.max(1, Number(registroAnterior.sequencia) || 0) + 1
-            : 1;
+      let proximaSequencia;
+      if (registroAnterior?.data === hoje) {
+        proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 1);
+      } else if (
+        registroAnterior?.data === ontem &&
+        (dataUltimoAcessoLocal === ontem || dataUltimoAcessoLocal === hoje)
+      ) {
+        proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 0) + 1;
+      } else if (dataUltimoAcessoLocal === ontem) {
+        proximaSequencia = 2;
+      } else {
+        proximaSequencia = 1;
+      }
 
       localStorage.setItem(
         chaveSequencia,
         JSON.stringify({ data: hoje, sequencia: proximaSequencia })
       );
       setSequencia(proximaSequencia);
+
+      if (dataUltimoAcessoLocal !== hoje) {
+        try {
+          const usuarioComAcesso = {
+            ...usuarioPerfil,
+            Us_dt_ultimo_acesso: hoje,
+          };
+          await api.put(
+            `/usuarios/${usuarioId}`,
+            montarDadosUsuario(usuarioComAcesso, hoje)
+          );
+        } catch (erroAcesso) {
+          console.error("Erro ao registrar o último acesso:", erroAcesso);
+        }
+      }
     } catch (error) {
       console.error("Erro ao carregar dados do usuário:", error);
       setErro("Erro ao carregar dados do usuário.");
@@ -196,7 +326,6 @@ function Perfil() {
 
   if (loading) return <p>Carregando usuario...</p>
   if (erro) return <p>{erro}</p>
-  if (!us) return <p>Não foi possível carregar os dados do usuário.</p>
 
   return (
     <div className={styles.container}>
@@ -213,9 +342,31 @@ function Perfil() {
         <div className={styles.left}>
 
           <section className={styles.profileCard}>
-            <div className={styles.avatar}>
-              <User size={42} />
+            <div
+              className={styles.avatar}
+              role="button"
+              tabIndex={0}
+              aria-label="Editar imagem do perfil"
+              onClick={() => seletorImagem.current?.click()}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  seletorImagem.current?.click();
+                }
+              }}
+            >
+              <img
+                src={previewImagem || us.imagemPerfil || us.Us_imagem || us.imagem || us.img}
+                alt="Avatar"
+              />
             </div>
+
+            <input
+              ref={seletorImagem}
+              type="file"
+              accept="image/*"
+              onChange={selecionarImagem}
+              hidden
+            />
 
             <div className={styles.profileInfo}>
               <div className={styles.nomeLinha}>
@@ -271,6 +422,7 @@ function Perfil() {
                 <Pencil size={15} />
                 Editar Perfil
               </button>
+
             </div>
 
 
@@ -496,6 +648,23 @@ function Perfil() {
               className={styles.formulario}
               onSubmit={salvarPerfil}
             >
+              <div className={styles.imagemFormulario}>
+                <button
+                  type="button"
+                  className={styles.avatarEdicao}
+                  onClick={() => seletorImagem.current?.click()}
+                >
+                  <img
+                    src={previewImagem || us.imagemPerfil || us.Us_imagem || us.imagem || us.img}
+                    alt="Prévia da imagem do perfil"
+                  />
+                  <span>
+                    <ImagePlus size={16} />
+                    Editar imagem
+                  </span>
+                </button>
+              </div>
+
               <label>
                 Nome
                 <input
