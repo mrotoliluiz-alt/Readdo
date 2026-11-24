@@ -1,6 +1,8 @@
 .layout {
     display: flex;
+    width: 100%;
     min-height: 100vh;
+    background: #f8fafc;
 }
 
 .conteudo {
@@ -8,6 +10,7 @@
     margin-left:250px;
     display: block;
     min-width: 0;
+    min-height: 100vh;
     background: #f8fafc;
     /*overflow-y: auto;*/
 }
@@ -22,4 +25,9 @@
 
 .dark *{
     border-color:#2A3153;
+}
+
+:global([data-theme="escuro"]) .layout,
+:global([data-theme="escuro"]) .conteudo {
+    background: #0f1425;
 }

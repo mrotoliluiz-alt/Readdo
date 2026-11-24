@@ -2,6 +2,7 @@ import styles from "./index.module.css";
 
 import { Bookmark, BookOpen, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 function CardLivro({
   titulo,
@@ -17,6 +18,28 @@ function CardLivro({
   const navigate = useNavigate();
 
   const tituloSeguro = titulo || "Título não disponível";
+
+  const obterUrlImagem = (imagem) => {
+    if (!imagem) return "";
+
+    if (/^(https?:\/\/|data:image\/|blob:)/i.test(imagem)) {
+      return imagem;
+    }
+
+    const baseUrl = api.defaults.baseURL.replace(/\/$/, "");
+
+    if (imagem.startsWith("/")) {
+      return `${baseUrl}${imagem}`;
+    }
+
+    if (/^public\//i.test(imagem) || /^obras\//i.test(imagem)) {
+      return `${baseUrl}/${imagem}`;
+    }
+
+    return `${baseUrl}/public/obras/${encodeURIComponent(imagem)}`;
+  };
+
+  const urlImagem = obterUrlImagem(imagem);
 
   const abrirLivro = () => {
     if (onClick) {
@@ -40,9 +63,9 @@ function CardLivro({
     <div className={styles.card}
     onClick={abrirLivro}>
       <div className={styles.imagemContainer}>
-        {imagem ? (
+        {urlImagem ? (
           <img
-            src={imagem}
+            src={urlImagem}
             alt={titulo}
             className={styles.imagem}
           />

@@ -167,6 +167,7 @@ function Landing() {
    <div className={styles.areaLivros}>
 
     <button
+        type="button"
         className={`${styles.botaoScroll} ${styles.esquerdaScroll}`}
         onClick={rolarEsquerda}
         aria-label="Ver livros anteriores"
@@ -177,15 +178,15 @@ function Landing() {
      {loading ? (
           <p>Carregando...</p>
         ) : (
-          <div className={styles.leitCard}>
+          <div className={styles.leitCard} ref={livrosRef}>
             {obras.map((obra) => (
               <CardLivro
-                key={obra.id}
-                id={obra.id}
-                titulo={obra.titulo}
-                autor={obra.Autor}
-                tipo={obra.Genero}
-                imagem={obra.Imagem}
+                key={obra.id ?? obra.Ob_ID}
+                id={obra.id ?? obra.Ob_ID}
+                titulo={obra.titulo ?? obra.Ob_titulo}
+                autor={obra.autor ?? obra.Ob_autor ?? obra.Autor}
+                tipo={obra.genero ?? obra.Ob_genero ?? obra.Genero}
+                imagem={obra.imagem ?? obra.Ob_img ?? obra.Imagem}
 
                 onClick={() => navigate('/Cadastro')}
               />
@@ -194,11 +195,12 @@ function Landing() {
         )}
 
     <button
+        type="button"
         className={`${styles.botaoScroll} ${styles.direitaScroll}`}
         onClick={rolarDireita}
         aria-label="Ver próximos livros"
     >
-         <ChevronLeft size={32} strokeWidth={2.5} />
+         <ChevronRight size={32} strokeWidth={2.5} />
     </button>
 
     </div>

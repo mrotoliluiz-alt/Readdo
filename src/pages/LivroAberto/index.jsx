@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -18,6 +18,7 @@ function LivroAberto() {
     const [salvandoFavorito, setSalvandoFavorito] = useState(false);
     const [favoritoSalvo, setFavoritoSalvo] = useState(false);
     const [erroFavorito, setErroFavorito] = useState("");
+    const obraLendoCadastrada = useRef("");
 
     useEffect(() => {
         const buscarLivro = async () => {
@@ -59,6 +60,68 @@ function LivroAberto() {
         buscarLivro();
     }, [id, location.state]);
 
+    useEffect(() => {
+        const cadastrarObraLendo = async () => {
+            if (!livro) return;
+
+            let usuario;
+            try {
+                usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+            } catch (error) {
+                console.error("Erro ao ler o usuário salvo:", error);
+                setErroFavorito("Não foi possível identificar o usuário salvo.");
+                return;
+            }
+
+            const usuarioId = Number(usuario?.id ?? usuario?.Us_ID);
+            const obraId = Number(livro?.Ob_ID ?? livro?.id);
+            const cadastroId = `${usuarioId}:${obraId}`;
+
+            if (
+                !Number.isInteger(usuarioId) ||
+                usuarioId <= 0 ||
+                !Number.isInteger(obraId) ||
+                obraId <= 0 ||
+                obraLendoCadastrada.current === cadastroId
+            ) {
+                return;
+            }
+
+            obraLendoCadastrada.current = cadastroId;
+
+            try {
+                setErroFavorito("");
+                setSalvandoFavorito(true);
+
+                const resposta = await api.post("/favoritossalvos", {
+                    Ob_ID: obraId,
+                    Us_ID: usuarioId,
+                    Fav_status: "Lendo",
+                });
+
+                if (resposta.data?.sucesso === false) {
+                    throw new Error(
+                        resposta.data.mensagem || "Não foi possível cadastrar a obra como lendo."
+                    );
+                }
+
+                setFavoritoSalvo(true);
+            } catch (error) {
+                console.error("Erro ao cadastrar obra como lendo:", error);
+                obraLendoCadastrada.current = "";
+                setErroFavorito(
+                    error.response?.data?.mensagem ||
+                        error.message ||
+                        "Não foi possível cadastrar a obra como lendo."
+                );
+            } finally {
+                setSalvandoFavorito(false);
+            }
+        };
+
+        cadastrarObraLendo();
+    }, [livro]);
+
     const salvarFavorito = async () => {
         setErroFavorito("");
 
@@ -92,7 +155,7 @@ function LivroAberto() {
             const resposta = await api.post("/favoritossalvos", {
                 Ob_ID: obraIdNumerico,
                 Us_ID: usuarioIdNumerico,
-                Fav_status: "favorito",
+                Fav_status: "Lendo",
             });
 
             if (resposta.data?.sucesso === false) {

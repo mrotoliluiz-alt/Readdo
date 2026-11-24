@@ -93,20 +93,6 @@ function Home() {
 
         </div>
 
-        <div className={styles.stats}>
-
-          <div className={styles.statCard}>
-            <h3>3</h3>
-            <span>Livros lidos</span>
-          </div>
-
-          <div className={styles.statCard}>
-            <h3>4.2K</h3>
-            <span>Palavras lidas</span>
-          </div>
-
-        </div>
-
       </section>
 
       <section>

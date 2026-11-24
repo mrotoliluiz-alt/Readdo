@@ -33,6 +33,23 @@ const CHAVE_MISSOES_DIARIAS = "readduo_missoes_diarias";
 const DURACAO_DIA_MISSOES = 24 * 60 * 60 * 1000;
 const QUANTIDADE_MISSOES_DIA = 5;
 
+function obterIdUsuarioLocal() {
+  try {
+    const usuario = JSON.parse(
+      localStorage.getItem("usuario") || "null"
+    );
+    const id = usuario?.Us_ID ?? usuario?.id;
+
+    return id == null ? "anonimo" : String(id);
+  } catch {
+    return "anonimo";
+  }
+}
+
+function obterChaveMissoes(base, usuarioId) {
+  return `${base}_${usuarioId}`;
+}
+
 const ABAS = [
   {
     id: "diarias",
@@ -139,13 +156,17 @@ function embaralharMissao(missoes) {
 }
 
 
-function selecionarCicloMisssoes(todasMissoes) {
+function selecionarCicloMisssoes(todasMissoes, usuarioId) {
   const agora = Date.now();
+  const chaveCiclo = obterChaveMissoes(
+    CHAVE_MISSOES_DIARIAS,
+    usuarioId
+  );
   let cicloSalvo = null;
 
   try {
     cicloSalvo = JSON.parse(
-      localStorage.getItem(CHAVE_MISSOES_DIARIAS)
+      localStorage.getItem(chaveCiclo)
     );
   } catch {
     cicloSalvo = null;
@@ -189,7 +210,7 @@ function selecionarCicloMisssoes(todasMissoes) {
 
   if (renovou) {
     localStorage.setItem(
-      CHAVE_MISSOES_DIARIAS,
+      chaveCiclo,
       JSON.stringify({ expiresAt, ids: idsSelecionados })
     );
   }
@@ -256,6 +277,15 @@ function formatarTempo(segundos) {
 
 function Missoes() {
   const navigate = useNavigate();
+  const usuarioId = obterIdUsuarioLocal();
+  const chaveMissoesConcluidas = obterChaveMissoes(
+    CHAVE_MISSOES_CONCLUIDAS,
+    usuarioId
+  );
+  const chaveMissoesDiarias = obterChaveMissoes(
+    CHAVE_MISSOES_DIARIAS,
+    usuarioId
+  );
 
   const [missoes, setMissoes] = useState([]);
   const [todasMissoes, setTodasMissoes] = useState([]);
@@ -309,7 +339,10 @@ function Missoes() {
     const carregar = async () => {
       try {
         const dados = await buscarMissoes();
-        const ciclo = selecionarCicloMisssoes(dados);
+        const ciclo = selecionarCicloMisssoes(
+          dados,
+          usuarioId
+        );
 
         setTodasMissoes(dados);
         setMissoes(ciclo.missoes);
@@ -386,7 +419,7 @@ function Missoes() {
         }
 
         const salvo = localStorage.getItem(
-          CHAVE_MISSOES_CONCLUIDAS
+          chaveMissoesConcluidas
         );
 
         let concluidasSalvas = [];
@@ -410,7 +443,7 @@ function Missoes() {
           );
 
         if (ciclo.renovou) {
-          localStorage.removeItem(CHAVE_MISSOES_CONCLUIDAS);
+          localStorage.removeItem(chaveMissoesConcluidas);
           setConcluidasIds([]);
         } else {
           const idsSelecionados = new Set(
@@ -438,7 +471,10 @@ function Missoes() {
     setUltimoLivro(
       obterUltimoLivro()
     );
-  }, []);
+  }, [
+    chaveMissoesConcluidas,
+    usuarioId,
+  ]);
 
 
 
@@ -448,7 +484,7 @@ function Missoes() {
 
       try {
         cicloSalvo = JSON.parse(
-          localStorage.getItem(CHAVE_MISSOES_DIARIAS)
+          localStorage.getItem(chaveMissoesDiarias)
         );
       } catch {
         cicloSalvo = null;
@@ -466,12 +502,15 @@ function Missoes() {
       if (restante <= 0) {
         if (todasMissoes.length > 0) {
           const novoCiclo =
-            selecionarCicloMisssoes(todasMissoes);
+            selecionarCicloMisssoes(
+              todasMissoes,
+              usuarioId
+            );
 
           setMissoes(novoCiclo.missoes);
           setConcluidasIds([]);
           localStorage.removeItem(
-            CHAVE_MISSOES_CONCLUIDAS
+            chaveMissoesConcluidas
           );
           setMissaoSelecionada(null);
           setSegundosRestantes(
@@ -491,7 +530,12 @@ function Missoes() {
     }, 1000);
 
     return () => clearInterval(intervalo);
-  }, [todasMissoes]);
+  }, [
+    chaveMissoesConcluidas,
+    chaveMissoesDiarias,
+    todasMissoes,
+    usuarioId,
+  ]);
 
 
 
@@ -908,7 +952,7 @@ function Missoes() {
             ];
 
             localStorage.setItem(
-              CHAVE_MISSOES_CONCLUIDAS,
+              chaveMissoesConcluidas,
               JSON.stringify(novas)
             );
 
@@ -924,7 +968,10 @@ function Missoes() {
     return () => {
       cancelado = true;
     };
-  }, [missoesComStatus]);
+  }, [
+    chaveMissoesConcluidas,
+    missoesComStatus,
+  ]);
 
 
   const concluirMissao = (id) => {
@@ -939,7 +986,7 @@ function Missoes() {
       ];
 
       localStorage.setItem(
-        CHAVE_MISSOES_CONCLUIDAS,
+        chaveMissoesConcluidas,
         JSON.stringify(novas)
       );
 

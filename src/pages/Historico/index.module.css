@@ -167,6 +167,13 @@
 
 /* ==================== LISTA DE LIVROS ==================== */
 
+.cardObras {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
 .listaLivros {
     display: flex;
     flex-direction: column;

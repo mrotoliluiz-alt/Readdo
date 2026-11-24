@@ -116,33 +116,6 @@ function Configuracoes() {
 
         <div className={styles.left}>
 
-          {/* Estatísticas */}
-
-          <section className={styles.stats}>
-
-            {estatisticas.map((item, index) => (
-
-              <div
-                key={index}
-                className={styles.statCard}
-              >
-
-                <div className={styles.icon}>
-                  {item.icone}
-                </div>
-
-                <h2>{item.valor}</h2>
-
-                <span>{item.titulo}</span>
-
-                <small>{item.extra}</small>
-
-              </div>
-
-            ))}
-
-          </section>
-
           {/* Aparência */}
 
           <section className={styles.card}>

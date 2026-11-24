@@ -4,10 +4,12 @@
 
 .container{
     width:100%;
+    min-height:100vh;
     padding:32px;
     display:flex;
     flex-direction:column;
     gap:24px;
+    background:#f8fafc;
 }
 
 /* ============================= */
@@ -17,6 +19,25 @@
 :global([data-theme="escuro"]) .container {
   background: #0f1425;
   color: #f1f5f9;
+}
+
+.layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 24px;
+}
+
+.left,
+.right {
+  min-width: 0;
+}
+
+:global([data-theme="escuro"]) .layout,
+:global([data-theme="escuro"]) .left,
+:global([data-theme="escuro"]) .right {
+  background: #0f1425;
 }
 
 :global([data-theme="escuro"]) .titulo h1,
@@ -1059,9 +1080,17 @@
 
     }
 
+    .layout {
+        grid-template-columns: minmax(0, 1fr) 300px;
+    }
+
 }
 
 @media (max-width:900px){
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
 
     .profileCard{
 
