@@ -40,8 +40,13 @@ function Salvos() {
           throw new Error("A resposta da API não contém uma lista de favoritos.");
         }
 
+        const favoritosSalvos = favoritos.filter(
+          (favorito) =>
+            String(favorito.Fav_status ?? "").trim().toLowerCase() === "favorito"
+        );
+
         const obrasDetalhadas = await Promise.all(
-          favoritos.map(async (favorito) => {
+          favoritosSalvos.map(async (favorito) => {
             const obraId = Number(favorito.Ob_ID);
 
             if (!Number.isInteger(obraId) || obraId <= 0) {

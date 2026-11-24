@@ -20,6 +20,137 @@
   color: #0f172a;
 }
 
+.missoesSemanais {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cabecalhoSemanal {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.cabecalhoSemanal h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.cabecalhoSemanal p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cabecalhoSemanal > span {
+  flex-shrink: 0;
+  color: #0fa6b3;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.listaSemanais {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cardSemanal {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.cardSemanalConcluido {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.cardSemanalTopo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardSemanalIcone {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #e7f9fb;
+  color: #0fa6b3;
+}
+
+.cardSemanalTopo span {
+  display: block;
+  margin-bottom: 3px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cardSemanalTopo h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 16px;
+}
+
+.cardSemanal > p {
+  min-height: 42px;
+  margin: 14px 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cardSemanalRodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cardSemanalRodape strong,
+.semanalConcluida {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #eab308;
+  font-size: 13px;
+}
+
+.cardSemanalRodape button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 10px;
+  padding: 9px 11px;
+  background: #0fa6b3;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.semanalConcluida {
+  color: #16a34a;
+}
+
 
 /* =========================================================
    HEADER

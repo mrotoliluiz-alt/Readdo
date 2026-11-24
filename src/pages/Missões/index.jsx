@@ -30,7 +30,11 @@ import {
 
 const CHAVE_MISSOES_CONCLUIDAS = "readduo_missoes_concluidas";
 const CHAVE_MISSOES_DIARIAS = "readduo_missoes_diarias";
+const CHAVE_MISSOES_SEMANAIS = "readduo_missoes_semanais";
+const CHAVE_MISSOES_SEMANAIS_CONCLUIDAS =
+  "readduo_missoes_semanais_concluidas";
 const DURACAO_DIA_MISSOES = 24 * 60 * 60 * 1000;
+const DURACAO_SEMANA_MISSOES = 7 * DURACAO_DIA_MISSOES;
 const QUANTIDADE_MISSOES_DIA = 5;
 
 function obterIdUsuarioLocal() {
@@ -99,12 +103,23 @@ function IconeMissao({ tipo, tamanho = 30 }) {
 
 
 function normalizarMissao(missao, index) {
+  const tipo = String(missao.Ms_tipo).toLowerCase();
+  const textoDuracao = String(
+    `${missao.Ms_titulo || ""} ${missao.Ms_descricao || ""}`
+  ).toLowerCase();
+  const exigeMaisDeUmDia =
+    /\b\d+\s*dias?\b|\bdias?\s+consecutiv|\bsemanas?\b/.test(
+      textoDuracao
+    );
+
   return {
     id: missao.Ms_ID,
     titulo: missao.Ms_titulo,
     descricao: missao.Ms_descricao,
     xp: Number(missao.Ms_recompensaXP),
-    tipo: String(missao.Ms_tipo).toLowerCase(),
+    tipo,
+    setor: tipo,
+    semanal: exigeMaisDeUmDia,
     ordem: index + 1,
     bonus: false,
     concluida: false,
@@ -222,6 +237,136 @@ function selecionarCicloMisssoes(todasMissoes, usuarioId) {
   };
 }
 
+function selecionarCicloMisssoesSemanais(todasMissoes, usuarioId) {
+  const agora = Date.now();
+  const chaveCiclo = obterChaveMissoes(
+    CHAVE_MISSOES_SEMANAIS,
+    usuarioId
+  );
+  const semanais = todasMissoes.filter(
+    (missao) => missao.semanal
+  );
+
+  let cicloSalvo = null;
+  try {
+    cicloSalvo = JSON.parse(
+      localStorage.getItem(chaveCiclo)
+    );
+  } catch {
+    cicloSalvo = null;
+  }
+
+  let renovou = false;
+  let slots = [];
+  let expiresAt = agora + DURACAO_SEMANA_MISSOES;
+
+  if (
+    cicloSalvo &&
+    Number.isFinite(cicloSalvo.expiresAt) &&
+    cicloSalvo.expiresAt > agora &&
+    Array.isArray(cicloSalvo.slots)
+  ) {
+    slots = cicloSalvo.slots
+      .map((slot) => {
+        const missao = semanais.find(
+          (item) => String(item.id) === String(slot.id)
+        );
+        return missao
+          ? { setor: missao.setor, id: String(missao.id) }
+          : null;
+      })
+      .filter(Boolean);
+    expiresAt = cicloSalvo.expiresAt;
+  }
+
+  if (
+    slots.length === 0 &&
+    Array.isArray(cicloSalvo?.slots)
+  ) {
+    const idsAntigos = new Set(
+      cicloSalvo.slots.map((slot) => String(slot.id))
+    );
+    slots = cicloSalvo.slots
+      .map((slot) => {
+        const missaoAtual = semanais.find(
+          (missao) => String(missao.id) === String(slot.id)
+        );
+        const setor =
+          missaoAtual?.setor || String(slot.setor || "");
+
+        if (!setor) {
+          return null;
+        }
+
+        const candidatos = semanais.filter(
+          (missao) =>
+            missao.setor === setor &&
+            !idsAntigos.has(String(missao.id))
+        );
+        const escolhido =
+          embaralharMissao(
+            candidatos.length > 0
+              ? candidatos
+              : semanais.filter(
+                  (missao) => missao.setor === setor
+                )
+          )[0];
+
+        return escolhido
+          ? { setor, id: String(escolhido.id) }
+          : null;
+      })
+      .filter(Boolean);
+    expiresAt = agora + DURACAO_SEMANA_MISSOES;
+    renovou = true;
+  } else if (slots.length === 0) {
+    const setores = [
+      ...new Set(
+        semanais.map((missao) => missao.setor)
+      ),
+    ];
+
+    slots = setores
+      .map((setor) => {
+        const candidatos = semanais.filter(
+          (missao) => missao.setor === setor
+        );
+        const escolhido =
+          embaralharMissao(candidatos)[0];
+        return escolhido
+          ? { setor, id: String(escolhido.id) }
+          : null;
+      })
+      .filter(Boolean);
+    renovou = true;
+  }
+
+  const selecionadas = slots
+    .map((slot) =>
+      semanais.find(
+        (missao) => String(missao.id) === slot.id
+      )
+    )
+    .filter(Boolean)
+    .map((missao, index) => ({
+      ...missao,
+      ordem: index + 1,
+    }));
+
+  if (renovou) {
+    localStorage.setItem(
+      chaveCiclo,
+      JSON.stringify({ expiresAt, slots })
+    );
+  }
+
+  return {
+    missoes: selecionadas,
+    expiresAt,
+    renovou,
+  };
+}
+
 
 function obterUltimoLivro() {
   const chaves = [
@@ -286,9 +431,22 @@ function Missoes() {
     CHAVE_MISSOES_DIARIAS,
     usuarioId
   );
+  const chaveMissoesSemanais = obterChaveMissoes(
+    CHAVE_MISSOES_SEMANAIS,
+    usuarioId
+  );
+  const chaveMissoesSemanaisConcluidas =
+    obterChaveMissoes(
+      CHAVE_MISSOES_SEMANAIS_CONCLUIDAS,
+      usuarioId
+    );
 
   const [missoes, setMissoes] = useState([]);
   const [todasMissoes, setTodasMissoes] = useState([]);
+  const [missoesSemanais, setMissoesSemanais] =
+    useState([]);
+  const [missoesSemanaisConcluidas, setMissoesSemanaisConcluidas] =
+    useState([]);
 
   const [concluidasIds, setConcluidasIds] =
     useState([]);
@@ -304,6 +462,8 @@ function Missoes() {
 
   const [segundosRestantes, setSegundosRestantes] =
     useState(8 * 60 * 60 + 41 * 60 + 46);
+  const [segundosSemanaisRestantes, setSegundosSemanaisRestantes] =
+    useState(DURACAO_SEMANA_MISSOES / 1000);
 
   const usuarioInicial =
     (() => {
@@ -339,17 +499,31 @@ function Missoes() {
     const carregar = async () => {
       try {
         const dados = await buscarMissoes();
+        const missoesDiariasDisponiveis = dados.filter(
+          (missao) => !missao.semanal
+        );
         const ciclo = selecionarCicloMisssoes(
+          missoesDiariasDisponiveis,
+          usuarioId
+        );
+        const cicloSemanal = selecionarCicloMisssoesSemanais(
           dados,
           usuarioId
         );
 
         setTodasMissoes(dados);
         setMissoes(ciclo.missoes);
+        setMissoesSemanais(cicloSemanal.missoes);
         setSegundosRestantes(
           Math.max(
             0,
             Math.ceil((ciclo.expiresAt - Date.now()) / 1000)
+          )
+        );
+        setSegundosSemanaisRestantes(
+          Math.max(
+            0,
+            Math.ceil((cicloSemanal.expiresAt - Date.now()) / 1000)
           )
         );
 
@@ -458,6 +632,40 @@ function Missoes() {
             ...new Set(todas),
           ].filter((id) => idsSelecionados.has(id)));
         }
+
+        const semanalSalvo = localStorage.getItem(
+          chaveMissoesSemanaisConcluidas
+        );
+        let semanaisConcluidas = [];
+
+        if (semanalSalvo) {
+          try {
+            const parsed = JSON.parse(semanalSalvo);
+            if (Array.isArray(parsed)) {
+              semanaisConcluidas = parsed.map(String);
+            }
+          } catch {
+            semanaisConcluidas = [];
+          }
+        }
+
+        if (cicloSemanal.renovou) {
+          localStorage.removeItem(
+            chaveMissoesSemanaisConcluidas
+          );
+          setMissoesSemanaisConcluidas([]);
+        } else {
+          const idsSemanais = new Set(
+            cicloSemanal.missoes.map((missao) =>
+              String(missao.id)
+            )
+          );
+          setMissoesSemanaisConcluidas(
+            semanaisConcluidas.filter((id) =>
+              idsSemanais.has(id)
+            )
+          );
+        }
       } catch (erro) {
         console.error(
           "Erro ao carregar missões:",
@@ -503,7 +711,9 @@ function Missoes() {
         if (todasMissoes.length > 0) {
           const novoCiclo =
             selecionarCicloMisssoes(
-              todasMissoes,
+              todasMissoes.filter(
+                (missao) => !missao.semanal
+              ),
               usuarioId
             );
 
@@ -533,6 +743,61 @@ function Missoes() {
   }, [
     chaveMissoesConcluidas,
     chaveMissoesDiarias,
+    todasMissoes,
+    usuarioId,
+  ]);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      let cicloSalvo = null;
+
+      try {
+        cicloSalvo = JSON.parse(
+          localStorage.getItem(chaveMissoesSemanais)
+        );
+      } catch {
+        cicloSalvo = null;
+      }
+
+      const expiresAt = Number(cicloSalvo?.expiresAt);
+
+      if (!Number.isFinite(expiresAt)) {
+        setSegundosSemanaisRestantes(0);
+        return;
+      }
+
+      const restante = expiresAt - Date.now();
+
+      if (restante <= 0) {
+        if (todasMissoes.length > 0) {
+          const novoCiclo =
+            selecionarCicloMisssoesSemanais(
+              todasMissoes,
+              usuarioId
+            );
+          setMissoesSemanais(novoCiclo.missoes);
+          setMissoesSemanaisConcluidas([]);
+          localStorage.removeItem(
+            chaveMissoesSemanaisConcluidas
+          );
+          setSegundosSemanaisRestantes(
+            Math.ceil(
+              (novoCiclo.expiresAt - Date.now()) / 1000
+            )
+          );
+        }
+        return;
+      }
+
+      setSegundosSemanaisRestantes(
+        Math.ceil(restante / 1000)
+      );
+    }, 1000);
+
+    return () => clearInterval(intervalo);
+  }, [
+    chaveMissoesSemanais,
+    chaveMissoesSemanaisConcluidas,
     todasMissoes,
     usuarioId,
   ]);
@@ -972,6 +1237,61 @@ function Missoes() {
     chaveMissoesConcluidas,
     missoesComStatus,
   ]);
+
+  useEffect(() => {
+    if (missoesSemanais.length === 0) {
+      return;
+    }
+
+    let cancelado = false;
+
+    const sincronizarSemanais = async () => {
+      for (const missao of missoesSemanais) {
+        if (
+          missoesSemanaisConcluidas.includes(
+            String(missao.id)
+          ) ||
+          cancelado
+        ) {
+          continue;
+        }
+
+        const cumprida =
+          await verificarMissao(missao);
+
+        if (cumprida && !cancelado) {
+          setMissoesSemanaisConcluidas((anteriores) => {
+            if (
+              anteriores.includes(String(missao.id))
+            ) {
+              return anteriores;
+            }
+
+            const novas = [
+              ...anteriores,
+              String(missao.id),
+            ];
+            localStorage.setItem(
+              chaveMissoesSemanaisConcluidas,
+              JSON.stringify(novas)
+            );
+            atualizarProgressoUsuario(missao);
+            return novas;
+          });
+        }
+      }
+    };
+
+    sincronizarSemanais();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [
+    chaveMissoesSemanaisConcluidas,
+    missoesSemanais,
+  ]);
+
 
 
   const concluirMissao = (id) => {
@@ -1460,33 +1780,112 @@ function Missoes() {
 
       if (abaAtiva === "semanais") {
         return (
-          <div
-            className={
-              styles.estadoAba
-            }
-          >
-            <div
-              className={
-                styles.estadoIcone
-              }
-            >
-              <Target />
+          <div className={styles.missoesSemanais}>
+            <div className={styles.cabecalhoSemanal}>
+              <div>
+                <h2>Missões semanais</h2>
+                <p>
+                  Fixas por 7 dias e substituídas por outra missão
+                  do mesmo setor ao terminar o ciclo.
+                </p>
+              </div>
+              <span>
+                Renovação: {formatarTempo(segundosSemanaisRestantes)}
+              </span>
             </div>
 
-            <h2>
-              Missões semanais
-            </h2>
+            {missoesSemanais.length > 0 ? (
+              <div className={styles.listaSemanais}>
+                {missoesSemanais.map((missao) => {
+                  const concluida =
+                    missoesSemanaisConcluidas.includes(
+                      String(missao.id)
+                    );
 
-            <p>
-              As missões semanais serão
-              carregadas do banco de dados
-              quando essa etapa estiver
-              integrada ao backend.
-            </p>
+                  return (
+                    <article
+                      className={`${styles.cardSemanal} ${
+                        concluida ? styles.cardSemanalConcluido : ""
+                      }`}
+                      key={missao.id}
+                    >
+                      <div className={styles.cardSemanalTopo}>
+                        <div className={styles.cardSemanalIcone}>
+                          <IconeMissao tipo={missao.tipo} tamanho={24} />
+                        </div>
+                        <div>
+                          <span>{missao.setor}</span>
+                          <h3>{missao.titulo}</h3>
+                        </div>
+                      </div>
 
-            <span>
-              Em breve
-            </span>
+                      <p>{missao.descricao}</p>
+
+                      <div className={styles.cardSemanalRodape}>
+                        <strong>
+                          <Star size={16} />
+                          +{missao.xp} XP
+                        </strong>
+                        {concluida ? (
+                          <span className={styles.semanalConcluida}>
+                            <Check size={16} />
+                            Concluída
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const cumprida =
+                                await verificarMissao(missao);
+                              if (!cumprida) {
+                                return;
+                              }
+
+                              setMissoesSemanaisConcluidas(
+                                (anteriores) => {
+                                  if (
+                                    anteriores.includes(
+                                      String(missao.id)
+                                    )
+                                  ) {
+                                    return anteriores;
+                                  }
+
+                                  const novas = [
+                                    ...anteriores,
+                                    String(missao.id),
+                                  ];
+                                  localStorage.setItem(
+                                    chaveMissoesSemanaisConcluidas,
+                                    JSON.stringify(novas)
+                                  );
+                                  atualizarProgressoUsuario(missao);
+                                  return novas;
+                                }
+                              );
+                            }}
+                          >
+                            Verificar missão
+                            <ChevronRight size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className={styles.estadoAba}>
+                <div className={styles.estadoIcone}>
+                  <Target />
+                </div>
+                <h2>Nenhuma missão semanal disponível</h2>
+                <p>
+                  Novas missões de sete dias aparecerão quando forem
+                  cadastradas no banco.
+                </p>
+              </div>
+            )}
           </div>
         );
       }
@@ -2032,7 +2431,9 @@ function Missoes() {
               }
             >
               {formatarTempo(
-                segundosRestantes
+                abaAtiva === "semanais"
+                  ? segundosSemanaisRestantes
+                  : segundosRestantes
               )}
             </strong>
 

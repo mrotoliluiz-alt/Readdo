@@ -1,5 +1,5 @@
 import styles from "./index.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import DOMPurify from "dompurify";
@@ -96,6 +96,7 @@ function Leitura() {
   const [capitulos, setCapitulos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
+  const obraLendoCadastrada = useRef("");
 
   const livro = location.state?.livro;
   const tituloLivro =
@@ -186,13 +187,35 @@ function Leitura() {
           JSON.stringify([...registros, registro])
         );
       }
+
+      const obraId = Number(id);
+      const cadastroId = `${usuarioId}:${obraId}`;
+
+      if (
+        !Number.isInteger(obraId) ||
+        obraId <= 0 ||
+        obraLendoCadastrada.current === cadastroId
+      ) {
+        return;
+      }
+
+      obraLendoCadastrada.current = cadastroId;
+
+      api.post("/favoritossalvos", {
+        Ob_ID: obraId,
+        Us_ID: usuarioId,
+        Fav_status: "Lendo",
+      }).catch((erroApi) => {
+        obraLendoCadastrada.current = "";
+        console.error("Erro ao cadastrar obra como lendo:", erroApi);
+      });
     } catch (erro) {
       console.error(
         "Erro ao registrar capítulo lido:",
         erro
       );
     }
-  }, [capituloAtual]);
+  }, [capituloAtual, id]);
 
   const navegarParaCapitulo = (capitulo) => {
     navigate(`/livro/${id}/ler/${capitulo.Cap_ID}`, {
