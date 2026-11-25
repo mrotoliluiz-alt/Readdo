@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 import { useCallback, useEffect, useState } from "react";
-import CardLivro from "../../componentes/CardLivro";
+import CardLivro from "../../componentes/cardLivro";
 import api from "../../services/api";
 
 import { Search, SearchCheck } from "lucide-react";

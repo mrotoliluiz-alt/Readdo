@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
-import CardLivro from "../../componentes/CardLivro";
+import CardLivro from "../../componentes/cardLivro";
 import { Bookmark, Search, X } from "lucide-react";
 import api from "../../services/api";
 

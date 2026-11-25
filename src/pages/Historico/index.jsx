@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { History, BookOpen } from "lucide-react";
 import styles from "./index.module.css";
-import CardLivro from "../../componentes/CardLivro";
+import CardLivro from "../../componentes/cardLivro";
 import api from "../../services/api";
 
 function Historico() {
