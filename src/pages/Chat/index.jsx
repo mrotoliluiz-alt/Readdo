@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import api from "../../services/api";
 
 import {
   MessageCircle,
@@ -16,156 +17,102 @@ import {
   Trash2,
 } from "lucide-react";
 
-/* =========================================================
-   USUÁRIOS MOCK
+function obterLista(resposta, recurso) {
+  const dados = resposta.data?.dados ?? resposta.data;
+  if (!Array.isArray(dados)) {
+    throw new Error(`A resposta de ${recurso} não contém uma lista.`);
+  }
+  return dados;
+}
 
-   Futuramente esses usuários virão do banco através da
-   tabela USUARIO.
+function normalizarUsuario(usuario) {
+  return {
+    ...usuario,
+    id: Number(usuario.Us_ID ?? usuario.id),
+    nome:
+      usuario.US_nome ??
+      usuario.Us_nome ??
+      usuario.nome ??
+      "",
+    imagem:
+      usuario.Us_imagem ??
+      usuario.img ??
+      usuario.imagemPerfil ??
+      usuario.imagem ??
+      "",
+  };
+}
 
-   Para testar:
-   ID 2 = Mariana Costa
-   ID 3 = Lucas Ferreira
-   ID 4 = Rafael Monteiro
-   ID 5 = Ana Beatriz
-========================================================= */
+function formatarHorario(data) {
+  const instante = new Date(data);
+  if (Number.isNaN(instante.getTime())) return "";
+  return instante.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-const usuariosMock = [
-  {
-    id: 2,
-    nome: "Mariana Costa",
-    online: true,
-  },
-  {
-    id: 3,
-    nome: "Lucas Ferreira",
-    online: true,
-  },
-  {
-    id: 4,
-    nome: "Rafael Monteiro",
-    online: false,
-  },
-  {
-    id: 5,
-    nome: "Ana Beatriz",
-    online: true,
-  },
-];
+function formatarDataHoraSql(data) {
+  const dataLocal = new Date(data);
+  const pad = (valor) => String(valor).padStart(2, "0");
 
-/* =========================================================
-   CONVERSAS MOCK
-========================================================= */
+  return `${dataLocal.getFullYear()}-${pad(dataLocal.getMonth() + 1)}-${pad(
+    dataLocal.getDate()
+  )} ${pad(dataLocal.getHours())}:${pad(dataLocal.getMinutes())}:${pad(
+    dataLocal.getSeconds()
+  )}`;
+}
 
-const conversasIniciais = [
-  {
-    id: 1,
-    usuarioId: 2,
-    nome: "Mariana Costa",
-    mensagem: "Você terminou Duna?",
-    tempo: "09:32",
-    online: true,
-    grupo: false,
+function formatarTempo(data) {
+  const instante = new Date(data);
+  if (Number.isNaN(instante.getTime())) return "";
 
-    mensagens: [
-      {
-        id: 1,
-        autor: "Mariana Costa",
-        texto: "Oi! Você terminou Duna?",
-        horario: "09:30",
-        propria: false,
-      },
-      {
-        id: 2,
-        autor: "Você",
-        texto: "Ainda não! Estou quase terminando.",
-        horario: "09:31",
-        propria: true,
-      },
-      {
-        id: 3,
-        autor: "Mariana Costa",
-        texto: "Nossa, você está na melhor parte!",
-        horario: "09:32",
-        propria: false,
-      },
-    ],
-  },
+  const hoje = new Date();
+  const ontem = new Date();
+  ontem.setDate(hoje.getDate() - 1);
+  if (instante.toDateString() === hoje.toDateString()) {
+    return formatarHorario(instante);
+  }
+  if (instante.toDateString() === ontem.toDateString()) {
+    return "Ontem";
+  }
+  return instante.toLocaleDateString("pt-BR");
+}
 
-  {
-    id: 2,
-    usuarioId: null,
-    nome: "Clube da Distopia",
-    mensagem: "Nova discussão iniciada.",
-    tempo: "Ontem",
-    online: false,
-    grupo: true,
+function urlImagem(imagem) {
+  if (!imagem) return "";
+  if (/^(https?:|data:|blob:)/i.test(imagem)) return imagem;
+  const baseUrl = api.defaults.baseURL.replace(/\/$/, "");
+  return `${baseUrl}/${imagem.replace(/^\//, "")}`;
+}
 
-    mensagens: [
-      {
-        id: 1,
-        autor: "Mariana Costa",
-        texto: "Pessoal, alguém já leu 1984?",
-        horario: "18:20",
-        propria: false,
-      },
-      {
-        id: 2,
-        autor: "Lucas Ferreira",
-        texto: "Comecei ontem. Estou gostando bastante.",
-        horario: "18:35",
-        propria: false,
-      },
-      {
-        id: 3,
-        autor: "Você",
-        texto: "Também estou lendo! Podemos discutir depois.",
-        horario: "19:02",
-        propria: true,
-      },
-    ],
-  },
-
-  {
-    id: 3,
-    usuarioId: 3,
-    nome: "Lucas Ferreira",
-    mensagem: "Gostei muito da sua história!",
-    tempo: "Seg",
-    online: true,
-    grupo: false,
-
-    mensagens: [
-      {
-        id: 1,
-        autor: "Lucas Ferreira",
-        texto: "Ei! Li sua história nova.",
-        horario: "14:20",
-        propria: false,
-      },
-      {
-        id: 2,
-        autor: "Lucas Ferreira",
-        texto: "Gostei muito da sua história!",
-        horario: "14:21",
-        propria: false,
-      },
-      {
-        id: 3,
-        autor: "Você",
-        texto: "Sério? Muito obrigado!",
-        horario: "14:25",
-        propria: true,
-      },
-    ],
-  },
-];
+function Avatar({ nome, imagem, grupo = false, className }) {
+  return (
+    <div
+      className={`${className} ${grupo ? styles.avatarGrupo : ""}`}
+      aria-hidden="true"
+    >
+      {grupo ? (
+        <Users size={20} />
+      ) : imagem ? (
+        <img src={urlImagem(imagem)} alt="" />
+      ) : (
+        nome.charAt(0).toUpperCase()
+      )}
+    </div>
+  );
+}
 
 /* =========================================================
    COMPONENTE
 ========================================================= */
 
 function Chat() {
-  const [conversas, setConversas] = useState(conversasIniciais);
+  const [conversas, setConversas] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuarioAtualId, setUsuarioAtualId] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erroCarregamento, setErroCarregamento] = useState("");
 
   const [conversaSelecionada, setConversaSelecionada] =
     useState(null);
@@ -183,6 +130,113 @@ function Chat() {
 
   const [criandoConversa, setCriandoConversa] =
     useState(false);
+  const [enviandoMensagem, setEnviandoMensagem] =
+    useState(false);
+  const [erroEnvio, setErroEnvio] = useState("");
+
+  useEffect(() => {
+    let requisicaoAtiva = true;
+
+    async function carregarConversas() {
+      try {
+        const usuarioSalvo = JSON.parse(
+          localStorage.getItem("usuario") || "null"
+        );
+        const idAtual = Number(usuarioSalvo?.Us_ID ?? usuarioSalvo?.id);
+        if (!Number.isInteger(idAtual) || idAtual <= 0) {
+          throw new Error("Não foi possível identificar o usuário conectado.");
+        }
+
+        const [respostaChats, respostaUsuarios] = await Promise.all([
+          api.get("/chat"),
+          api.get("/usuarios"),
+        ]);
+        const chats = obterLista(respostaChats, "/chat");
+        const listaUsuarios = obterLista(respostaUsuarios, "/usuarios")
+          .map(normalizarUsuario)
+          .filter((usuario) => Number.isInteger(usuario.id));
+        const usuariosPorId = new Map(
+          listaUsuarios.map((usuario) => [usuario.id, usuario])
+        );
+        const chatsDoUsuario = chats
+          .filter((chat) => {
+            const remetente = Number(chat.Chat_remetente);
+            const destinatario = Number(chat.Chat_destinatario);
+            return remetente === idAtual || destinatario === idAtual;
+          })
+          .sort(
+            (a, b) =>
+              new Date(a.Chat_data_hora).getTime() -
+                new Date(b.Chat_data_hora).getTime() ||
+              Number(a.Chat_ID) - Number(b.Chat_ID)
+          );
+        const conversasPorUsuario = new Map();
+
+        chatsDoUsuario.forEach((chat) => {
+          const remetente = Number(chat.Chat_remetente);
+          const destinatario = Number(chat.Chat_destinatario);
+          const outroUsuarioId =
+            remetente === idAtual ? destinatario : remetente;
+          const outroUsuario = usuariosPorId.get(outroUsuarioId);
+          const nome = outroUsuario?.nome || `Usuário ${outroUsuarioId}`;
+          const texto = chat.Chat_mensagem ?? "";
+          const mensagemChat = {
+            id: chat.Chat_ID,
+            autor: remetente === idAtual ? "Você" : nome,
+            texto,
+            horario: formatarHorario(chat.Chat_data_hora),
+            propria: remetente === idAtual,
+          };
+          const idConversa = `usuario-${outroUsuarioId}`;
+          const conversa =
+            conversasPorUsuario.get(idConversa) || {
+              id: idConversa,
+              usuarioId: outroUsuarioId,
+              chatId: null,
+              remetenteId: null,
+              destinatarioId: null,
+              nome,
+              imagem: outroUsuario?.imagem || "",
+              mensagem: "",
+              tempo: "",
+              online: false,
+              grupo: false,
+              mensagens: [],
+            };
+
+          conversa.mensagens.push(mensagemChat);
+          conversa.chatId = Number(chat.Chat_ID);
+          conversa.remetenteId = remetente;
+          conversa.destinatarioId = destinatario;
+          conversa.mensagem = texto || "Nova conversa";
+          conversa.tempo = formatarTempo(chat.Chat_data_hora);
+          conversasPorUsuario.set(idConversa, conversa);
+        });
+
+        if (requisicaoAtiva) {
+          setUsuarioAtualId(idAtual);
+          setUsuarios(listaUsuarios);
+          setConversas(Array.from(conversasPorUsuario.values()));
+        }
+      } catch (error) {
+        console.error("Erro ao carregar conversas:", error);
+        if (requisicaoAtiva) {
+          setErroCarregamento(
+            error.response?.data?.mensagem ||
+              error.message ||
+              "Não foi possível carregar as conversas."
+          );
+        }
+      } finally {
+        if (requisicaoAtiva) setCarregando(false);
+      }
+    }
+
+    carregarConversas();
+    return () => {
+      requisicaoAtiva = false;
+    };
+  }, []);
 
   /* =======================================================
      CONVERSAS FILTRADAS
@@ -223,45 +277,83 @@ function Chat() {
      ENVIAR MENSAGEM
   ======================================================= */
 
-  const enviarMensagem = () => {
+  const enviarMensagem = async () => {
     const texto = mensagem.trim();
 
-    if (!texto || !conversaAtual) {
+    if (!texto || !conversaAtual || enviandoMensagem) {
       return;
     }
 
-    const horario = new Date().toLocaleTimeString("pt-BR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    setEnviandoMensagem(true);
+    setErroEnvio("");
 
-    const novaMensagem = {
-      id: Date.now(),
-      autor: "Você",
-      texto,
-      horario,
-      propria: true,
-    };
+    try {
+      const agora = new Date();
+      const dataHora = agora.toISOString();
+      const resposta = await api.post("/chat", {
+        chat_remetente: usuarioAtualId,
+        chat_destinatario: conversaAtual.usuarioId,
+        chat_data_hora: formatarDataHoraSql(agora),
+        chat_mensagem: texto,
+        chat_status: 1,
+      });
+      const dadosResposta = resposta.data?.dados ?? resposta.data;
+      const chatSalvo = Array.isArray(dadosResposta)
+        ? dadosResposta[0]
+        : dadosResposta;
+      const chatId = Number(chatSalvo?.Chat_ID);
+      if (!Number.isInteger(chatId) || chatId <= 0) {
+        throw new Error(
+          "A API não retornou o ID da mensagem criada."
+        );
+      }
+      const novaMensagem = {
+        id: chatId,
+        autor: "Você",
+        texto: chatSalvo?.chat_mensagem ?? chatSalvo?.Chat_mensagem ?? texto,
+        horario: formatarHorario(
+          chatSalvo?.chat_data_hora ?? chatSalvo?.Chat_data_hora ?? dataHora
+        ),
+        propria: true,
+      };
 
-    setConversas((lista) =>
-      lista.map((conversa) => {
-        if (conversa.id !== conversaAtual.id) {
-          return conversa;
-        }
-
-        return {
-          ...conversa,
-          mensagem: texto,
-          tempo: "Agora",
-          mensagens: [
-            ...conversa.mensagens,
-            novaMensagem,
-          ],
-        };
-      })
-    );
-
-    setMensagem("");
+      setConversas((lista) =>
+        lista.map((conversa) =>
+          conversa.id === conversaAtual.id
+            ? {
+                ...conversa,
+                chatId,
+                remetenteId:
+                  conversa.remetenteId ?? usuarioAtualId,
+                destinatarioId:
+                  conversa.destinatarioId ?? conversa.usuarioId,
+                mensagem: novaMensagem.texto,
+                tempo: formatarTempo(
+                  chatSalvo?.chat_data_hora ??
+                    chatSalvo?.Chat_data_hora ??
+                    dataHora
+                ),
+                mensagens: [...conversa.mensagens, novaMensagem],
+              }
+            : conversa
+        )
+      );
+      setMensagem("");
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+      const dadosErro = error.response?.data;
+      setErroEnvio(
+        dadosErro?.mensagem ||
+          dadosErro?.erro ||
+          dadosErro?.message ||
+          dadosErro?.dados ||
+          (typeof dadosErro === "string" ? dadosErro : "") ||
+        (dadosErro ? JSON.stringify(dadosErro) : "") ||
+        "Não foi possível enviar a mensagem. Verifique os dados do chat e tente novamente."
+      );
+    } finally {
+      setEnviandoMensagem(false);
+    }
   };
 
   /* =======================================================
@@ -296,30 +388,6 @@ function Chat() {
   };
 
   /* =======================================================
-     BUSCAR USUÁRIO PELO ID
-
-     MOCK ATUAL.
-
-     FUTURAMENTE:
-
-     const resposta = await fetch(
-       `http://localhost:3000/usuarios/${id}`
-     );
-
-     const dados = await resposta.json();
-
-     return dados.dados;
-  ======================================================= */
-
-  const buscarUsuarioPorId = async (id) => {
-    const usuario = usuariosMock.find(
-      (item) => item.id === Number(id)
-    );
-
-    return usuario || null;
-  };
-
-  /* =======================================================
      CRIAR CONVERSA
   ======================================================= */
 
@@ -342,7 +410,14 @@ function Chat() {
     setErroUsuario("");
 
     try {
-      const usuario = await buscarUsuarioPorId(idInformado);
+      const usuarioIdInformado = Number(idInformado);
+      if (usuarioIdInformado === usuarioAtualId) {
+        setErroUsuario("Informe o ID de outro usuário.");
+        return;
+      }
+      const usuario = usuarios.find(
+        (item) => item.id === usuarioIdInformado
+      );
 
       /* Usuário não existe */
 
@@ -371,27 +446,26 @@ function Chat() {
       /* Cria a nova conversa */
 
       const novaConversa = {
-        id: Date.now(),
+        id: `usuario-${usuario.id}`,
 
         usuarioId: usuario.id,
 
         nome: usuario.nome,
 
-        mensagem: "Nova conversa iniciada.",
+        imagem: usuario.imagem,
 
-        tempo: "Agora",
+        mensagem: "",
 
-        online: usuario.online,
+        tempo: "",
+
+        online: false,
 
         grupo: false,
 
         mensagens: [],
       };
 
-      setConversas((lista) => [
-        novaConversa,
-        ...lista,
-      ]);
+      setConversas((lista) => [novaConversa, ...lista]);
 
       setConversaSelecionada(novaConversa.id);
 
@@ -504,7 +578,16 @@ function Chat() {
 
           {/* LISTA DE CONVERSAS */}
 
-          {conversasFiltradas.length === 0 ? (
+          {carregando ? (
+            <div className={styles.semConversa}>
+              <p>Carregando conversas...</p>
+            </div>
+          ) : erroCarregamento ? (
+            <div className={styles.semConversa}>
+              <h3>Não foi possível carregar as conversas</h3>
+              <p>{erroCarregamento}</p>
+            </div>
+          ) : conversasFiltradas.length === 0 ? (
 
             <div className={styles.semConversa}>
 
@@ -557,24 +640,12 @@ function Chat() {
 
                     {/* AVATAR */}
 
-                    <div
-                      className={`
-                        ${styles.avatar}
-                        ${
-                          item.grupo
-                            ? styles.avatarGrupo
-                            : ""
-                        }
-                      `}
-                    >
-                      {item.grupo ? (
-                        <Users size={20} />
-                      ) : (
-                        item.nome
-                          .charAt(0)
-                          .toUpperCase()
-                      )}
-                    </div>
+                    <Avatar
+                      nome={item.nome}
+                      imagem={item.imagem}
+                      grupo={item.grupo}
+                      className={styles.avatar}
+                    />
 
                     {/* INFORMAÇÕES */}
 
@@ -728,24 +799,12 @@ function Chat() {
                   <ArrowLeft size={20} />
                 </button>
 
-                <div
-                  className={`
-                    ${styles.avatar}
-                    ${
-                      conversaAtual.grupo
-                        ? styles.avatarGrupo
-                        : ""
-                    }
-                  `}
-                >
-                  {conversaAtual.grupo ? (
-                    <Users size={20} />
-                  ) : (
-                    conversaAtual.nome
-                      .charAt(0)
-                      .toUpperCase()
-                  )}
-                </div>
+                <Avatar
+                  nome={conversaAtual.nome}
+                  imagem={conversaAtual.imagem}
+                  grupo={conversaAtual.grupo}
+                  className={styles.avatar}
+                />
 
                 <div className={styles.chatPessoa}>
 
@@ -820,14 +879,15 @@ function Chat() {
                       >
 
                         {!item.propria && (
-                          <div
-                            className={
-                              styles.miniAvatar
-                            }
-                          >
-                            {item.autor
-                              .charAt(0)
-                              .toUpperCase()}
+                          <div className={styles.miniAvatar}>
+                            {conversaAtual.imagem ? (
+                              <img
+                                src={urlImagem(conversaAtual.imagem)}
+                                alt=""
+                              />
+                            ) : (
+                              item.autor.charAt(0).toUpperCase()
+                            )}
                           </div>
                         )}
 
@@ -875,28 +935,34 @@ function Chat() {
 
               {/* ÁREA DE ENVIO */}
 
+              {erroEnvio && (
+                <p className={styles.erroEnvio}>{erroEnvio}</p>
+              )}
+
               <div className={styles.areaMensagem}>
 
                 <textarea
                   value={mensagem}
                   onChange={(evento) =>
-                    setMensagem(
-                      evento.target.value
-                    )
+                    {
+                      setMensagem(evento.target.value);
+                      setErroEnvio("");
+                    }
                   }
                   onKeyDown={pressionarEnter}
                   placeholder="Digite uma mensagem..."
                   rows={1}
+                  disabled={enviandoMensagem}
                 />
 
                 <button
                   type="button"
                   className={styles.botaoEnviar}
                   onClick={enviarMensagem}
-                  disabled={!mensagem.trim()}
+                  disabled={!mensagem.trim() || enviandoMensagem}
                   title="Enviar mensagem"
                 >
-                  <Send size={19} />
+                  {enviandoMensagem ? "..." : <Send size={19} />}
                 </button>
 
               </div>
