@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import CardLivro from "../../componentes/CardLivro";
-import { Bookmark, Search, X } from "lucide-react";
-import api from "../../services/api";
-
+import { Bookmark } from "lucide-react";
+import { buscarObrasDoUsuario } from "../../services/obrasUsuario";
 
 function Salvos() {
   const [obras, setObras] = useState([]);
@@ -31,41 +30,13 @@ function Salvos() {
           throw new Error("Usuario invalido");
         }
 
-        const respostaFavoritos = await api.get(
-          `/favoritos/usuario/${usuarioId}`
-        );
-        const favoritos = respostaFavoritos.data?.dados;
-
-        if (!Array.isArray(favoritos)) {
-          throw new Error("A resposta da API não contém uma lista de favoritos.");
-        }
-
-        const favoritosSalvos = favoritos.filter(
-          (favorito) =>
-            String(favorito.Fav_status ?? "").trim().toLowerCase() === "favorito"
-        );
-
-        const obrasDetalhadas = await Promise.all(
-          favoritosSalvos.map(async (favorito) => {
-            const obraId = Number(favorito.Ob_ID);
-
-            if (!Number.isInteger(obraId) || obraId <= 0) {
-              throw new Error("Um favorito não possui um ID de obra válido.");
-            }
-
-            const respostaObra = await api.get(`/obras/detalhada/${obraId}`);
-            const obra = respostaObra.data?.dados ?? respostaObra.data;
-
-            if (!obra?.Ob_ID) {
-              throw new Error(`Não foi possível carregar a obra ${obraId}.`);
-            }
-
-            return obra;
-          })
+        const obrasSalvas = await buscarObrasDoUsuario(
+          usuarioId,
+          "favorito"
         );
 
         if (requisicaoAtiva) {
-          setObras(obrasDetalhadas);
+          setObras(obrasSalvas);
         }
       } catch (error) {
         console.error("Erro ao carregar obras salvas:", error);
@@ -110,18 +81,12 @@ function Salvos() {
         <section className={styles.cardObras}>
           {obras.map((obra) => (
             <CardLivro
-              key={obra.Ob_ID}
-              id={obra.Ob_ID}
-              titulo={obra.Ob_titulo}
-              autor={obra.Autor}
-              tipo={obra.Ob_genero}
-              imagem={
-                obra.Ob_imagem && /^https?:\/\//i.test(obra.Ob_imagem)
-                  ? obra.Ob_imagem
-                  : obra.Ob_imagem
-                    ? `${api.defaults.baseURL.replace(/\/$/, "")}/public/obras/${encodeURIComponent(obra.Ob_imagem)}`
-                    : undefined
-              }
+              key={obra.Ob_ID ?? obra.id}
+              id={obra.Ob_ID ?? obra.id}
+              titulo={obra.titulo ?? obra.Ob_titulo}
+              autor={obra.autor ?? obra.Ob_autor ?? obra.Autor}
+              tipo={obra.genero ?? obra.Genero ?? obra.Ob_genero}
+              imagem={obra.imagem ?? obra.Ob_imagem ?? obra.Imagem}
               navigationState={obra}
             />
           ))}

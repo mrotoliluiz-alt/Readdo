@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
+import { obterAtividadesRecentes } from "../../utils/atividades";
 
 import {
   User,
@@ -39,6 +40,8 @@ function Perfil() {
   const [salvandoSeguir, setSalvandoSeguir] = useState(false);
   const [amigos, setAmigos] = useState([]);
   const [erroAmigos, setErroAmigos] = useState("");
+  const [atividades, setAtividades] = useState([]);
+  const [erroAtividades, setErroAtividades] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [formulario, setFormulario] = useState({ nome: "", bio: "", imagem: null });
@@ -47,7 +50,6 @@ function Perfil() {
   const seletorImagem = useRef(null);
   const perfilProprio = Number(us?.id) === usuarioLocalId;
 
-  const atividades = [];
   const conquistas = [];
   const dias = Array.from({ length: Math.min(sequencia, 7) }, (_, index) => {
     const data = new Date();
@@ -70,6 +72,115 @@ function Perfil() {
         },
       ]
     : [];
+
+  useEffect(() => {
+    const usuarioId = us?.id ?? us?.Us_ID;
+    if (!usuarioId) {
+      setAtividades([]);
+      return undefined;
+    }
+
+    let requisicaoAtiva = true;
+    let timeoutId;
+    const carregarAtividades = async () => {
+      try {
+        setErroAtividades("");
+        const resposta = await api.get(
+          `/usuario-missoes/usuario/${usuarioId}`
+        );
+        const registros = resposta.data?.dados ?? resposta.data;
+        if (!Array.isArray(registros)) {
+          throw new Error(
+            "A resposta de missões do usuário não contém uma lista."
+          );
+        }
+
+        const agora = Date.now();
+        const atividadesDoPerfil = registros
+          .filter((registro) => {
+            const status = String(registro.Um_Status ?? "")
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .toLowerCase();
+            const concluidaEm = new Date(
+              registro.Um_Dtconclusao
+            ).getTime();
+
+            return (
+              Number(registro.Us_ID) === Number(usuarioId) &&
+              status.startsWith("conclu") &&
+              Number.isFinite(concluidaEm) &&
+              concluidaEm <= agora &&
+              agora - concluidaEm < 24 * 60 * 60 * 1000
+            );
+          })
+          .map((registro) => {
+            const concluidaEm = new Date(
+              registro.Um_Dtconclusao
+            ).getTime();
+            const minutos = Math.floor((agora - concluidaEm) / 60000);
+            const tempo =
+              minutos < 1
+                ? "Agora"
+                : minutos < 60
+                  ? `Há ${minutos} min`
+                  : `Há ${Math.floor(minutos / 60)} h`;
+
+            return {
+              id: `api-${usuarioId}-${registro.Ms_ID}-${concluidaEm}`,
+              missaoId: String(registro.Ms_ID),
+              titulo: "Missão concluída",
+              subtitulo: registro.Ms_titulo ?? "Missão",
+              concluidaEm,
+              tempo,
+              expiraEm: concluidaEm + 24 * 60 * 60 * 1000,
+            };
+          });
+
+        const atividadesLocais =
+          Number(usuarioId) === Number(usuarioLocalId)
+            ? obterAtividadesRecentes(usuarioId)
+            : [];
+        const porMissao = new Map();
+        [...atividadesDoPerfil, ...atividadesLocais].forEach((atividade) => {
+          const chave = atividade.missaoId ?? atividade.id;
+          const existente = porMissao.get(chave);
+          if (!existente || atividade.concluidaEm > existente.concluidaEm) {
+            porMissao.set(chave, atividade);
+          }
+        });
+        const recentes = [...porMissao.values()].sort(
+          (a, b) => b.concluidaEm - a.concluidaEm
+        );
+        if (!requisicaoAtiva) return;
+        setAtividades(recentes);
+        if (recentes.length > 0) {
+          const proximaExpiracao = Math.min(
+            ...recentes.map((atividade) => atividade.expiraEm)
+          );
+          timeoutId = window.setTimeout(
+            carregarAtividades,
+            Math.max(0, proximaExpiracao - Date.now())
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao carregar atividades do perfil:", error);
+        if (requisicaoAtiva) {
+          setErroAtividades(
+            error.response?.data?.mensagem ||
+              error.message ||
+              "Não foi possível carregar as atividades."
+          );
+        }
+      }
+    };
+
+    carregarAtividades();
+    return () => {
+      requisicaoAtiva = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [us?.id, us?.Us_ID, usuarioLocalId]);
 
   function mostrarMensagem(texto) {
     setMensagem(texto);
@@ -247,6 +358,8 @@ function Perfil() {
         setSalvandoSeguir(false);
         setAmigos([]);
         setErroAmigos("");
+        setAtividades([]);
+        setErroAtividades("");
         setSequencia(0);
         setModalAberto(false);
         setPreviewImagem("");
@@ -575,13 +688,18 @@ function Perfil() {
                 </span>
               </div>
 
+              {erroAtividades && <p role="alert">{erroAtividades}</p>}
               {atividades.length === 0 && (
-                <p>Nenhuma atividade recente.</p>
+                <p>
+                  {erroAtividades
+                    ? "As atividades não estão disponíveis."
+                    : "Nenhuma missão concluída nas últimas 24 horas."}
+                </p>
               )}
               {atividades.map((item, index) => (
                 <div
                   className={styles.activity}
-                  key={index}
+                  key={item.id ?? index}
                 >
                   <div className={styles.activityTexto}>
                     <strong>{item.titulo}</strong>

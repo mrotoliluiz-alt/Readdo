@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -18,6 +18,9 @@ function LivroAberto() {
     const [salvandoFavorito, setSalvandoFavorito] = useState(false);
     const [favoritoSalvo, setFavoritoSalvo] = useState(false);
     const [erroFavorito, setErroFavorito] = useState("");
+    const [historicoSalvo, setHistoricoSalvo] = useState(false);
+    const [erroHistorico, setErroHistorico] = useState("");
+    const verificacaoHistorico = useRef("");
 
     useEffect(() => {
         const buscarLivro = async () => {
@@ -60,7 +63,7 @@ function LivroAberto() {
     }, [id, location.state]);
 
     useEffect(() => {
-        const verificarFavorito = async () => {
+        const verificarFavoritoERegistrarHistorico = async () => {
             if (!livro) return;
 
             let usuario;
@@ -83,25 +86,70 @@ function LivroAberto() {
                 return;
             }
 
+            const chaveVerificacao = `${usuarioId}:${obraId}`;
+            if (verificacaoHistorico.current === chaveVerificacao) return;
+            verificacaoHistorico.current = chaveVerificacao;
+            setHistoricoSalvo(false);
+            setErroHistorico("");
+
             try {
                 const resposta = await api.get(`/favoritos/usuario/${usuarioId}`);
                 const favoritos = resposta.data?.dados;
 
-                if (Array.isArray(favoritos)) {
-                    setFavoritoSalvo(
-                        favoritos.some(
-                            (favorito) =>
-                                Number(favorito.Ob_ID) === obraId &&
-                                String(favorito.Fav_status ?? "").trim().toLowerCase() === "favorito"
-                        )
+                if (!Array.isArray(favoritos)) {
+                    throw new Error(
+                        "A resposta da API não contém uma lista de favoritos."
                     );
                 }
+                if (verificacaoHistorico.current !== chaveVerificacao) return;
+
+                const registroExistente = favoritos.find(
+                    (favorito) => Number(favorito?.Ob_ID) === obraId
+                );
+                const statusExistente = String(
+                    registroExistente?.Fav_status ?? ""
+                ).trim().toLowerCase();
+
+                setFavoritoSalvo(statusExistente === "favorito");
+
+                if (statusExistente === "lendo") {
+                    setHistoricoSalvo(true);
+                    return;
+                }
+
+                if (registroExistente) return;
+
+                setErroHistorico("");
+                const respostaCadastro = await api.post("/favoritossalvos", {
+                    Ob_ID: obraId,
+                    Us_ID: usuarioId,
+                    Fav_status: "lendo",
+                });
+
+                if (verificacaoHistorico.current !== chaveVerificacao) return;
+
+                if (respostaCadastro.data?.sucesso === false) {
+                    throw new Error(
+                        respostaCadastro.data.mensagem ||
+                            "Não foi possível registrar a obra no histórico."
+                    );
+                }
+
+                setHistoricoSalvo(true);
             } catch (error) {
-                console.error("Erro ao verificar favorito:", error);
+                console.error(
+                    "Erro ao registrar a obra no histórico:",
+                    error
+                );
+                setErroHistorico(
+                    error.response?.data?.mensagem ||
+                        error.message ||
+                        "Não foi possível registrar a obra no histórico."
+                );
             }
         };
 
-        verificarFavorito();
+        verificarFavoritoERegistrarHistorico();
     }, [livro]);
 
     const salvarFavorito = async () => {
@@ -313,6 +361,16 @@ function LivroAberto() {
                     {erroFavorito && (
                         <p className={styles.erroFavorito} role="alert">
                             {erroFavorito}
+                        </p>
+                    )}
+                    {historicoSalvo && (
+                        <p className={styles.feedbackFavorito} role="status">
+                            Obra registrada no histórico.
+                        </p>
+                    )}
+                    {erroHistorico && (
+                        <p className={styles.erroFavorito} role="alert">
+                            {erroHistorico}
                         </p>
                     )}
                     

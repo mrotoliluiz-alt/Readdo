@@ -2120,6 +2120,111 @@
 }
 
 
+/* MISSÕES SEMANAIS */
+
+:global([data-theme="escuro"]) .cabecalhoSemanal,
+:global([data-theme="dark"]) .cabecalhoSemanal {
+  background: #161c33;
+  border-color: #2a3153;
+  box-shadow: none;
+}
+
+:global([data-theme="escuro"]) .cabecalhoSemanal h2,
+:global([data-theme="dark"]) .cabecalhoSemanal h2,
+:global([data-theme="escuro"]) .cardSemanalTopo h3,
+:global([data-theme="dark"]) .cardSemanalTopo h3 {
+  color: #f1f5f9;
+}
+
+:global([data-theme="escuro"]) .cabecalhoSemanal p,
+:global([data-theme="escuro"]) .cardSemanalTopo span,
+:global([data-theme="escuro"]) .cardSemanal > p,
+:global([data-theme="dark"]) .cabecalhoSemanal p,
+:global([data-theme="dark"]) .cardSemanalTopo span,
+:global([data-theme="dark"]) .cardSemanal > p {
+  color: #a8b1cc;
+}
+
+:global([data-theme="escuro"]) .cabecalhoSemanal > span,
+:global([data-theme="dark"]) .cabecalhoSemanal > span {
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .cardSemanal,
+:global([data-theme="dark"]) .cardSemanal {
+  background: #161c33;
+  border-color: #2a3153;
+  box-shadow: none;
+}
+
+:global([data-theme="escuro"]) .cardSemanalIcone,
+:global([data-theme="dark"]) .cardSemanalIcone {
+  background: #123c43;
+  color: #4dd4e0;
+}
+
+:global([data-theme="escuro"]) .cardSemanalConcluido,
+:global([data-theme="dark"]) .cardSemanalConcluido {
+  background: #14281f;
+  border-color: #28624a;
+}
+
+:global([data-theme="escuro"]) .cardSemanalRodape strong,
+:global([data-theme="dark"]) .cardSemanalRodape strong {
+  color: #fbbf24;
+}
+
+:global([data-theme="escuro"]) .semanalConcluida,
+:global([data-theme="dark"]) .semanalConcluida {
+  color: #4ade80;
+}
+
+:global([data-theme="escuro"]) .cardSemanalRodape button,
+:global([data-theme="dark"]) .cardSemanalRodape button {
+  background: #0fa6b3;
+  color: #ffffff;
+}
+
+:global([data-theme="escuro"]) .cardSemanalRodape button:hover,
+:global([data-theme="dark"]) .cardSemanalRodape button:hover {
+  background: #12bcc8;
+}
+
+
+/* MODO CLARO: COMPONENTES SEMANAIS */
+
+:global([data-theme="claro"]) .cabecalhoSemanal,
+:global([data-theme="light"]) .cabecalhoSemanal,
+:global([data-theme="claro"]) .cardSemanal,
+:global([data-theme="light"]) .cardSemanal {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: none;
+}
+
+:global([data-theme="claro"]) .cabecalhoSemanal h2,
+:global([data-theme="light"]) .cabecalhoSemanal h2,
+:global([data-theme="claro"]) .cardSemanalTopo h3,
+:global([data-theme="light"]) .cardSemanalTopo h3 {
+  color: #0f172a;
+}
+
+:global([data-theme="claro"]) .cabecalhoSemanal p,
+:global([data-theme="light"]) .cabecalhoSemanal p,
+:global([data-theme="claro"]) .cardSemanalTopo span,
+:global([data-theme="light"]) .cardSemanalTopo span,
+:global([data-theme="claro"]) .cardSemanal > p,
+:global([data-theme="light"]) .cardSemanal > p {
+  color: #64748b;
+}
+
+:global([data-theme="claro"]) .cardSemanalConcluido,
+:global([data-theme="light"]) .cardSemanalConcluido {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+
 /* =========================================================
    RESPONSIVIDADE
    ========================================================= */
@@ -2174,6 +2279,14 @@
     padding: 24px 18px 50px;
 
     gap: 22px;
+  }
+
+  .listaSemanais {
+    grid-template-columns: 1fr;
+  }
+
+  .cabecalhoSemanal {
+    flex-direction: column;
   }
 
   .titulo h1 {

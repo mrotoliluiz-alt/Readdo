@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { registrarAtividadeMissao } from "../../utils/atividades";
 
 import {
   Target,
@@ -1221,6 +1222,7 @@ function Missoes() {
               JSON.stringify(novas)
             );
 
+            registrarAtividadeMissao(usuarioId, missao, "diaria");
             atualizarProgressoUsuario(missao);
             return novas;
           });
@@ -1236,6 +1238,7 @@ function Missoes() {
   }, [
     chaveMissoesConcluidas,
     missoesComStatus,
+    usuarioId,
   ]);
 
   useEffect(() => {
@@ -1275,6 +1278,7 @@ function Missoes() {
               chaveMissoesSemanaisConcluidas,
               JSON.stringify(novas)
             );
+            registrarAtividadeMissao(usuarioId, missao, "semanal");
             atualizarProgressoUsuario(missao);
             return novas;
           });
@@ -1290,6 +1294,7 @@ function Missoes() {
   }, [
     chaveMissoesSemanaisConcluidas,
     missoesSemanais,
+    usuarioId,
   ]);
 
 
@@ -1318,6 +1323,7 @@ function Missoes() {
           );
 
         if (missao) {
+          registrarAtividadeMissao(usuarioId, missao, "diaria");
           atualizarProgressoUsuario(missao);
         }
       }
@@ -1858,6 +1864,11 @@ function Missoes() {
                                   localStorage.setItem(
                                     chaveMissoesSemanaisConcluidas,
                                     JSON.stringify(novas)
+                                  );
+                                  registrarAtividadeMissao(
+                                    usuarioId,
+                                    missao,
+                                    "semanal"
                                   );
                                   atualizarProgressoUsuario(missao);
                                   return novas;

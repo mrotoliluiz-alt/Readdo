@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { History, BookOpen } from "lucide-react";
 import styles from "./index.module.css";
 import CardLivro from "../../componentes/CardLivro";
-import api from "../../services/api";
+import { buscarObrasDoUsuario } from "../../services/obrasUsuario";
 
 function Historico() {
   const [obras, setObras] = useState([]);
@@ -31,35 +31,13 @@ function Historico() {
           throw new Error("Usuario invalido");
         }
 
-        const respostaFavoritos = await api.get(
-          `/favoritos/usuario/${usuarioId}`
-        );
-        const favoritos = respostaFavoritos.data?.dados;
-
-        if (!Array.isArray(favoritos)) {
-          throw new Error("A resposta da API não contém uma lista de favoritos.");
-        }
-
-        const favoritosLendo = favoritos.filter(
-          (favorito) =>
-            String(favorito.Fav_status ?? "").trim().toLowerCase() === "lendo"
-        );
-
-        const obrasDetalhadas = await Promise.all(
-          favoritosLendo.map(async (favorito) => {
-            const obraId = Number(favorito.Ob_ID);
-
-            if (!Number.isInteger(obraId) || obraId <= 0) {
-              throw new Error("Um favorito não possui um ID de obra válido.");
-            }
-
-            const respostaObra = await api.get(`/obras/detalhada/${obraId}`);
-            return respostaObra.data?.dados ?? respostaObra.data;
-          })
+        const obrasDoHistorico = await buscarObrasDoUsuario(
+          usuarioId,
+          "lendo"
         );
 
         if (requisicaoAtiva) {
-          setObras(obrasDetalhadas.filter((obra) => obra?.Ob_ID));
+          setObras(obrasDoHistorico);
         }
       } catch (error) {
         console.error("Erro ao carregar histórico de leituras:", error);
@@ -103,12 +81,12 @@ function Historico() {
         <section className={styles.cardObras}>
           {obras.map((obra) => (
             <CardLivro
-              key={obra.Ob_ID}
-              id={obra.Ob_ID}
-              titulo={obra.Ob_titulo}
-              autor={obra.Autor}
-              tipo={obra.Ob_genero}
-              imagem={obra.Ob_imagem}
+              key={obra.Ob_ID ?? obra.id}
+              id={obra.Ob_ID ?? obra.id}
+              titulo={obra.titulo ?? obra.Ob_titulo}
+              autor={obra.autor ?? obra.Ob_autor ?? obra.Autor}
+              tipo={obra.genero ?? obra.Genero ?? obra.Ob_genero}
+              imagem={obra.imagem ?? obra.Ob_imagem ?? obra.Imagem}
               favorito
               navigationState={obra}
             />

@@ -201,14 +201,41 @@ function Leitura() {
 
       obraLendoCadastrada.current = cadastroId;
 
-      api.post("/favoritossalvos", {
-        Ob_ID: obraId,
-        Us_ID: usuarioId,
-        Fav_status: "Lendo",
-      }).catch((erroApi) => {
-        obraLendoCadastrada.current = "";
-        console.error("Erro ao cadastrar obra como lendo:", erroApi);
-      });
+      api
+        .get(`/favoritos/usuario/${usuarioId}`)
+        .then((respostaFavoritos) => {
+          const favoritos = respostaFavoritos.data?.dados;
+
+          if (!Array.isArray(favoritos)) {
+            throw new Error(
+              "A resposta da API não contém uma lista de favoritos."
+            );
+          }
+
+          const registroExistente = favoritos.some(
+            (favorito) => Number(favorito?.Ob_ID) === obraId
+          );
+
+          if (registroExistente) return null;
+
+          return api.post("/favoritossalvos", {
+            Ob_ID: obraId,
+            Us_ID: usuarioId,
+            Fav_status: "lendo",
+          });
+        })
+        .then((respostaCadastro) => {
+          if (respostaCadastro?.data?.sucesso === false) {
+            throw new Error(
+              respostaCadastro.data.mensagem ||
+                "Não foi possível cadastrar a obra como lendo."
+            );
+          }
+        })
+        .catch((erroApi) => {
+          obraLendoCadastrada.current = "";
+          console.error("Erro ao cadastrar obra como lendo:", erroApi);
+        });
     } catch (erro) {
       console.error(
         "Erro ao registrar capítulo lido:",

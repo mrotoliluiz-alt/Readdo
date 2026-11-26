@@ -3378,3 +3378,234 @@
   background: #0d1324;
   color: #f8fafc;
 }
+
+:global([data-theme="escuro"]) .profileCard,
+:global([data-theme="escuro"]) .card,
+:global([data-theme="escuro"]) .sequencia,
+:global([data-theme="escuro"]) .statCard,
+:global([data-theme="escuro"]) .sideCard,
+:global([data-theme="escuro"]) .modal,
+:global([data-theme="dark"]) .profileCard,
+:global([data-theme="dark"]) .card,
+:global([data-theme="dark"]) .sequencia,
+:global([data-theme="dark"]) .statCard,
+:global([data-theme="dark"]) .sideCard,
+:global([data-theme="dark"]) .modal {
+  background: #151c32;
+  border-color: #293653;
+  box-shadow: none;
+}
+
+:global([data-theme="escuro"]) .profileCard:hover,
+:global([data-theme="escuro"]) .statCard:hover,
+:global([data-theme="dark"]) .profileCard:hover,
+:global([data-theme="dark"]) .statCard:hover {
+  border-color: #354568;
+  background: #182039;
+}
+
+:global([data-theme="escuro"]) .titulo h1,
+:global([data-theme="escuro"]) .nomeLinha h2,
+:global([data-theme="escuro"]) .card h3,
+:global([data-theme="escuro"]) .seqTitulo h2,
+:global([data-theme="escuro"]) .cardHeader h3,
+:global([data-theme="escuro"]) .statCard h3,
+:global([data-theme="escuro"]) .modalHeader h2,
+:global([data-theme="escuro"]) .circleCentro strong,
+:global([data-theme="dark"]) .titulo h1,
+:global([data-theme="dark"]) .nomeLinha h2,
+:global([data-theme="dark"]) .card h3,
+:global([data-theme="dark"]) .seqTitulo h2,
+:global([data-theme="dark"]) .cardHeader h3,
+:global([data-theme="dark"]) .statCard h3,
+:global([data-theme="dark"]) .modalHeader h2,
+:global([data-theme="dark"]) .circleCentro strong {
+  color: #f8fafc;
+}
+
+:global([data-theme="escuro"]) .profileInfo > p,
+:global([data-theme="escuro"]) .bio,
+:global([data-theme="escuro"]) .activityTexto strong,
+:global([data-theme="escuro"]) .item strong,
+:global([data-theme="escuro"]) .generos li strong,
+:global([data-theme="dark"]) .profileInfo > p,
+:global([data-theme="dark"]) .bio,
+:global([data-theme="dark"]) .activityTexto strong,
+:global([data-theme="dark"]) .item strong,
+:global([data-theme="dark"]) .generos li strong {
+  color: #dfe7f5;
+}
+
+:global([data-theme="escuro"]) .profileInfo > span,
+:global([data-theme="escuro"]) .infoLinha span,
+:global([data-theme="escuro"]) .activityTexto span,
+:global([data-theme="escuro"]) .activity small,
+:global([data-theme="escuro"]) .item span,
+:global([data-theme="escuro"]) .item small,
+:global([data-theme="escuro"]) .dia small,
+:global([data-theme="escuro"]) .statCard small,
+:global([data-theme="escuro"]) .statCard > span,
+:global([data-theme="escuro"]) .generos li,
+:global([data-theme="escuro"]) .circleCentro span,
+:global([data-theme="dark"]) .profileInfo > span,
+:global([data-theme="dark"]) .infoLinha span,
+:global([data-theme="dark"]) .activityTexto span,
+:global([data-theme="dark"]) .activity small,
+:global([data-theme="dark"]) .item span,
+:global([data-theme="dark"]) .item small,
+:global([data-theme="dark"]) .dia small,
+:global([data-theme="dark"]) .statCard small,
+:global([data-theme="dark"]) .statCard > span,
+:global([data-theme="dark"]) .generos li,
+:global([data-theme="dark"]) .circleCentro span {
+  color: #8996b1;
+}
+
+:global([data-theme="escuro"]) .avatar,
+:global([data-theme="escuro"]) .avatarEdicao,
+:global([data-theme="escuro"]) .avatarMini,
+:global([data-theme="dark"]) .avatar,
+:global([data-theme="dark"]) .avatarEdicao,
+:global([data-theme="dark"]) .avatarMini {
+  background: #10182d;
+  border-color: #34415f;
+  color: #e9efff;
+}
+
+:global([data-theme="escuro"]) .progress,
+:global([data-theme="escuro"]) .cardQuantidade,
+:global([data-theme="dark"]) .progress,
+:global([data-theme="dark"]) .cardQuantidade {
+  background: #29334e;
+  color: #9aa8c2;
+}
+
+:global([data-theme="escuro"]) .activity,
+:global([data-theme="escuro"]) .item,
+:global([data-theme="escuro"]) .modalHeader,
+:global([data-theme="dark"]) .activity,
+:global([data-theme="dark"]) .item,
+:global([data-theme="dark"]) .modalHeader {
+  border-bottom-color: #27324c;
+}
+
+:global([data-theme="escuro"]) .circle::after,
+:global([data-theme="dark"]) .circle::after {
+  background: #151c32;
+}
+
+:global([data-theme="escuro"]) .conquistaIcon,
+:global([data-theme="dark"]) .conquistaIcon {
+  background: rgba(97, 166, 250, 0.09);
+}
+
+:global([data-theme="escuro"]) .verTudo,
+:global([data-theme="dark"]) .verTudo {
+  background: #112f47;
+  color: #0fa6b3;
+}
+
+:global([data-theme="escuro"]) .verTudo:hover,
+:global([data-theme="dark"]) .verTudo:hover {
+  background: #173d59;
+  color: #36c2cc;
+}
+
+:global([data-theme="escuro"]) .toast,
+:global([data-theme="dark"]) .toast {
+  background: #17243a;
+  border-color: #0fa6b3;
+  color: #eafcff;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme="escuro"]) .modalOverlay,
+:global([data-theme="dark"]) .modalOverlay {
+  background: rgba(4, 8, 19, 0.76);
+}
+
+:global([data-theme="escuro"]) .modal,
+:global([data-theme="dark"]) .modal {
+  border-color: #30405f;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="escuro"]) .formulario label,
+:global([data-theme="dark"]) .formulario label {
+  color: #cbd4e5;
+}
+
+:global([data-theme="escuro"]) .formulario input,
+:global([data-theme="escuro"]) .formulario textarea,
+:global([data-theme="dark"]) .formulario input,
+:global([data-theme="dark"]) .formulario textarea {
+  background: #10182d;
+  border-color: #303d5b;
+  color: #f4f7fc;
+}
+
+:global([data-theme="escuro"]) .formulario input:focus,
+:global([data-theme="escuro"]) .formulario textarea:focus,
+:global([data-theme="dark"]) .formulario input:focus,
+:global([data-theme="dark"]) .formulario textarea:focus {
+  background: #121c32;
+  border-color: #0fa6b3;
+}
+
+:global([data-theme="escuro"]) .fecharModal,
+:global([data-theme="escuro"]) .cancelar,
+:global([data-theme="dark"]) .fecharModal,
+:global([data-theme="dark"]) .cancelar {
+  background: #202941;
+  border-color: #303d5b;
+  color: #a8b4ca;
+}
+
+:global([data-theme="escuro"]) .modal::-webkit-scrollbar-thumb,
+:global([data-theme="dark"]) .modal::-webkit-scrollbar-thumb {
+  background: #34415e;
+}
+
+:global([data-theme="claro"]) .modalOverlay,
+:global([data-theme="light"]) .modalOverlay {
+  background: rgba(15, 23, 42, 0.42);
+}
+
+:global([data-theme="claro"]) .avatarEdicao,
+:global([data-theme="light"]) .avatarEdicao {
+  background: #f0f9fb;
+  border-color: #b8dfe5;
+  color: #155873;
+}
+
+:global([data-theme="claro"]) .avatarMini,
+:global([data-theme="light"]) .avatarMini {
+  background: #edf5f8;
+  border-color: #d7e7ed;
+  color: #155873;
+}
+
+:global([data-theme="claro"]) .conquistaIcon,
+:global([data-theme="light"]) .conquistaIcon {
+  background: #edf4ff;
+}
+
+:global([data-theme="claro"]) .cardHeader button,
+:global([data-theme="light"]) .cardHeader button {
+  color: #087f8c;
+}
+
+:global([data-theme="claro"]) .cardHeader button:hover,
+:global([data-theme="light"]) .cardHeader button:hover {
+  color: #075e69;
+}
+
+:global([data-theme="claro"]) .modal::-webkit-scrollbar-thumb,
+:global([data-theme="light"]) .modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+:global([data-theme="claro"]) .modal::-webkit-scrollbar-thumb:hover,
+:global([data-theme="light"]) .modal::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

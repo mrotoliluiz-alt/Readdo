@@ -208,11 +208,11 @@ export default function Oficina() {
         alert("Obra cadastrada com sucesso!");
       }
 
-      setFormData({
+      /*setFormData({
         Ob_titulo: "",
         Ob_genero: "",
         Ob_sinopse: "",
-      });
+      });*/
 
       setSelectedFile(null);
       setObraSelecionada(null);
