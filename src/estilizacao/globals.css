@@ -127,14 +127,20 @@ th {
 
 @media screen and (max-width: 960px) {
   html {
-    font-size: 50%;
+    font-size: 62.5%;
   }
 }
 
 @media screen and (max-width: 600px) {
   html {
-    font-size: 37.2%;
+    font-size: 62.5%;
   }
+}
+
+svg.lucide:not(:where([data-preserve-icon-size] *)) {
+  min-width: 24px;
+  min-height: 24px;
+  flex-shrink: 0;
 }
 
 @font-face {

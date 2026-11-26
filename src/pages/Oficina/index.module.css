@@ -1810,9 +1810,14 @@ button:disabled {
     }
 
     .toolbar button {
-        min-width: 34px;
-        min-height: 34px;
+        min-width: 40px;
+        min-height: 40px;
         padding: 0 8px;
+    }
+
+    .toolbar button svg {
+        width: 18px;
+        height: 18px;
     }
 
     .capitulosContainer {

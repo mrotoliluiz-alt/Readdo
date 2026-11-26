@@ -295,6 +295,10 @@
   margin-bottom: 22px;
 }
 
+.marcadorFimCapitulo {
+  height: 2px;
+}
+
 .navegacaoCapitulos {
   display: flex;
   justify-content: space-between;
@@ -326,6 +330,307 @@
   border-color: #d9e4ec;
   color: #94a3b8;
   cursor: not-allowed;
+}
+
+.secaoComentarios {
+  width: min(560px, 100%);
+  max-height: min(760px, calc(100vh - 64px));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid #dbe5eb;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 24px 80px rgba(15, 28, 100, 0.24);
+}
+
+.fundoModalComentarios {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.abrirComentarios {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 28px;
+  background: #0f8e9b;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 100, 113, 0.32);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.abrirComentarios:hover {
+  background: #0b737e;
+  transform: translateY(-2px);
+}
+
+.contagemBotaoComentarios {
+  min-width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+}
+
+.acoesCabecalhoComentarios {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fecharComentarios {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dbe5eb;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.fecharComentarios:hover {
+  background: #f1f5f9;
+}
+
+.cabecalhoComentarios {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.cabecalhoComentarios > div:first-child > span {
+  display: block;
+  margin-bottom: 4px;
+  color: #0fa6b3;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.cabecalhoComentarios h2 {
+  margin: 0;
+  color: #0f1c64;
+  font-size: 22px;
+}
+
+.contagemComentarios {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.formularioComentario {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.formularioComentario label {
+  color: #0f1c64;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.formularioComentario textarea {
+  width: 100%;
+  min-height: 100px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #26344d;
+  font: inherit;
+  line-height: 1.5;
+}
+
+.formularioComentario textarea:focus {
+  outline: 2px solid rgba(15, 166, 179, 0.22);
+  border-color: #0fa6b3;
+}
+
+.acoesComentario {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.botaoEnviarComentario {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: #0f8e9b;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.botaoEnviarComentario:hover:not(:disabled) {
+  background: #0b737e;
+}
+
+.botaoEnviarComentario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.avisoLoginComentario {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid #dbe5eb;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.avisoLoginComentario p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.listaComentarios {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  margin-top: 12px;
+  overflow-y: auto;
+}
+
+.comentario {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 18px 2px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.comentario:last-child {
+  border-bottom: 0;
+}
+
+.avatarComentario {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e0f7fa;
+  color: #0f6471;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.conteudoComentario {
+  min-width: 0;
+  flex: 1;
+}
+
+.metaComentario {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.metaComentario strong {
+  color: #0f1c64;
+  font-size: 14px;
+}
+
+.metaComentario time {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.statusComentario {
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: #fff7db;
+  color: #8a5a00;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.conteudoComentario p {
+  margin: 8px 0 0;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.estadoComentarios {
+  margin: 16px 0;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.erroComentario,
+.sucessoComentario {
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.erroComentario {
+  color: #b42318;
+}
+
+.sucessoComentario {
+  color: #137547;
 }
 
 
@@ -810,6 +1115,19 @@
     font-size: 16px;
   }
 
+  .secaoComentarios {
+    padding: 20px 16px;
+  }
+
+  .fundoModalComentarios {
+    padding: 16px;
+  }
+
+  .abrirComentarios {
+    right: 16px;
+    bottom: 16px;
+  }
+
   .rodape {
     display: none;
   }
@@ -949,6 +1267,77 @@
 :global([data-theme="escuro"]) .botaoCapitulo:disabled {
   border-color: #26344d;
   color: #64748b;
+}
+
+:global([data-theme="escuro"]) .secaoComentarios {
+  border-color: #26344d;
+  background: #11182a;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="escuro"]) .fecharComentarios {
+  border-color: #26344d;
+  background: #11182a;
+  color: #cbd5e1;
+}
+
+:global([data-theme="escuro"]) .fecharComentarios:hover {
+  background: #202b42;
+}
+
+:global([data-theme="escuro"]) .cabecalhoComentarios h2,
+:global([data-theme="escuro"]) .formularioComentario label,
+:global([data-theme="escuro"]) .metaComentario strong {
+  color: #e7f4ff;
+}
+
+:global([data-theme="escuro"]) .contagemComentarios,
+:global([data-theme="escuro"]) .metaComentario time,
+:global([data-theme="escuro"]) .estadoComentarios {
+  color: #94a8bd;
+}
+
+:global([data-theme="escuro"]) .formularioComentario,
+:global([data-theme="escuro"]) .avisoLoginComentario {
+  border-color: #26344d;
+  background: #0b1020;
+}
+
+:global([data-theme="escuro"]) .formularioComentario textarea {
+  border-color: #26344d;
+  background: #11182a;
+  color: #e7f4ff;
+}
+
+:global([data-theme="escuro"]) .avisoLoginComentario p,
+:global([data-theme="escuro"]) .conteudoComentario p {
+  color: #cbd5e1;
+}
+
+:global([data-theme="escuro"]) .acoesComentario {
+  color: #94a8bd;
+}
+
+:global([data-theme="escuro"]) .comentario {
+  border-color: #26344d;
+}
+
+:global([data-theme="escuro"]) .avatarComentario {
+  background: #102b34;
+  color: #8ee8ef;
+}
+
+:global([data-theme="escuro"]) .statusComentario {
+  background: #3a2e16;
+  color: #f5cf77;
+}
+
+:global([data-theme="escuro"]) .erroComentario {
+  color: #fda29b;
+}
+
+:global([data-theme="escuro"]) .sucessoComentario {
+  color: #75d6a5;
 }
 
 :global([data-theme="escuro"]) .carregandoViewer,

@@ -343,12 +343,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
     padding: 1px;
     border: none;
     background: transparent;
     color: #cbd5e1;
     cursor: pointer;
     transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.nota button svg {
+    width: 18px;
+    height: 18px;
 }
 
 .nota button:hover {

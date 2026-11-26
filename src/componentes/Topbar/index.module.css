@@ -138,7 +138,7 @@
 @media (max-width: 700px) {
 
     .topBar {
-        padding: 0 20px;
+        padding: 0 12px;
     }
 
     .logo img {
@@ -152,7 +152,15 @@
     }
 
     .boxBotoes {
-        gap: 8px;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .boxBotoes button {
+        min-height: 44px;
+        padding: 8px;
+        font-size: 11px;
+        white-space: nowrap;
     }
 
 }

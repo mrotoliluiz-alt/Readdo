@@ -24,9 +24,12 @@ function Sidebar({ fechada, setFechada }) {
   const location = useLocation();
 
   return (
-    <aside className={`${styles.sidebar} ${
+    <aside
+      data-preserve-icon-size=""
+      className={`${styles.sidebar} ${
         fechada ? styles.sidebarFechada : ""
-    }`}>
+      }`}
+    >
 
     <button
     className={styles.toggle}
@@ -162,4 +165,3 @@ function Sidebar({ fechada, setFechada }) {
 }
 
 export default Sidebar;
-

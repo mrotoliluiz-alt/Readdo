@@ -65,10 +65,6 @@ const ABAS = [
     nome: "Semanais",
   },
   {
-    id: "conquistas",
-    nome: "Conquistas",
-  },
-  {
     id: "recompensas",
     nome: "Recompensas",
   },
@@ -154,6 +150,33 @@ async function buscarMissoes() {
       missao.Ms_tipo
     )
     .map(normalizarMissao);
+}
+
+function obterListaResposta(resposta, recurso) {
+  if (resposta.data?.sucesso === false) {
+    throw new Error(
+      resposta.data.mensagem || `Não foi possível carregar ${recurso}.`
+    );
+  }
+
+  const dados = resposta.data?.dados ?? resposta.data;
+  if (!Array.isArray(dados)) {
+    throw new Error(`A resposta de ${recurso} não contém uma lista.`);
+  }
+
+  return dados;
+}
+
+function normalizarTexto(texto) {
+  return String(texto || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function obraPublicada(obra) {
+  const status = normalizarTexto(obra?.Ob_status ?? obra?.status);
+  return Number(status) === 1 || status === "publicada" || status === "publicado";
 }
 
 
@@ -682,6 +705,7 @@ function Missoes() {
     );
   }, [
     chaveMissoesConcluidas,
+    chaveMissoesSemanaisConcluidas,
     usuarioId,
   ]);
 
@@ -1049,79 +1073,99 @@ function Missoes() {
           return false;
         }
 
-        const titulo =
-          String(missao.titulo).toLowerCase();
+        const titulo = normalizarTexto(missao.titulo);
+        const descricao = normalizarTexto(missao.descricao);
+
+        if (
+          titulo.includes("incansavel") ||
+          titulo.includes("ofensiva") ||
+          titulo.includes("semana de leitura")
+        ) {
+          const registro = JSON.parse(
+            localStorage.getItem(
+              `readduo-sequencia-${usuarioId}`
+            ) || "null"
+          );
+          const hoje = new Date();
+          const dataHoje = [
+            hoje.getFullYear(),
+            String(hoje.getMonth() + 1).padStart(2, "0"),
+            String(hoje.getDate()).padStart(2, "0"),
+          ].join("-");
+
+          return (
+            Number(registro?.sequencia) >= 7 &&
+            registro?.data === dataHoje
+          );
+        }
 
         if (
           missao.tipo === "leitura" ||
           titulo.includes("leitor") ||
-          titulo.includes("mestre") ||
           titulo.includes("primeira leitura") ||
           titulo.includes("leitura")
         ) {
           const chave =
-            `readduo-capitulos-lidos-${usuarioId}`;
-          const registros =
-            JSON.parse(
-              localStorage.getItem(chave) || "[]"
-            );
-          const capitulosLidos =
-            Array.isArray(registros)
-              ? new Set(registros).size
+            `readduo-capitulos-concluidos-${usuarioId}`;
+          const registros = JSON.parse(
+            localStorage.getItem(chave) || "[]"
+          );
+          const capitulosLidos = Array.isArray(registros)
+            ? new Set(registros.map(String)).size
+            : 0;
+          const quantidadeNaDescricao = Number(
+            descricao.match(/\d+/)?.[0]
+          );
+          const meta = Number.isInteger(quantidadeNaDescricao)
+            ? quantidadeNaDescricao
+            : titulo.includes("primeira leitura")
+              ? 1
               : 0;
 
-          if (titulo.includes("primeira leitura")) {
-            return capitulosLidos >= 1;
-          }
-          if (titulo.includes("iniciante")) {
-            return capitulosLidos >= 3;
-          }
-          if (titulo.includes("dedicado")) {
-            return capitulosLidos >= 5;
-          }
-          if (titulo.includes("mestre da leitura")) {
-            const meta =
-              String(missao.descricao).includes("22")
-                ? 22
-                : 20;
-            return capitulosLidos >= meta;
-          }
+          return meta > 0 && capitulosLidos >= meta;
         }
 
         if (titulo.includes("primeira obra")) {
-          const resposta =
-            await api.get(
-              `/obras/usuario/${usuarioId}`
-            );
-          const obras =
-            resposta.data?.dados;
-          return (
-            Array.isArray(obras) &&
-            obras.length >= 1
+          const resposta = await api.get(
+            `/obras/usuario/${usuarioId}`
           );
+          const obras = obterListaResposta(resposta, "obras do usuário");
+          return obras.some(obraPublicada);
         }
 
-        if (titulo.includes("primeiro capítulo")) {
-          const obrasResposta =
-            await api.get(
-              `/obras/usuario/${usuarioId}`
-            );
-          const obras =
-            obrasResposta.data?.dados;
-
-          if (!Array.isArray(obras)) {
-            return false;
-          }
+        if (titulo.includes("primeiro capitulo")) {
+          const obrasResposta = await api.get(
+            `/obras/usuario/${usuarioId}`
+          );
+          const obras = obterListaResposta(
+            obrasResposta,
+            "obras do usuário"
+          ).filter(obraPublicada);
 
           for (const obra of obras) {
-            const resposta =
-              await api.get(
-                `/capitulos/obra/${obra.Ob_ID}`
-              );
-            if (
-              Array.isArray(resposta.data?.dados) &&
-              resposta.data.dados.length >= 1
-            ) {
+            const resposta = await api.get(
+              `/capitulos/obra/${obra.Ob_ID}`
+            );
+            const capitulos = obterListaResposta(
+              resposta,
+              "capítulos da obra"
+            );
+            const possuiCapituloPublicado = capitulos.some(
+              (capitulo) => {
+                const conteudo = String(
+                  capitulo?.Cap_conteudo || ""
+                )
+                  .replace(/<[^>]*>/g, " ")
+                  .trim();
+
+                return (
+                  String(capitulo?.Cap_titulo || "").trim() &&
+                  conteudo.length > 0
+                );
+              }
+            );
+
+            if (possuiCapituloPublicado) {
               return true;
             }
           }
@@ -1130,46 +1174,38 @@ function Missoes() {
         }
 
         if (titulo.includes("comentarista")) {
-          const resposta =
-            await api.get(
-              `/comentarios/usuario/${usuarioId}`
-            );
-          const comentarios =
-            resposta.data?.dados;
-          return (
-            Array.isArray(comentarios) &&
-            comentarios.length >= 1
+          const resposta = await api.get(
+            `/comentarios/usuario/${usuarioId}`
+          );
+          const comentarios = obterListaResposta(
+            resposta,
+            "comentários do usuário"
+          );
+          return comentarios.some(
+            (comentario) =>
+              String(
+                comentario?.Com_obr_texto ??
+                  comentario?.com_obr_texto ??
+                  ""
+              ).trim().length > 0
           );
         }
 
         if (titulo.includes("conhecendo a comunidade")) {
-          const registros =
-            JSON.parse(
-              localStorage.getItem(
-                `readduo-usuarios-seguidos-${usuarioId}`
-              ) || "[]"
-            );
-          return (
-            Array.isArray(registros) &&
-            new Set(registros).size >= 5
+          const resposta = await api.get("/seguindo", {
+            params: { Us_ID: usuarioId },
+          });
+          const seguindo = obterListaResposta(
+            resposta,
+            "usuários seguidos"
           );
-        }
+          const usuariosSeguidos = new Set(
+            seguindo
+              .map((relacao) => Number(relacao?.Seguindo))
+              .filter((id) => Number.isInteger(id) && id > 0)
+          );
 
-        if (
-          titulo.includes("incansavel") ||
-          titulo.includes("incansável") ||
-          titulo.includes("ofensiva") ||
-          titulo.includes("semana de leitura")
-        ) {
-          const registro =
-            JSON.parse(
-              localStorage.getItem(
-                `readduo-sequencia-${usuarioId}`
-              ) || "null"
-            );
-          return (
-            Number(registro?.sequencia) >= 7
-          );
+          return usuariosSeguidos.size >= 5;
         }
 
         return false;
@@ -1178,7 +1214,7 @@ function Missoes() {
           "Erro ao verificar missão:",
           erro
         );
-        return false;
+        return null;
       }
     };
 
@@ -1192,23 +1228,36 @@ function Missoes() {
 
     const sincronizarMisssoes = async () => {
       for (const missao of missoesComStatus) {
-        if (
-          missao.status === "concluida" ||
-          cancelado
-        ) {
+        if (cancelado) {
           continue;
         }
 
-        const cumprida =
-          await verificarMissao(missao);
+        const idMissao = String(missao.id);
+        const jaConcluida = concluidasIds.includes(idMissao);
+        const cumprida = await verificarMissao(missao);
 
-        if (cumprida && !cancelado) {
+        if (cancelado || cumprida === null) {
+          continue;
+        }
+
+        if (!cumprida && jaConcluida) {
           setConcluidasIds((anteriores) => {
-            if (
-              anteriores.includes(
-                String(missao.id)
-              )
-            ) {
+            if (!anteriores.includes(idMissao)) {
+              return anteriores;
+            }
+
+            const novas = anteriores.filter(
+              (id) => id !== idMissao
+            );
+            localStorage.setItem(
+              chaveMissoesConcluidas,
+              JSON.stringify(novas)
+            );
+            return novas;
+          });
+        } else if (cumprida && !jaConcluida) {
+          setConcluidasIds((anteriores) => {
+            if (anteriores.includes(idMissao)) {
               return anteriores;
             }
 
@@ -1238,6 +1287,7 @@ function Missoes() {
   }, [
     chaveMissoesConcluidas,
     missoesComStatus,
+    concluidasIds,
     usuarioId,
   ]);
 
@@ -1250,23 +1300,37 @@ function Missoes() {
 
     const sincronizarSemanais = async () => {
       for (const missao of missoesSemanais) {
-        if (
-          missoesSemanaisConcluidas.includes(
-            String(missao.id)
-          ) ||
-          cancelado
-        ) {
+        if (cancelado) {
           continue;
         }
 
-        const cumprida =
-          await verificarMissao(missao);
+        const idMissao = String(missao.id);
+        const jaConcluida =
+          missoesSemanaisConcluidas.includes(idMissao);
+        const cumprida = await verificarMissao(missao);
 
-        if (cumprida && !cancelado) {
+        if (cancelado || cumprida === null) {
+          continue;
+        }
+
+        if (!cumprida && jaConcluida) {
           setMissoesSemanaisConcluidas((anteriores) => {
-            if (
-              anteriores.includes(String(missao.id))
-            ) {
+            if (!anteriores.includes(idMissao)) {
+              return anteriores;
+            }
+
+            const novas = anteriores.filter(
+              (id) => id !== idMissao
+            );
+            localStorage.setItem(
+              chaveMissoesSemanaisConcluidas,
+              JSON.stringify(novas)
+            );
+            return novas;
+          });
+        } else if (cumprida && !jaConcluida) {
+          setMissoesSemanaisConcluidas((anteriores) => {
+            if (anteriores.includes(idMissao)) {
               return anteriores;
             }
 
@@ -1294,6 +1358,7 @@ function Missoes() {
   }, [
     chaveMissoesSemanaisConcluidas,
     missoesSemanais,
+    missoesSemanaisConcluidas,
     usuarioId,
   ]);
 
@@ -1901,94 +1966,6 @@ function Missoes() {
         );
       }
 
-
-      /* ---------------------------------------------------
-         CONQUISTAS
-         --------------------------------------------------- */
-
-      if (abaAtiva === "conquistas") {
-        return (
-          <div
-            className={
-              styles.conquistas
-            }
-          >
-
-            <div
-              className={
-                styles.conquistaCard
-              }
-            >
-              <div
-                className={
-                  styles.conquistaIcone
-                }
-              >
-                <Award />
-              </div>
-
-              <div>
-                <h3>
-                  Primeiro passo
-                </h3>
-
-                <p>
-                  Complete sua primeira
-                  missão.
-                </p>
-
-                <strong>
-                  {quantidadeConcluidas >=
-                  1
-                    ? "Desbloqueada"
-                    : "Bloqueada"}
-                </strong>
-              </div>
-            </div>
-
-
-            <div
-              className={
-                styles.conquistaCard
-              }
-            >
-              <div
-                className={
-                  styles.conquistaIcone
-                }
-              >
-                <Trophy />
-              </div>
-
-              <div>
-                <h3>
-                  Mestre das missões
-                </h3>
-
-                <p>
-                  Complete todas as
-                  missões diárias.
-                </p>
-
-                <strong>
-                  {todasNormaisConcluidas
-                    ? "Desbloqueada"
-                    : `${quantidadeConcluidas}/${Math.max(
-                        quantidadeTotal - 1,
-                        0
-                      )}`}
-                </strong>
-              </div>
-            </div>
-
-          </div>
-        );
-      }
-
-
-      /* ---------------------------------------------------
-         RECOMPENSAS
-         --------------------------------------------------- */
 
       return (
         <div

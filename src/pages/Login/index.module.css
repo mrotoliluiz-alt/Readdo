@@ -449,8 +449,8 @@
 }
 .formCard input{
   
-  height: 50px ;
-  width: 23em;
+  width: 100%;
+  max-width: 23em;
   margin-top: 5px;
   margin-bottom: 8px;
   padding: 0 10px;
@@ -464,4 +464,3 @@
   font-size: 15px;
 }
 }
-

@@ -398,7 +398,7 @@
   margin-top: 6px;
 
 
-  font-size: 9px;
+  font-size: 12px;
 
 
   color: #8996b2;
@@ -471,9 +471,9 @@
 
 .infoLinha svg {
 
-  width: 14px;
+  width: 16px;
 
-  height: 14px;
+  height: 16px;
 
 
   color: #73819e;
@@ -508,7 +508,7 @@
 
 .botaoPerfil {
 
-  height: 34px;
+  height: 40px;
 
 
   display: flex;
@@ -537,7 +537,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   font-weight: 700;
 
@@ -569,9 +569,9 @@
 
 .botaoPerfil svg {
 
-  width: 15px;
+  width: 16px;
 
-  height: 15px;
+  height: 16px;
 
 }
 
