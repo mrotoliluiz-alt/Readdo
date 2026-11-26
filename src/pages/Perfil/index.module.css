@@ -1786,12 +1786,12 @@
 
 .avatarMini {
 
-  width: 31px;
+  width: 26px;
 
-  height: 31px;
+  height: 26px;
 
 
-  min-width: 31px;
+  min-width: 26px;
 
 
   display: flex;
@@ -1802,6 +1802,10 @@
 
 
   border-radius: 50%;
+
+  overflow: hidden;
+  flex-shrink: 0;
+  box-sizing: border-box;
 
 
   background: linear-gradient(
@@ -1821,6 +1825,32 @@
   font-size: 10px;
 
   font-weight: 700;
+
+}
+
+.avatarMini img {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  object-fit: cover;
+
+}
+
+.avatarMini[role="button"] {
+
+  cursor: pointer;
+
+}
+
+.avatarMini[role="button"]:focus-visible {
+
+  outline: 2px solid #0fa6b3;
+  outline-offset: 2px;
 
 }
 

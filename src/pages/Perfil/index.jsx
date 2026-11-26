@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 
 import {
@@ -18,23 +19,36 @@ import {
   ImagePlus,
 } from "lucide-react";
 
+function urlImagem(imagem) {
+  if (!imagem) return "";
+  if (/^(https?:|data:|blob:)/i.test(imagem)) return imagem;
+  const baseUrl = api.defaults.baseURL.replace(/\/$/, "");
+  return `${baseUrl}/${imagem.replace(/^\//, "")}`;
+}
 
 
 function Perfil() {
+  const navigate = useNavigate();
+  const { id: perfilId } = useParams();
   const [us, setUs] = useState(null);
+  const [usuarioLocalId, setUsuarioLocalId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
+  const [erroSeguir, setErroSeguir] = useState("");
   const [seguindo, setSeguindo] = useState(false);
+  const [salvandoSeguir, setSalvandoSeguir] = useState(false);
+  const [amigos, setAmigos] = useState([]);
+  const [erroAmigos, setErroAmigos] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [formulario, setFormulario] = useState({ nome: "", bio: "", imagem: null });
   const [previewImagem, setPreviewImagem] = useState("");
   const [sequencia, setSequencia] = useState(0);
   const seletorImagem = useRef(null);
+  const perfilProprio = Number(us?.id) === usuarioLocalId;
 
   const atividades = [];
   const conquistas = [];
-  const amigos = [];
   const dias = Array.from({ length: Math.min(sequencia, 7) }, (_, index) => {
     const data = new Date();
     data.setDate(data.getDate() - (Math.min(sequencia, 7) - index - 1));
@@ -75,6 +89,32 @@ function Perfil() {
   function fecharModal() {
     setModalAberto(false);
     setPreviewImagem("");
+  }
+
+  async function seguirUsuario() {
+    if (perfilProprio || seguindo || salvandoSeguir) return;
+
+    setSalvandoSeguir(true);
+    setErroSeguir("");
+    try {
+      await api.post("/seguindo", {
+        Us_ID: usuarioLocalId,
+        Seguindo: Number(us.id),
+      });
+      setSeguindo(true);
+      mostrarMensagem(`Agora você está seguindo ${us.nome}.`);
+    } catch (error) {
+      console.error("Erro ao seguir usuário:", error);
+      const detalheErro =
+        error.response?.data?.mensagem || error.response?.data?.dados;
+      setErroSeguir(
+        typeof detalheErro === "string"
+          ? detalheErro
+          : "Não foi possível seguir este usuário."
+      );
+    } finally {
+      setSalvandoSeguir(false);
+    }
   }
 
   async function selecionarImagem(event) {
@@ -195,133 +235,211 @@ function Perfil() {
   }
 
   useEffect(() => {
+    let requisicaoAtiva = true;
+
     async function carregarUsuario() {
-    try {
-      const usuarioSalvo = localStorage.getItem("usuario");
-      if (!usuarioSalvo) {
-        setErro("Não foi possível carregar os dados do usuário.");
-        return;
-      }
-
-      const usuarioAtual = JSON.parse(usuarioSalvo);
-      const usuarioId = Number(usuarioAtual?.Us_ID ?? usuarioAtual?.id);
-      if (!Number.isFinite(usuarioId)) {
-        throw new Error("O usuário salvo não possui um ID válido.");
-      }
-
-      const resposta = await api.get("/usuarios");
-      const usuarios = Array.isArray(resposta.data)
-        ? resposta.data
-        : resposta.data?.dados;
-      if (!Array.isArray(usuarios)) {
-        throw new Error("A resposta de /usuarios não contém uma lista de usuários.");
-      }
-
-      const usuarioEncontrado = usuarios.find(
-        (usuario) => Number(usuario.Us_ID ?? usuario.id) === usuarioId
-      );
-      if (!usuarioEncontrado) {
-        throw new Error("O usuário atual não foi encontrado em /usuarios.");
-      }
-
-      const usuarioPerfil = {
-        ...usuarioEncontrado,
-        id: usuarioEncontrado.Us_ID ?? usuarioEncontrado.id,
-        nome:
-          usuarioEncontrado.US_nome ??
-          usuarioEncontrado.Us_nome ??
-          usuarioEncontrado.nome ??
-          "",
-        nivel: usuarioEncontrado.Us_nivel ?? usuarioEncontrado.nivel,
-        xpTotal:
-          usuarioEncontrado.Us_XP_total ?? usuarioEncontrado.xpTotal,
-        biografia:
-          usuarioEncontrado.Us_biografia ?? usuarioEncontrado.biografia ?? "",
-        imagemPerfil:
-          usuarioEncontrado.Us_imagem ??
-          usuarioEncontrado.img ??
-          "",
-      };
-      setUs(usuarioPerfil);
-      localStorage.setItem("usuario", JSON.stringify(usuarioPerfil));
-
-      const agora = new Date();
-      const hoje = [
-        agora.getFullYear(),
-        String(agora.getMonth() + 1).padStart(2, "0"),
-        String(agora.getDate()).padStart(2, "0"),
-      ].join("-");
-      const ultimoAcesso = usuarioEncontrado.Us_dt_ultimo_acesso;
-      const dataUltimoAcesso = ultimoAcesso ? new Date(ultimoAcesso) : null;
-      const dataUltimoAcessoLocal =
-        dataUltimoAcesso && !Number.isNaN(dataUltimoAcesso.getTime())
-          ? [
-              dataUltimoAcesso.getFullYear(),
-              String(dataUltimoAcesso.getMonth() + 1).padStart(2, "0"),
-              String(dataUltimoAcesso.getDate()).padStart(2, "0"),
-            ].join("-")
-          : null;
-
-      const chaveSequencia = `readduo-sequencia-${usuarioId}`;
-      const sequenciaSalva = localStorage.getItem(chaveSequencia);
-      let registroAnterior = null;
       try {
-        registroAnterior = sequenciaSalva ? JSON.parse(sequenciaSalva) : null;
-      } catch {
-        registroAnterior = null;
-      }
-      const ontemData = new Date(agora);
-      ontemData.setDate(ontemData.getDate() - 1);
-      const ontem = [
-        ontemData.getFullYear(),
-        String(ontemData.getMonth() + 1).padStart(2, "0"),
-        String(ontemData.getDate()).padStart(2, "0"),
-      ].join("-");
+        setLoading(true);
+        setErro("");
+        setErroSeguir("");
+        setUs(null);
+        setSeguindo(false);
+        setSalvandoSeguir(false);
+        setAmigos([]);
+        setErroAmigos("");
+        setSequencia(0);
+        setModalAberto(false);
+        setPreviewImagem("");
 
-      let proximaSequencia;
-      if (registroAnterior?.data === hoje) {
-        proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 1);
-      } else if (
-        registroAnterior?.data === ontem &&
-        (dataUltimoAcessoLocal === ontem || dataUltimoAcessoLocal === hoje)
-      ) {
-        proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 0) + 1;
-      } else if (dataUltimoAcessoLocal === ontem) {
-        proximaSequencia = 2;
-      } else {
-        proximaSequencia = 1;
-      }
-
-      localStorage.setItem(
-        chaveSequencia,
-        JSON.stringify({ data: hoje, sequencia: proximaSequencia })
-      );
-      setSequencia(proximaSequencia);
-
-      if (dataUltimoAcessoLocal !== hoje) {
-        try {
-          const usuarioComAcesso = {
-            ...usuarioPerfil,
-            Us_dt_ultimo_acesso: hoje,
-          };
-          await api.put(
-            `/usuarios/${usuarioId}`,
-            montarDadosUsuario(usuarioComAcesso, hoje)
-          );
-        } catch (erroAcesso) {
-          console.error("Erro ao registrar o último acesso:", erroAcesso);
+        const usuarioSalvo = localStorage.getItem("usuario");
+        if (!usuarioSalvo) {
+          throw new Error("Não foi possível carregar os dados do usuário.");
         }
+
+        const usuarioAtual = JSON.parse(usuarioSalvo);
+        const usuarioLocalIdAtual = Number(
+          usuarioAtual?.Us_ID ?? usuarioAtual?.id
+        );
+        if (!Number.isInteger(usuarioLocalIdAtual) || usuarioLocalIdAtual <= 0) {
+          throw new Error("O usuário salvo não possui um ID válido.");
+        }
+
+        const usuarioId = perfilId === undefined
+          ? usuarioLocalIdAtual
+          : Number(perfilId);
+        if (!Number.isInteger(usuarioId) || usuarioId <= 0) {
+          throw new Error("O perfil solicitado não possui um ID válido.");
+        }
+
+        const resposta = await api.get("/usuarios");
+        const usuarios = Array.isArray(resposta.data)
+          ? resposta.data
+          : resposta.data?.dados;
+        if (!Array.isArray(usuarios)) {
+          throw new Error("A resposta de /usuarios não contém uma lista de usuários.");
+        }
+
+        const usuarioEncontrado = usuarios.find(
+          (usuario) => Number(usuario.Us_ID ?? usuario.id) === usuarioId
+        );
+        if (!usuarioEncontrado) {
+          throw new Error("O usuário solicitado não foi encontrado em /usuarios.");
+        }
+
+        const usuarioPerfil = {
+          ...usuarioEncontrado,
+          id: usuarioEncontrado.Us_ID ?? usuarioEncontrado.id,
+          nome:
+            usuarioEncontrado.US_nome ??
+            usuarioEncontrado.Us_nome ??
+            usuarioEncontrado.nome ??
+            "",
+          nivel: usuarioEncontrado.Us_nivel ?? usuarioEncontrado.nivel,
+          xpTotal:
+            usuarioEncontrado.Us_XP_total ?? usuarioEncontrado.xpTotal,
+          biografia:
+            usuarioEncontrado.Us_biografia ?? usuarioEncontrado.biografia ?? "",
+          imagemPerfil:
+            usuarioEncontrado.Us_imagem ??
+            usuarioEncontrado.img ??
+            "",
+        };
+        if (!requisicaoAtiva) return;
+        setUsuarioLocalId(usuarioLocalIdAtual);
+        setUs(usuarioPerfil);
+
+        try {
+          const respostaSeguindo = await api.get("/seguindo", {
+            params: { Us_ID: usuarioId },
+          });
+          const listaSeguindo =
+            respostaSeguindo.data?.dados ?? respostaSeguindo.data;
+          if (!Array.isArray(listaSeguindo)) {
+            throw new Error("A resposta de /seguindo não contém uma lista.");
+          }
+
+          const usuariosPorId = new Map(
+            usuarios.map((usuario) => [
+              Number(usuario.Us_ID ?? usuario.id),
+              usuario,
+            ])
+          );
+          const listaAmigos = listaSeguindo
+            .map((relacao) => {
+              const seguido = usuariosPorId.get(Number(relacao.Seguindo));
+              if (!seguido) return null;
+
+              return {
+                id: Number(seguido.Us_ID ?? seguido.id),
+                nome:
+                  seguido.US_nome ??
+                  seguido.Us_nome ??
+                  seguido.nome ??
+                  "Usuário",
+                imagem:
+                  seguido.Us_imagem ??
+                  seguido.img ??
+                  seguido.imagemPerfil ??
+                  seguido.imagem ??
+                  "",
+                nivel: seguido.Us_nivel ?? seguido.nivel,
+              };
+            })
+            .filter(Boolean);
+
+          if (requisicaoAtiva) setAmigos(listaAmigos);
+        } catch (errorSeguindo) {
+          console.error("Erro ao carregar usuários seguidos:", errorSeguindo);
+          if (requisicaoAtiva) {
+            setErroAmigos("Não foi possível carregar a lista de amigos.");
+          }
+        }
+
+        if (usuarioId !== usuarioLocalIdAtual) return;
+        localStorage.setItem("usuario", JSON.stringify(usuarioPerfil));
+
+        const agora = new Date();
+        const hoje = [
+          agora.getFullYear(),
+          String(agora.getMonth() + 1).padStart(2, "0"),
+          String(agora.getDate()).padStart(2, "0"),
+        ].join("-");
+        const ultimoAcesso = usuarioEncontrado.Us_dt_ultimo_acesso;
+        const dataUltimoAcesso = ultimoAcesso ? new Date(ultimoAcesso) : null;
+        const dataUltimoAcessoLocal =
+          dataUltimoAcesso && !Number.isNaN(dataUltimoAcesso.getTime())
+            ? [
+                dataUltimoAcesso.getFullYear(),
+                String(dataUltimoAcesso.getMonth() + 1).padStart(2, "0"),
+                String(dataUltimoAcesso.getDate()).padStart(2, "0"),
+              ].join("-")
+            : null;
+
+        const chaveSequencia = `readduo-sequencia-${usuarioLocalIdAtual}`;
+        const sequenciaSalva = localStorage.getItem(chaveSequencia);
+        let registroAnterior = null;
+        try {
+          registroAnterior = sequenciaSalva ? JSON.parse(sequenciaSalva) : null;
+        } catch {
+          registroAnterior = null;
+        }
+        const ontemData = new Date(agora);
+        ontemData.setDate(ontemData.getDate() - 1);
+        const ontem = [
+          ontemData.getFullYear(),
+          String(ontemData.getMonth() + 1).padStart(2, "0"),
+          String(ontemData.getDate()).padStart(2, "0"),
+        ].join("-");
+
+        let proximaSequencia;
+        if (registroAnterior?.data === hoje) {
+          proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 1);
+        } else if (
+          registroAnterior?.data === ontem &&
+          (dataUltimoAcessoLocal === ontem || dataUltimoAcessoLocal === hoje)
+        ) {
+          proximaSequencia = Math.max(1, Number(registroAnterior.sequencia) || 0) + 1;
+        } else if (dataUltimoAcessoLocal === ontem) {
+          proximaSequencia = 2;
+        } else {
+          proximaSequencia = 1;
+        }
+
+        localStorage.setItem(
+          chaveSequencia,
+          JSON.stringify({ data: hoje, sequencia: proximaSequencia })
+        );
+        setSequencia(proximaSequencia);
+
+        if (dataUltimoAcessoLocal !== hoje) {
+          try {
+            const usuarioComAcesso = {
+              ...usuarioPerfil,
+              Us_dt_ultimo_acesso: hoje,
+            };
+            await api.put(
+              `/usuarios/${usuarioLocalIdAtual}`,
+              montarDadosUsuario(usuarioComAcesso, hoje)
+            );
+          } catch (erroAcesso) {
+            console.error("Erro ao registrar o último acesso:", erroAcesso);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
+        if (requisicaoAtiva) {
+          setErro(error.message || "Erro ao carregar dados do usuário.");
+        }
+      } finally {
+        if (requisicaoAtiva) setLoading(false);
       }
-    } catch (error) {
-      console.error("Erro ao carregar dados do usuário:", error);
-      setErro("Erro ao carregar dados do usuário.");
-    } finally {
-      setLoading(false);
-    }
     }
 
     carregarUsuario();
-  }, []);
+    return () => {
+      requisicaoAtiva = false;
+    };
+  }, [perfilId]);
 
 
   if (loading) return <p>Carregando usuario...</p>
@@ -333,7 +451,7 @@ function Perfil() {
       <div className={styles.header}>
         <div className={styles.titulo}>
           <User />
-          <h1>Meu Perfil</h1>
+          <h1>{perfilProprio ? "Meu Perfil" : `Perfil de ${us.nome}`}</h1>
         </div>
       </div>
 
@@ -344,29 +462,31 @@ function Perfil() {
           <section className={styles.profileCard}>
             <div
               className={styles.avatar}
-              role="button"
-              tabIndex={0}
-              aria-label="Editar imagem do perfil"
-              onClick={() => seletorImagem.current?.click()}
-              onKeyDown={(event) => {
+              role={perfilProprio ? "button" : undefined}
+              tabIndex={perfilProprio ? 0 : undefined}
+              aria-label={perfilProprio ? "Editar imagem do perfil" : undefined}
+              onClick={perfilProprio ? () => seletorImagem.current?.click() : undefined}
+              onKeyDown={perfilProprio ? (event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   seletorImagem.current?.click();
                 }
-              }}
+              } : undefined}
             >
               <img
-                src={previewImagem || us.imagemPerfil || us.Us_imagem || us.imagem || us.img}
+                src={previewImagem || urlImagem(us.imagemPerfil || us.Us_imagem || us.imagem || us.img)}
                 alt="Avatar"
               />
             </div>
 
-            <input
-              ref={seletorImagem}
-              type="file"
-              accept="image/*"
-              onChange={selecionarImagem}
-              hidden
-            />
+            {perfilProprio && (
+              <input
+                ref={seletorImagem}
+                type="file"
+                accept="image/*"
+                onChange={selecionarImagem}
+                hidden
+              />
+            )}
 
             <div className={styles.profileInfo}>
               <div className={styles.nomeLinha}>
@@ -396,35 +516,39 @@ function Perfil() {
             </div>
 
             <div className={styles.profileButtons}>
-              <button
-                className={`${styles.botaoPerfil} ${
-                  seguindo ? styles.seguindo : ""
-                }`}
-                onClick={() => setSeguindo((anterior) => !anterior)}
-              >
-                {seguindo ? (
-                  <>
-                    <Check size={15} />
-                    Seguindo
-                  </>
-                ) : (
-                  <>
-                    <Users size={15} />
-                    Seguir
-                  </>
-                )}
-              </button>
-
-              <button
-                className={styles.botaoPerfil}
-                onClick={abrirEdicao}
-              >
-                <Pencil size={15} />
-                Editar Perfil
-              </button>
-
+              {!perfilProprio && (
+                <button
+                  className={`${styles.botaoPerfil} ${
+                    seguindo ? styles.seguindo : ""
+                  }`}
+                  onClick={seguirUsuario}
+                  disabled={seguindo || salvandoSeguir}
+                >
+                  {seguindo ? (
+                    <>
+                      <Check size={15} />
+                      Seguindo
+                    </>
+                  ) : (
+                    <>
+                      <Users size={15} />
+                      {salvandoSeguir ? "Seguindo..." : "Seguir"}
+                    </>
+                  )}
+                </button>
+              )}
+              {perfilProprio && (
+                <button
+                  className={styles.botaoPerfil}
+                  onClick={abrirEdicao}
+                >
+                  <Pencil size={15} />
+                  Editar Perfil
+                </button>
+              )}
             </div>
 
+            {erroSeguir && <p role="alert">{erroSeguir}</p>}
 
             <button
               className={styles.contadorSeguidores}
@@ -579,30 +703,42 @@ function Perfil() {
               <button type="button" aria-label="Amigos" />
             </div>
 
-            {amigos.length === 0 && <p>Nenhum amigo para exibir.</p>}
+            {erroAmigos && <p role="alert">{erroAmigos}</p>}
+            {!erroAmigos && amigos.length === 0 && (
+              <p>Nenhum amigo para exibir.</p>
+            )}
             {amigos.map((item, index) => (
               <div
                 className={styles.item}
-                key={index}
+                key={item.id ?? index}
               >
-                <div className={styles.avatarMini}>
-                  {item.nome.charAt(0)}
+                <div
+                  className={styles.avatarMini}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Abrir perfil de ${item.nome}`}
+                  onClick={() => navigate(`/Perfil/${item.id}`)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      navigate(`/Perfil/${item.id}`);
+                    }
+                  }}
+                >
+                  {item.imagem ? (
+                    <img src={urlImagem(item.imagem)} alt="" />
+                  ) : (
+                    item.nome.charAt(0).toUpperCase()
+                  )}
                 </div>
 
                 <div>
                   <strong>{item.nome}</strong>
-                  <span>{item.nivel}</span>
+                  <span>
+                    {item.nivel == null ? "Seguindo" : `Nível ${item.nivel}`}
+                  </span>
                 </div>
 
-                <small
-                  className={
-                    item.status === "Online"
-                      ? styles.statusOnline
-                      : styles.statusOffline
-                  }
-                >
-                  {item.status}
-                </small>
               </div>
             ))}
           </div>
@@ -618,7 +754,7 @@ function Perfil() {
           </div>
         )}
 
-        {modalAberto && (
+        {perfilProprio && modalAberto && (
         <div
           className={styles.modalOverlay}
           onClick={fecharModal}
@@ -655,7 +791,7 @@ function Perfil() {
                   onClick={() => seletorImagem.current?.click()}
                 >
                   <img
-                    src={previewImagem || us.imagemPerfil || us.Us_imagem || us.imagem || us.img}
+                    src={previewImagem || urlImagem(us.imagemPerfil || us.Us_imagem || us.imagem || us.img)}
                     alt="Prévia da imagem do perfil"
                   />
                   <span>

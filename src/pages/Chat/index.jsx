@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 import {
@@ -86,11 +87,22 @@ function urlImagem(imagem) {
   return `${baseUrl}/${imagem.replace(/^\//, "")}`;
 }
 
-function Avatar({ nome, imagem, grupo = false, className }) {
+function Avatar({ nome, imagem, grupo = false, className, onClick }) {
   return (
     <div
       className={`${className} ${grupo ? styles.avatarGrupo : ""}`}
-      aria-hidden="true"
+      aria-hidden={onClick ? undefined : "true"}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `Abrir perfil de ${nome}` : undefined}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (onClick && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          onClick(event);
+        }
+      }}
     >
       {grupo ? (
         <Users size={20} />
@@ -108,6 +120,7 @@ function Avatar({ nome, imagem, grupo = false, className }) {
 ========================================================= */
 
 function Chat() {
+  const navigate = useNavigate();
   const [conversas, setConversas] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioAtualId, setUsuarioAtualId] = useState(null);
@@ -133,6 +146,12 @@ function Chat() {
   const [enviandoMensagem, setEnviandoMensagem] =
     useState(false);
   const [erroEnvio, setErroEnvio] = useState("");
+
+  const abrirPerfil = (id) => {
+    if (Number.isInteger(id) && id > 0) {
+      navigate(`/Perfil/${id}`);
+    }
+  };
 
   useEffect(() => {
     let requisicaoAtiva = true;
@@ -645,6 +664,14 @@ function Chat() {
                       imagem={item.imagem}
                       grupo={item.grupo}
                       className={styles.avatar}
+                      onClick={
+                        !item.grupo
+                          ? (evento) => {
+                              evento.stopPropagation();
+                              abrirPerfil(item.usuarioId);
+                            }
+                          : undefined
+                      }
                     />
 
                     {/* INFORMAÇÕES */}
@@ -804,6 +831,11 @@ function Chat() {
                   imagem={conversaAtual.imagem}
                   grupo={conversaAtual.grupo}
                   className={styles.avatar}
+                  onClick={
+                    !conversaAtual.grupo
+                      ? () => abrirPerfil(conversaAtual.usuarioId)
+                      : undefined
+                  }
                 />
 
                 <div className={styles.chatPessoa}>
@@ -879,7 +911,19 @@ function Chat() {
                       >
 
                         {!item.propria && (
-                          <div className={styles.miniAvatar}>
+                          <div
+                            className={styles.miniAvatar}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Abrir perfil de ${conversaAtual.nome}`}
+                            onClick={() => abrirPerfil(conversaAtual.usuarioId)}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                abrirPerfil(conversaAtual.usuarioId);
+                              }
+                            }}
+                          >
                             {conversaAtual.imagem ? (
                               <img
                                 src={urlImagem(conversaAtual.imagem)}

@@ -359,6 +359,16 @@
   user-select: none;
 }
 
+.avatar[role="button"] {
+  cursor: pointer;
+}
+
+.avatar[role="button"]:focus-visible,
+.miniAvatar[role="button"]:focus-visible {
+  outline: 3px solid rgba(15, 166, 179, 0.45);
+  outline-offset: 3px;
+}
+
 .avatarGrupo {
   background: linear-gradient(
     135deg,
@@ -969,6 +979,10 @@
 
   font-size: 9px;
   font-weight: 800;
+}
+
+.miniAvatar[role="button"] {
+  cursor: pointer;
 }
 
 .miniAvatar img {

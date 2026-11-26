@@ -34,6 +34,7 @@ function App() {
         <Route path="/Historico" element={<Historico />} />
         <Route path="/Oficina" element={<Oficina />} />
         <Route path="/Perfil" element={<Perfil />} />
+        <Route path="/Perfil/:id" element={<Perfil />} />
         <Route path="/Pesquisa" element={<Pesquisa />} />
         <Route path="/Missoes" element={<Missoes/>}/>
         </Route>
