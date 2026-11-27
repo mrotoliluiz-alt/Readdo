@@ -142,9 +142,7 @@ function Landing() {
                 <div className={styles.direita}>
 
                    
-                         <img src={Mascotão} 
-                         height={600}
-                         width={600} />
+                         <img src={Mascotão} alt="Mascote do Readduo" />
                 </div>
 
             </div>

@@ -225,8 +225,10 @@
 
 
 .direita img {
-    width: 100%;
-    height: 100%;
+    width: 600px;
+    max-width: none;
+    flex: 0 0 600px;
+    height: auto;
     object-fit: contain;
 }
 
@@ -454,6 +456,10 @@
 
     .landing {
         padding: 0 20px;
+    }
+
+    .direita {
+        display: none;
     }
 
     .conteudoPrincipal,

@@ -464,7 +464,6 @@ export default function Oficina() {
               <div className={styles.infoObra}>
                 <div
                   className={styles.capaObra}
-                  title="Clique para adicionar ou trocar a imagem"
                 >
                   {obraAberta?.Ob_imagem ? (
                     <img

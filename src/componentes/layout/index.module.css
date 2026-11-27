@@ -31,3 +31,9 @@
 :global([data-theme="escuro"]) .conteudo {
     background: #0f1425;
 }
+
+@media (max-width: 700px) {
+    .conteudo {
+        margin-left: 80px;
+    }
+}

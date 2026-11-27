@@ -6,16 +6,12 @@ import api from "../../services/api";
 
 import {
   House,
-  Road,
   ChevronLeft,
   ChevronRight,
-  HatGlasses,
 } from "lucide-react";
 
 
 function Home() {
-  const scrollRef1 = useRef(null);
-  const scrollRef2 = useRef(null);
   const scrollRefObras = useRef(null);
 
   const [obras, setObras] = useState([]);
@@ -106,7 +102,7 @@ function Home() {
         onClick={() => rolar(scrollRefObras, 1)}
         aria-label="Ver próximos livros"
         disabled={loading || obras.length === 0}>
-          {'>'}
+          <ChevronRight size={22} aria-hidden="true" />
         </button>
 
         {loading ? (
@@ -134,7 +130,7 @@ function Home() {
         onClick={() => rolar(scrollRefObras, -1)}
         aria-label="Ver livros anteriores"
         disabled={loading || obras.length === 0}>
-          {'<'}
+          <ChevronLeft size={22} aria-hidden="true" />
         </button>
       
       </ div>

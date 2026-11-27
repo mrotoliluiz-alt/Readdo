@@ -266,3 +266,85 @@
 [data-theme="escuro"] .salvar:hover {
   background: #123B48;
 }
+
+@media (max-width: 900px) {
+  .container {
+    padding: 28px 22px;
+  }
+
+  .livro {
+    gap: 30px;
+    padding: 30px;
+  }
+
+  .capa,
+  .capaLivro {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .capaLivro {
+    height: auto;
+    aspect-ratio: 7 / 10;
+  }
+
+  .informacoes h1 {
+    font-size: 32px;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 20px 14px;
+  }
+
+  .voltar {
+    margin-bottom: 18px;
+  }
+
+  .livro {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+
+  .capa,
+  .capaLivro {
+    width: min(220px, 72vw);
+    min-width: 0;
+    margin: 0 auto;
+  }
+
+  .capaLivro {
+    height: auto;
+    aspect-ratio: 7 / 10;
+  }
+
+  .informacoes h1 {
+    margin-top: 12px;
+    font-size: 28px;
+  }
+
+  .informacoes h2 {
+    margin-bottom: 16px;
+    font-size: 17px;
+  }
+
+  .descricao {
+    font-size: 15px;
+  }
+
+  .botoes {
+    flex-wrap: wrap;
+    margin-top: 22px;
+  }
+
+  .ler,
+  .salvar {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
+}

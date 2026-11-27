@@ -8,7 +8,7 @@
   /*align-items: center;*/
   /* justify-content: center; */
   /* place-items: center; */
-  min-width: 32rem;
+  min-width: 0;
   min-height: 100vh;
   /* border: 1px solid red; */
   /* box-sizing: border-box; */
@@ -30,6 +30,11 @@ html {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 html, body, #root {
@@ -138,8 +143,6 @@ th {
 }
 
 svg.lucide:not(:where([data-preserve-icon-size] *)) {
-  min-width: 24px;
-  min-height: 24px;
   flex-shrink: 0;
 }
 

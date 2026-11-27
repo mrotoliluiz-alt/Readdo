@@ -1,6 +1,6 @@
 import styles from "./index.module.css";
 
-import { Bookmark, BookOpen, Star } from "lucide-react";
+import {BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
@@ -11,7 +11,6 @@ function CardLivro({
   imagem,
   id,
   link,
-  favorito = false,
   onClick,
   navigationState
 }) {
@@ -78,13 +77,6 @@ function CardLivro({
             <span>{autor}</span>
           </div>
         )}
-
-        <button className={styles.salvar}>
-          <Bookmark
-            size={18}
-            fill={favorito ? "white" : "none"}
-          />
-        </button>
       </div>
 
       <div className={styles.info}>

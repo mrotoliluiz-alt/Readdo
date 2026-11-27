@@ -164,3 +164,33 @@
     }
 
 }
+
+@media (max-width: 380px) {
+    .topBarLanding {
+        height: auto;
+        min-height: 112px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+    }
+
+    .topBarLanding .logo img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .topBarLanding .logoRead,
+    .topBarLanding .logoDo {
+        font-size: 22px;
+    }
+
+    .topBarLanding .conteudo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .topBarLanding .boxBotoes {
+        justify-content: center;
+    }
+}
