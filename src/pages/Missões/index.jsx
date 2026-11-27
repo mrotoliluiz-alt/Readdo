@@ -2361,18 +2361,6 @@ function Missoes() {
               </>
             ) : (
               <>
-                <div
-                  className={
-                    styles.semLivro
-                  }
-                >
-                  <BookMarked />
-
-                  <p>
-                    Você ainda não possui
-                    um último livro salvo.
-                  </p>
-                </div>
 
                 <button
                   type="button"
