@@ -55,6 +55,26 @@ function obterChaveMissoes(base, usuarioId) {
   return `${base}_${usuarioId}`;
 }
 
+function obterSequenciaAcessos(usuarioId) {
+  try {
+    const registro = JSON.parse(
+      localStorage.getItem(`readduo-sequencia-${usuarioId}`) || "null"
+    );
+    const agora = new Date();
+    const hoje = [
+      agora.getFullYear(),
+      String(agora.getMonth() + 1).padStart(2, "0"),
+      String(agora.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    if (registro?.data !== hoje) return 0;
+
+    return Math.max(0, Number(registro.sequencia) || 0);
+  } catch {
+    return 0;
+  }
+}
+
 const ABAS = [
   {
     id: "diarias",
@@ -517,6 +537,10 @@ function Missoes() {
         0
       ) || 0
     );
+
+  const [sequenciaAcessos] = useState(() =>
+    obterSequenciaAcessos(usuarioId)
+  );
 
 
   useEffect(() => {
@@ -1081,22 +1105,7 @@ function Missoes() {
           titulo.includes("ofensiva") ||
           titulo.includes("semana de leitura")
         ) {
-          const registro = JSON.parse(
-            localStorage.getItem(
-              `readduo-sequencia-${usuarioId}`
-            ) || "null"
-          );
-          const hoje = new Date();
-          const dataHoje = [
-            hoje.getFullYear(),
-            String(hoje.getMonth() + 1).padStart(2, "0"),
-            String(hoje.getDate()).padStart(2, "0"),
-          ].join("-");
-
-          return (
-            Number(registro?.sequencia) >= 7 &&
-            registro?.data === dataHoje
-          );
+          return obterSequenciaAcessos(usuarioId) >= 7;
         }
 
         if (
@@ -2110,13 +2119,12 @@ function Missoes() {
             </span>
 
             <strong>
-              {quantidadeConcluidas > 0
-                ? "Em andamento"
-                : "0 dias"}
+              {sequenciaAcessos}{" "}
+              {sequenciaAcessos === 1 ? "dia" : "dias"}
             </strong>
 
             <small>
-              Melhor sequência
+              Dias de acesso consecutivos
             </small>
           </div>
         </div>
